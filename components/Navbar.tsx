@@ -14,7 +14,7 @@ const Navbar = () => {
     <nav className="w-full px-24 py-6 bg-primary text flex justify-between items-center">
         <div className="flex gap-30">
             <Link className="text-white text-xl" href="/">Home</Link>
-            <Link className="text-white text-xl" href="/about">About</Link>
+            <Link className="text-white text-xl" href="/events">Registrations</Link>
         </div>
 
         <div className="flex gap-4">
