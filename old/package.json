@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
-    "@heroui/react": "^2.8.5",
+    "@heroui/react": "^3.0.0-beta.2",
+    "@heroui/styles": "^3.0.0-beta.2",
     "@heroui/system": "^2.4.23",
     "@heroui/table": "^2.2.27",
     "@heroui/theme": "^2.4.23",
@@ -29,7 +30,8 @@
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "tailwindcss": "^4.1.17"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.17",

@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+model Event {
+  id           Int            @id @default(autoincrement())
+  name         String
+  description  String
+  date         DateTime
+  active       Boolean        @default(true)
+  totalScore   Int
+  Registration Registration[]
+}
+
+model Registration {
+  id          Int    @id @default(autoincrement())
+  studentName String
+  grade       Int
+  userId      Int
+  eventId     Int
+  score       Int?
+  Event       Event  @relation(fields: [eventId], references: [id])
+  User        User   @relation(fields: [userId], references: [id])
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  name         String?
+  admin        Boolean        @default(false)
+  Registration Registration[]
+}
