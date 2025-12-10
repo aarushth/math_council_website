@@ -1,5 +1,8 @@
 @import "tailwindcss";
-@import "flowbite-react/plugin/tailwindcss";
-@source "../.flowbite-react/class-list.json";
+@source '../../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';
+@custom-variant dark (&:is(.dark *));
+@plugin '../hero.ts';
 
-@custom-variant hover (&:hover);
+
+
+/* @custom-variant hover (&:hover); */

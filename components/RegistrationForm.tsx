@@ -1,5 +1,5 @@
 "use client";
-import { Modal, ModalBody, ModalHeader, FloatingLabel, Dropdown, DropdownItem, Button } from "flowbite-react";
+// import { Modal, ModalBody, ModalHeader, FloatingLabel, Dropdown, DropdownItem, Button } from "flowbite-react";
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -81,7 +81,7 @@ export default function RegistrationForm({ event, open, setOpen}: Props) {
     return (
       <>
         <ToastContainer/>
-        <Modal show={open} size="md" onClose={closeModal} popup >
+        {/* <Modal show={open} size="md" onClose={closeModal} popup >
         <ModalHeader className="bg-cyan-950 rounded-t-lg"/>
         <ModalBody className="bg-cyan-950 rounded-b-lg">
           <div className="space-y-6">
@@ -102,7 +102,7 @@ export default function RegistrationForm({ event, open, setOpen}: Props) {
             </div>
           </div>
         </ModalBody>
-      </Modal>
+      </Modal> */}
       
       </>
     )}

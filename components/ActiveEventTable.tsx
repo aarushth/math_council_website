@@ -1,7 +1,7 @@
 "use client";
-import { Table, TableRow, TableCell, TableBody, TableHead, TableHeadCell } from "flowbite-react";
+// import { Table, TableRow, TableCell, TableBody, TableHead, TableHeadCell } from "flowbite-react";
 import { CalendarIcon, MapPinIcon, PlusIcon } from "@heroicons/react/24/solid";
-
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@heroui/table";
 export function formatEventDate(dateString: string) {
   const date = new Date(dateString);
 
@@ -36,8 +36,32 @@ interface Props {
 
 
 export default function ActiveEventTable({ event, onRegisterClick }: Props) {
+  const columns = [
+    {
+      key: "studentName",
+      label: "Student Name",
+    },
+    {
+      key: "grade",
+      label: "Grade",
+    }
+  ];
   return (
-<Table className="overflow-hidden">
+    <Table aria-label="Example table with dynamic content">
+      <TableHeader columns={columns}>
+        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+      </TableHeader>
+      <TableBody items={event.registrations}>
+        {(item) => (
+          <TableRow key={item.id}>
+            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}</TableCell>}
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  )
+}
+{/* <Table className="overflow-hidden">
     <caption className="px-5 font-medium flex flex-col justify-between text-heading bg-cyan-800 rounded-t-lg">
             <div className="flex flex-row gap-4 my-2">
                 <p className="text-xl text-white">{event.name}</p>
@@ -87,5 +111,5 @@ export default function ActiveEventTable({ event, onRegisterClick }: Props) {
               </TableCell>
             </TableRow>
         </TableBody>
-    </Table>
-)}
+    </Table> */}
+
