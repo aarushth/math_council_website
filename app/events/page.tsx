@@ -1,59 +1,51 @@
-import { prisma } from "@/lib/prisma";
-import RegistrationFormWrapper from "@/components/RegistrationFormWrapper";
-import { getServerSession } from "next-auth/next";
+"use client";
+import { useEffect, useState } from "react";
+import ActiveEventTable from "@/components/ActiveEventTable";
+import RegistrationForm from "@/components/RegistrationForm";
+import { useSession } from "next-auth/react";
+
+interface Event {
+  id: number;
+  name: string;
+  description: string;
+  date: string;
+}
 
 
-
-export default async function EventsPage() {
-  const session = await getServerSession();
+export default function EventsPage() {
+  const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [openModal, setOpenModal] = useState(false);
+  const { data: session, status } = useSession();
+  useEffect(() => {
+      fetch("/api/event/active")
+        .then((res) => res.json())
+        .then((data) => {
+          setEvents(data);
+          setLoading(false);
+        });
+    }, []);
 
   if (!session || !session.user?.email) {
     return <p className="p-6 text-center">Please log in to see events.</p>;
   }
 
-  const events = await prisma.event.findMany({
-    orderBy: { id: "asc" },
-  });
   const userId = session.user.id;
-  const activeEvents = events.filter(e => e.active);
-  const inactiveEvents = events.filter(e => !e.active);
+  
+  
+
+  if (loading) return <p>Loading...</p>;
+  if (!events.length) return <p>No active events.</p>;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Events</h1>
-
-      {/* ACTIVE EVENTS */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-3">Active Events</h2>
-        <div className="space-y-3">
-          {activeEvents.map(event => (
-            <div
-              key={event.id}
-              className="border p-4 rounded-lg shadow-sm flex justify-between items-center"
-            >
-              <span className="font-medium">{event.name}</span>
-              <RegistrationFormWrapper eventId={event.id} userId={userId} />
-            </div>
-          ))}
+      {events.map(event => (
+        <div key={event.id}>
+          <ActiveEventTable event={event} onRegisterClick={() => setOpenModal(true)}/> 
+          <RegistrationForm event={event} open={openModal} setOpen={setOpenModal}/>
         </div>
-      </section>
-
-      <hr className="my-10" />
-
-      {/* INACTIVE EVENTS */}
-      <section>
-        <h2 className="text-2xl font-semibold mb-3">Inactive Events</h2>
-        <div className="space-y-3">
-          {inactiveEvents.map(event => (
-            <div
-              key={event.id}
-              className="border p-4 rounded-lg shadow-sm bg-gray-100"
-            >
-              <span className="font-medium">{event.name}</span>
-            </div>
-          ))}
-        </div>
-      </section>
+      ))}
     </div>
   );
 }

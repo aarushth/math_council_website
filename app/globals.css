@@ -1,9 +1,5 @@
 @import "tailwindcss";
-
-@theme {
-  --color-primary: #006d77;
-  --color-back: #edf6f9;
-  --color-fore: #83c5be;
-}
+@import "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
 
 @custom-variant hover (&:hover);

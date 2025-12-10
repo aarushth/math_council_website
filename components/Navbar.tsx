@@ -11,7 +11,7 @@ const Navbar = () => {
     const user = session?.user;
 
     return (
-    <nav className="w-full px-24 py-6 bg-primary text flex justify-between items-center">
+    <nav className="w-full px-24 py-6 bg-cyan-800 text flex justify-between items-center">
         <div className="flex gap-30">
             <Link className="text-white text-xl" href="/">Home</Link>
             <Link className="text-white text-xl" href="/events">Registrations</Link>
