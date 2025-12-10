@@ -24,7 +24,7 @@ const customTheme = createTheme({
   },
   dropdown:{
 	"floating": {
-		"base": "py-0",
+		"base": "z-10 w-fit rounded-lg shadow text-left py-0",
 		"hidden": "py-0",
 		"item": {
 			"container": "py-0",
