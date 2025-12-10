@@ -34,7 +34,6 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async signIn({ user }) {
-      console.log("Sign in attempt for user:", user.email);
       if (!user.email) return false;
 
       let existingUser = await prisma.user.findUnique({

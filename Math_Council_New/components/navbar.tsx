@@ -16,7 +16,8 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import { Logo } from "@/components/icons";
+// import { Logo } from "@/components/icons";
+import { TbMathSymbols } from "react-icons/tb";
 import { useSession } from "next-auth/react";
 import SignInButton from "@/components/SignInButton";
 import LogoutButton from "@/components/LogoutButton";
@@ -30,8 +31,8 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand as="li" className="gap-3 max-w-fit">
           <NextLink className="flex justify-start items-center gap-1" href="/">
-            <Logo /> 
-            <p className="font-bold text-inherit">ACME</p>
+            <TbMathSymbols className="size-7"/> 
+            <p className="font-bold text-inherit">EHS Math Council</p>
           </NextLink>
         </NavbarBrand>
         <ul className="hidden lg:flex gap-4 justify-start ml-2">
@@ -49,20 +50,29 @@ export const Navbar = () => {
             </NavbarItem>
           ))}
         </ul>
+        
       </NavbarContent>
 
-      <NavbarContent className="hidden sm:flex basis-1/5 sm:basis-full" justify="end">
-        <ThemeSwitch />
+      <NavbarContent className="hidden lg:flex basis-1/5 sm:basis-full" justify="end">
         {!user ? (
-            <SignInButton/>
-        ) : (
-            <LogoutButton/>
-        )}
-        <NavbarMenuToggle />
-
+              <SignInButton/>
+          ) : (
+              <LogoutButton/>
+          )}
+        <ThemeSwitch />
       </NavbarContent>
 
-      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+      <NavbarContent className="hidden md:flex lg:hidden basis-1 pl-4" justify="end">
+        {!user ? (
+              <SignInButton/>
+          ) : (
+              <LogoutButton/>
+          )}
+        <ThemeSwitch />
+        <NavbarMenuToggle />
+      </NavbarContent>
+
+      <NavbarContent className="flex md:hidden basis-1 pl-4" justify="end">
         <ThemeSwitch />
         <NavbarMenuToggle />
       </NavbarContent>

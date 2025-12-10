@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "EHS Math Council",
+  description: "Eastlake Math Council's Official Website",
   navItems: [
     {
       label: "Home",
