@@ -4,11 +4,18 @@ import ActiveEventTable from "@/components/ActiveEventTable";
 import RegistrationForm from "@/components/RegistrationForm";
 import { useSession } from "next-auth/react";
 
+interface Registration{
+  id:number
+  studentName: string
+  grade: number
+  eventId: number
+}
 interface Event {
   id: number;
   name: string;
   description: string;
   date: string;
+  registrations: Registration[];
 }
 
 
@@ -16,6 +23,7 @@ export default function EventsPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
+
   const { data: session, status } = useSession();
   useEffect(() => {
       fetch("/api/event/active")
@@ -23,17 +31,13 @@ export default function EventsPage() {
         .then((data) => {
           setEvents(data);
           setLoading(false);
+          console.log(data);
         });
     }, []);
 
   if (!session || !session.user?.email) {
     return <p className="p-6 text-center">Please log in to see events.</p>;
   }
-
-  const userId = session.user.id;
-  
-  
-
   if (loading) return <p>Loading...</p>;
   if (!events.length) return <p>No active events.</p>;
 

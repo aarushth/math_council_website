@@ -19,7 +19,7 @@ model User{
 model Registration{
   id Int @id @default(autoincrement())
   studentName String
-  grade Int?
+  grade Int
   user User @relation(fields: [userId], references: [id])
   userId Int
   event Event @relation(fields: [eventId], references: [id])

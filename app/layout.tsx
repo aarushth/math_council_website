@@ -10,20 +10,35 @@ const customTheme = createTheme({
     "input": {
       "default": {
         "filled": {
-          "sm": "peer block w-full appearance-none rounded-lg border-0 border-b-2 border-cyan-500 bg-gray-50 px-2.5 pb-2.5 pt-5 text-xs text-cyan-600 focus:border-primary-600 focus:outline-none focus:ring-0 dark:border-cyan-600 dark:bg-cyan-400/70 dark:text-cyan-900 dark:focus:border-cyan-600",
-          "md": "peer block w-full appearance-none rounded-lg border-0 border-b-2 border-cyan-500 bg-gray-50 px-2.5 pb-2.5 pt-5 text-sm text-cyan-600 focus:border-primary-600 focus:outline-none focus:ring-0 dark:border-cyan-600 dark:bg-cyan-100 dark:text-cyan-900 dark:focus:border-cyan-600"
+          "md": "rounded-lg dark:border-cyan-600 dark:bg-cyan-100 dark:text-cyan-600 dark:focus:border-cyan-800 border-cyan-600 bg-cyan-100 text-cyan-600 focus:border-cyan-800"
         },
       },
     },
     "label": {
       "default": {
         "filled": {
-          "sm": "absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 text-xs text-cyan-600 transition-transform duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-cyan-600 dark:text-cyan-600 peer-focus:dark:text-cyan-600",
-          "md": "absolute left-2.5 top-4 z-10 origin-[0] -translate-y-4 scale-75 text-sm text-cyan-600 transition-transform duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:text-cyan-600 dark:text-cyan-600 peer-focus:dark:text-cyan-600"
+          "md": "text-cyan-600 peer-focus:text-cyan-600 dark:text-cyan-600 peer-focus:dark:text-cyan-600"
         }
       },
     }
-  }
+  },
+  dropdown:{
+	"floating": {
+		"base": "py-0",
+		"hidden": "py-0",
+		"item": {
+			"container": "py-0",
+			"base": "bg-cyan-100 text-cyan-800 hover:bg-cyan-800 hover:text-cyan-100 focus:bg-cyan-800 focus:text-cyan-100 dark:bg-cyan-100 dark:text-cyan-800 dark:hover:bg-cyan-800 dark:hover:text-cyan-100 dark:focus:bg-cyan-800 dark:focus:text-cyan-100",
+		},
+		"style": {
+			"dark": "bg-cyan-100 dark:bg-cyan-100 text-white dark:bg-gray-700",
+			"light": "border border-gray-200 bg-white text-gray-900",
+			"auto": "border border-gray-200 bg-white text-gray-900 dark:border-none dark:bg-gray-700 dark:text-white"
+		},
+		"target": "text-cyan-600 w-fit bg-cyan-100 border-none border-b-100 border-cyan-600 py-0"
+	},
+	"inlineWrapper": "flex items-center"
+	}
 });
 
 
@@ -45,17 +60,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    
-      <html lang="en" className={`${poppins.variable}`}>
-        <body className="bg-back">
-          <ClientProvider>
-            <ThemeProvider theme={customTheme}>
-                <Navbar/>
-                {children}
-            </ThemeProvider>
-          </ClientProvider>
-        </body>
-      </html>
-  );
+	return (
+		<html lang="en" className={`${poppins.variable}`}>
+			<body className="bg-back">
+				<ClientProvider>
+					<ThemeProvider theme={customTheme}>
+						<Navbar/>
+						{children}
+					</ThemeProvider>
+				</ClientProvider>
+			</body>
+		</html>
+	);
 }
