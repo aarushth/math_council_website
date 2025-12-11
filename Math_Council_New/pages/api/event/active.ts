@@ -23,7 +23,7 @@ export default async function handler(
     const activeEvents = await prisma.event.findMany({
       where: { active: true },
       include: {
-        Registration: {
+        registrations: {
           where: {
             userId: userId, // ⭐ ONLY pull registrations belonging to this user
           },

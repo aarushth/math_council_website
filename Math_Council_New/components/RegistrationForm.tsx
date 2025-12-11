@@ -1,0 +1,137 @@
+"use client";
+import { Event, Registration } from "@/components/primitives";
+import { useState } from "react";
+import { useSession } from "next-auth/react";
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Select,
+  SelectItem,
+  Input,
+  addToast
+} from "@heroui/react";
+
+interface Props {
+  event: Event;
+  addRegistration: (id:number, r : Registration) => void;
+  isOpen: boolean;                
+  onOpenChange: () => void;
+}
+
+const grades = [
+  {key:"0", label:"Kindergarten"},
+  {key:"1", label:"1st Grade"},
+  {key:"2", label:"2nd Grade"},
+  {key:"3", label:"3rd Grade"},
+  {key:"4", label:"4th Grade"},
+  {key:"5", label:"5th Grade"},
+  {key:"6", label:"6th Grade"},
+  {key:"7", label:"7th Grade"},
+  {key:"8", label:"8th Grade"},
+];
+
+
+export default function RegistrationForm({ event, addRegistration, isOpen, onOpenChange}: Props) {
+	const { data: session, status } = useSession();
+	const [name, setName] = useState("");
+	const [nameTouched, setNameTouched] = useState(false);
+
+	const [grade, setGrade] = useState(new Set([]));
+	const [gradeTouched, setGradeTouched] = useState(false);
+
+	const isNameInvalid = (name === "") && nameTouched;
+
+	const gradeNumber = Number(Array.from(grade)[0]); // fastest way
+	const isGradeInvalid = (Number.isNaN(gradeNumber)) && gradeTouched;
+	const isSubmitDisabled = isGradeInvalid || isNameInvalid;
+	async function handleSubmit(onClose : () => void){
+		try {
+			const res = await fetch("/api/registration/create", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					studentName: name,
+					grade: gradeNumber,
+					userId: session?.user.id,
+					eventId: event.id
+				}),
+			});
+
+			if (!res.ok) throw new Error("Failed to create registration");
+			const newRegistration = await res.json();
+			addRegistration(event.id, newRegistration)
+			onClose();
+		} catch (err) {
+			console.error(err);
+			addToast({
+				title: "An error ocurred. Please try again later.",
+				color: "danger",
+			})
+		}
+	}
+	function clearData(){
+		setGrade(new Set([]));
+		setName("");
+		setGradeTouched(false);
+		setNameTouched(false);
+	}
+
+  return (
+      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} onClose={() => {  clearData()}}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Register for {event.name}</ModalHeader>
+              <ModalBody>
+                <Input
+                  label="Student Name"
+                  variant="bordered"
+                  isRequired
+                  color={isNameInvalid ? "danger" : "default"}
+                  errorMessage={isNameInvalid ? "You must enter a name" : ""}
+                  isInvalid={isNameInvalid}
+                  onValueChange={setName}
+                  onFocusChange={(isFocused: boolean) => {!isFocused && setNameTouched(true)}}
+                />
+                <Select 
+                  className="max-w-xl"
+                  variant="bordered" 
+                  items={grades} 
+                  label="Grade Level" 
+                  isRequired
+                  errorMessage={isGradeInvalid ? "You must pick a grade" : ""}
+                  isInvalid={isGradeInvalid}
+                  selectedKeys={grade}
+                  onClose={() => setGradeTouched(true)}
+                  onSelectionChange={setGrade}
+                >
+                  {(animal) => <SelectItem>{animal.label}</SelectItem>}
+                </Select>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="ghost" onPress={() => {onClose();}}>Cancel</Button>
+                <Button 
+				color="primary" 
+				variant= {isSubmitDisabled ? "faded" : "solid"}
+				isDisabled={isSubmitDisabled}
+				onPress={() => {
+					if((Number.isNaN(gradeNumber)) || (name === "")){
+						setGradeTouched(true)
+						setNameTouched(true)
+					}else{
+						handleSubmit(onClose);
+					}
+                  }}>
+                  Submit
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+  );
+}

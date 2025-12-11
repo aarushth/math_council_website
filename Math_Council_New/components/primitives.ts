@@ -51,3 +51,17 @@ export const subtitle = tv({
     fullWidth: true,
   },
 });
+
+export interface Event {
+  id: number;
+  name: string;
+  description: string;
+  date: string;
+  registrations: Registration[];
+}
+export interface Registration{
+  id:number
+  studentName: string
+  grade: number
+  eventId: number
+}

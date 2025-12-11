@@ -1,30 +1,27 @@
 "use client";
 import { useEffect, useState } from "react";
 import ActiveEventTable from "@/components/ActiveEventTable";
-// import RegistrationForm from "@/components/RegistrationForm";
+import RegistrationForm from "@/components/RegistrationForm";
 import { useSession } from "next-auth/react";
-
-interface Registration{
-  id:number
-  studentName: string
-  grade: number
-  eventId: number
-}
-interface Event {
-  id: number;
-  name: string;
-  description: string;
-  date: string;
-  Registration: Registration[];
-}
-
+import { useDisclosure } from '@heroui/react'
+import type { Event, Registration } from '@/components/primitives'
 
 export default function RegistrationPage() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
-
+  // const [openModal, setOpenModal] = useState(false);
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const { data: session, status } = useSession();
+  function addRegistrationToEvent(eventId: number, registration: Registration) {
+    setEvents(prevEvents =>
+      prevEvents.map(ev =>
+        ev.id === eventId
+          ? { ...ev, registrations: [...ev.registrations, registration] }
+          : ev
+      )
+    );
+  }
+
   useEffect(() => {
       fetch("/api/event/active")
         .then((res) => res.json())
@@ -46,8 +43,8 @@ export default function RegistrationPage() {
       <h1 className="text-3xl font-bold mb-6">Events</h1>
       {events.map(event => (
         <div key={event.id}>
-          <ActiveEventTable event={event} onRegisterClick={() => setOpenModal(true)}/> 
-          {/* <RegistrationForm event={event} open={openModal} setOpen={setOpenModal}/> */}
+          <ActiveEventTable event={event} onRegisterClick={onOpen}/> 
+          <RegistrationForm event={event} addRegistration={addRegistrationToEvent} isOpen={isOpen} onOpenChange={onOpenChange}/>
         </div>
       ))}
     </div>

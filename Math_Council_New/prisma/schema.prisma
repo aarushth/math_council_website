@@ -12,7 +12,7 @@ model Event {
   date         DateTime
   active       Boolean        @default(true)
   totalScore   Int
-  Registration Registration[]
+  registrations Registration[]
 }
 
 model Registration {
@@ -22,8 +22,8 @@ model Registration {
   userId      Int
   eventId     Int
   score       Int?
-  Event       Event  @relation(fields: [eventId], references: [id])
-  User        User   @relation(fields: [userId], references: [id])
+  event       Event  @relation(fields: [eventId], references: [id])
+  user        User   @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -31,5 +31,5 @@ model User {
   email        String         @unique
   name         String?
   admin        Boolean        @default(false)
-  Registration Registration[]
+  registrations Registration[]
 }
