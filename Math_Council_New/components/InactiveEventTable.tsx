@@ -1,0 +1,66 @@
+"use client";
+import { FaCalendar, FaMapMarkerAlt, FaPlus} from "react-icons/fa";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Popover, PopoverContent, PopoverTrigger, Tooltip, Button, addToast } from "@heroui/react";
+import { Event, Registration, errorToast, formatEventDate } from "@/components/primitives";
+import RegistrationActions from "@/components/RegistrationActions";
+import { useCallback, Key} from "react";
+import EventTopContent from "./EventTopContent";
+
+
+interface Props {
+  event: Event;
+}
+
+export default function InactiveEventTable({event}: Props) {
+
+  const columns = [
+    {
+      key: "studentName",
+      label: "Student Name",
+    },
+    {
+      key: "grade",
+      label: "Grade",
+    },
+    {
+      key: "score",
+      label: "Score",
+    }
+  ];
+    const renderCell = useCallback((registration : Registration, columnKey : Key) => {
+      const cellValue = registration[columnKey as keyof Registration];
+
+      switch (columnKey) {
+        case "grade":
+          return ( cellValue === 0 ? "KG" : cellValue);
+        case "score":
+          return cellValue != null 
+            ? `${cellValue} / ${event.totalScore}` 
+            : "Score not available yet";
+        default:
+          return cellValue;
+      }
+  }, []);
+    
+  return (
+    <Table aria-label={event.name + " table"} topContent={
+      <EventTopContent event={event}/>
+    }>
+      <TableHeader columns={columns}>
+          {(column) => <TableColumn 
+            key={column.key}>
+              {column.label}
+            </TableColumn>}
+      </TableHeader>
+      <TableBody items={event.registrations || []} >
+        {(item) => (
+          <TableRow key={item.id}>
+            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+          </TableRow>
+        )}
+      </TableBody>
+    </Table>
+  )
+}
+
+

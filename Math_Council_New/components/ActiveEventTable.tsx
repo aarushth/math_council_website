@@ -1,27 +1,32 @@
 "use client";
-import { FaCalendar, FaMapMarkerAlt, FaPlus } from "react-icons/fa";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, getKeyValue } from "@heroui/table";
-import { Event } from "@/components/primitives";
-export function formatEventDate(dateString: string) {
-  const date = new Date(dateString);
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
+import { Event, Registration, errorToast} from "@/components/primitives";
+import RegistrationActions from "@/components/RegistrationActions";
+import { useCallback, Key} from "react";
+import EventTopContent from "./EventTopContent";
+import { FaPlus } from "react-icons/fa";
 
-  return date.toLocaleString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 interface Props {
   event: Event;
-  onRegisterClick?: (event: Event) => void;
+  onRegisterClick: (event: Event, registration? : Registration) => void;
+  onCancelRegistration: (eventId:number, registrationId: number) => void;
 }
 
 
-export default function ActiveEventTable({ event, onRegisterClick }: Props) {
+export default function ActiveEventTable({ event, onRegisterClick, onCancelRegistration }: Props) {
+
+  async function deleteRegistration(id: number) {
+    try {
+      const res = await fetch(`/api/registration/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to cancel registration");
+      onCancelRegistration(event.id, id)
+      
+    }catch (err) {
+      console.error(err);
+			errorToast();
+    }
+  }
   const columns = [
     {
       key: "studentName",
@@ -32,51 +37,57 @@ export default function ActiveEventTable({ event, onRegisterClick }: Props) {
       label: "Grade",
     },
     {
-      key: "delete",
-      label: "",
+      key: "actions",
+      label: "Actions",
     }
   ];
-  if(!event){
-    return <p>No upcoming events</p>;
-  }else{
+    const renderCell = useCallback((registration : Registration, columnKey : Key) => {
+      // const [isOpen, setIsOpen] = useState(false);
+      const cellValue = registration[columnKey as keyof Registration];
+
+      switch (columnKey) {
+        case "grade":
+          return ( cellValue === 0 ? "KG" : cellValue);
+        case "actions":
+          return (
+            <RegistrationActions registration={registration} event={event} deleteRegistration={deleteRegistration} editRegistration={(r) => {
+              console.log(r); 
+              onRegisterClick(event, r)}}/>
+          );
+        default:
+          return cellValue;
+      }
+  }, []);
     
   return (
     <Table aria-label={event.name + " table"} topContent={
-        <>
-            <p className="block text-xl">{event.name}</p>
-            <p className="block text-xs -my-2 text-body">{event.description}</p>
-            
-            <div className="flex flex-row gap-4 mt-1">
-                <FaCalendar className="size-4"></FaCalendar>
-                <p className="text-xs font-normal text-body text-center">{formatEventDate(event.date)}</p>
-            </div>
-            <div className="flex flex-row gap-4">
-                <FaMapMarkerAlt className="size-3"></FaMapMarkerAlt>
-                <p className="text-xs font-normal text-body">Location</p>
-            </div>
-        </>
+      <EventTopContent event={event}/>
     }
     bottomContent={
-        <div className="cursor-pointer text-green-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-green-500 hover:text-black" onClick={() => onRegisterClick && onRegisterClick(event)}>
+        <div className="cursor-pointer text-green-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-green-500 hover:text-black" onClick={() => onRegisterClick(event)}>
             <FaPlus className="size-5"></FaPlus>
             <p>Register a{event.registrations.length != 0 && "nother"} student</p>
         </div>
     }>
       <TableHeader columns={columns}>
-        {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
+          {(column) => <TableColumn 
+          // className={column.key === "actions"? "pr-20" : "pr-0"} 
+          className="text-center"
+            key={column.key}
+            // align={column.key === "actions" ? "end" : "start"}
+            >
+              {column.label}
+            </TableColumn>}
       </TableHeader>
-      <TableBody items={event.registrations || []}>
+      <TableBody items={event.registrations || []} emptyContent={"No registrations found."}>
         {(item) => (
           <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{columnKey === "grade" ? item.grade === 0
-                                          ? "KG" : item.grade : getKeyValue(item, columnKey)}
-                                        </TableCell>}
+            {(columnKey) => <TableCell className="text-center">{renderCell(item, columnKey)}</TableCell>}
           </TableRow>
         )}
       </TableBody>
     </Table>
   )
-}
 }
 
 

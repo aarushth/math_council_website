@@ -3,16 +3,21 @@ import { useEffect, useState } from "react";
 import ActiveEventTable from "@/components/ActiveEventTable";
 import RegistrationForm from "@/components/RegistrationForm";
 import { useSession } from "next-auth/react";
-import { useDisclosure } from '@heroui/react'
+import { Spinner, useDisclosure } from '@heroui/react'
 import type { Event, Registration } from '@/components/primitives'
 
 export default function RegistrationPage() {
+  const { data: session, status } = useSession();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  // const [openModal, setOpenModal] = useState(false);
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const { data: session, status } = useSession();
+  const [existingRegistration, setExistingRegistration] = useState<Registration | null>(null);
+ 
   function addRegistrationToEvent(eventId: number, registration: Registration) {
+    if (!registration.id) {
+      console.error("Registration missing id!", registration);
+      return;
+    }
     setEvents(prevEvents =>
       prevEvents.map(ev =>
         ev.id === eventId
@@ -21,30 +26,78 @@ export default function RegistrationPage() {
       )
     );
   }
+  function updateRegistration(eventId: number, registration: Registration) {
+    if (!registration.id) {
+      console.error("Cannot update registration without id", registration);
+      return;
+    }
+    setEvents(prevEvents =>
+      prevEvents.map(ev =>
+        ev.id === eventId
+          ? {
+              ...ev,
+              registrations: [
+                ...ev.registrations.filter(r => r.id !== registration.id),
+                registration
+              ],
+            }
+          : ev
+      )
+    );
+  }
 
+  function cancelRegistration(eventId:number, registrationId : number){
+    setEvents(prevEvents =>
+        prevEvents.map(ev =>
+          ev.id === eventId
+            ? {
+                ...ev,
+                registrations: ev.registrations.filter(
+                  (reg) => reg.id !== registrationId
+                ),
+              }
+            : ev
+        )
+      );
+  }
   useEffect(() => {
       fetch("/api/event/active")
         .then((res) => res.json())
         .then((data) => {
           setEvents(data);
           setLoading(false);
-          console.log(data);
         });
     }, []);
+  
+  if (status === "loading") {
+    // session is still being fetched
+    return <div className="flex justify-center h-full">
+            <Spinner />
+          </div>
+  }
 
-  if (!session || !session.user?.email) {
+  if (status === "unauthenticated" || !session?.user?.email) {
     return <p className="p-6 text-center">Please log in to see events.</p>;
   }
-  if (loading) return <p>Loading...</p>;
+
+  if (loading) {
+    return <div className="flex justify-center h-full">
+              <Spinner />
+            </div>
+  }
+
   if (!events.length) return <p>No active events.</p>;
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">Events</h1>
+      <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
       {events.map(event => (
         <div key={event.id}>
-          <ActiveEventTable event={event} onRegisterClick={onOpen}/> 
-          <RegistrationForm event={event} addRegistration={addRegistrationToEvent} isOpen={isOpen} onOpenChange={onOpenChange}/>
+          <ActiveEventTable event={event} onRegisterClick={(e, r) => {
+            setExistingRegistration(r ? r : null);
+            onOpen(); 
+          }} onCancelRegistration={cancelRegistration}/> 
+          <RegistrationForm event={event} addRegistration={addRegistrationToEvent} updateRegistration={updateRegistration} isOpen={isOpen} onOpenChange={onOpenChange} existingRegistration={existingRegistration} clearExisting={() => setExistingRegistration(null)}/>
         </div>
       ))}
     </div>

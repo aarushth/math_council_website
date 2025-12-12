@@ -1,5 +1,5 @@
 import { tv } from "tailwind-variants";
-
+import { addToast } from "@heroui/toast";
 export const title = tv({
   base: "tracking-tight inline font-semibold",
   variants: {
@@ -40,6 +40,26 @@ export const title = tv({
   ],
 });
 
+export function errorToast(){
+  addToast({
+				title: "An error ocurred. Please try again later.",
+				color: "danger",
+        timeout: 3000,
+        shouldShowTimeoutProgress: true,
+			})
+}
+export function formatEventDate(dateString: string) {
+  const date = new Date(dateString);
+
+  return date.toLocaleString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 export const subtitle = tv({
   base: "w-full md:w-1/2 my-2 text-lg lg:text-xl text-default-600 block max-w-full",
   variants: {
@@ -57,6 +77,7 @@ export interface Event {
   name: string;
   description: string;
   date: string;
+  totalScore: number,
   registrations: Registration[];
 }
 export interface Registration{

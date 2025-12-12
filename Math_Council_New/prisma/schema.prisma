@@ -5,13 +5,14 @@ generator client {
 datasource db {
   provider = "sqlite"
 }
+
 model Event {
-  id           Int            @id @default(autoincrement())
-  name         String
-  description  String
-  date         DateTime
-  active       Boolean        @default(true)
-  totalScore   Int
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String
+  date          DateTime
+  active        Boolean        @default(true)
+  totalScore    Int
   registrations Registration[]
 }
 
@@ -27,9 +28,9 @@ model Registration {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  email        String         @unique
-  name         String?
-  admin        Boolean        @default(false)
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  name          String?
+  admin         Boolean        @default(false)
   registrations Registration[]
 }

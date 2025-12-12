@@ -11,6 +11,10 @@ export const siteConfig = {
     {
       label: "Registration",
       href: "/registration",
+    },
+    {
+      label: "Scores",
+      href: "/scores",
     }
   ]
 };

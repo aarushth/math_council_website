@@ -1,6 +1,6 @@
 "use client";
-import { Event, Registration } from "@/components/primitives";
-import { useState } from "react";
+import { errorToast, Event, Registration } from "@/components/primitives";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import {
   Modal,
@@ -17,9 +17,12 @@ import {
 
 interface Props {
   event: Event;
-  addRegistration: (id:number, r : Registration) => void;
+  addRegistration: (eventId:number, r : Registration) => void;
+  updateRegistration: (eventId:number, r: Registration) => void;
   isOpen: boolean;                
   onOpenChange: () => void;
+  existingRegistration?: Registration | null;
+  clearExisting: () => void;
 }
 
 const grades = [
@@ -35,13 +38,25 @@ const grades = [
 ];
 
 
-export default function RegistrationForm({ event, addRegistration, isOpen, onOpenChange}: Props) {
+export default function RegistrationForm({ event, addRegistration, updateRegistration, isOpen, onOpenChange, existingRegistration, clearExisting}: Props) {
 	const { data: session, status } = useSession();
 	const [name, setName] = useState("");
 	const [nameTouched, setNameTouched] = useState(false);
 
-	const [grade, setGrade] = useState(new Set([]));
+	const [grade, setGrade] = useState<Set<string>>(new Set());
 	const [gradeTouched, setGradeTouched] = useState(false);
+
+  const isEditing = !!existingRegistration;
+
+  useEffect(() => {
+  if (existingRegistration) {
+    setName(existingRegistration.studentName);
+    setGrade(new Set([String(existingRegistration.grade)])); // store as Set<string>
+  } else {
+    setName("");
+    setGrade(new Set());
+  }
+}, [existingRegistration]);
 
 	const isNameInvalid = (name === "") && nameTouched;
 
@@ -49,39 +64,56 @@ export default function RegistrationForm({ event, addRegistration, isOpen, onOpe
 	const isGradeInvalid = (Number.isNaN(gradeNumber)) && gradeTouched;
 	const isSubmitDisabled = isGradeInvalid || isNameInvalid;
 	async function handleSubmit(onClose : () => void){
-		try {
-			const res = await fetch("/api/registration/create", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					studentName: name,
-					grade: gradeNumber,
-					userId: session?.user.id,
-					eventId: event.id
-				}),
-			});
+    if(!isEditing){
+      try {
+        const res = await fetch("/api/registration/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            studentName: name,
+            grade: gradeNumber,
+            userId: session?.user.id,
+            eventId: event.id
+          }),
+        });
 
-			if (!res.ok) throw new Error("Failed to create registration");
-			const newRegistration = await res.json();
-			addRegistration(event.id, newRegistration)
-			onClose();
-		} catch (err) {
-			console.error(err);
-			addToast({
-				title: "An error ocurred. Please try again later.",
-				color: "danger",
-			})
-		}
+        if (!res.ok) throw new Error("Failed to create registration");
+        const newRegistration = await res.json();
+        addRegistration(event.id, newRegistration)
+        onClose();
+      } catch (err) {
+        console.error(err);
+        errorToast();
+      }
+    }else{
+      try {
+        const res = await fetch(`/api/registration/${existingRegistration.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ studentName: name, grade: gradeNumber}),
+        });
+
+        if (!res.ok) throw new Error("Failed to update registration");
+        const data = await res.json();
+        const updatedRegistration = data.registration;
+        updateRegistration(event.id, updatedRegistration);
+        onClose();
+      } catch (err) {
+        console.error(err);
+        errorToast();
+      }
+    }
 	}
 	function clearData(){
 		setGrade(new Set([]));
 		setName("");
 		setGradeTouched(false);
 		setNameTouched(false);
+    clearExisting();
 	}
 
   return (
-      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} onClose={() => {  clearData()}}>
+      <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} onClose={() => { clearData()}}>
         <ModalContent>
           {(onClose) => (
             <>
@@ -90,6 +122,7 @@ export default function RegistrationForm({ event, addRegistration, isOpen, onOpe
                 <Input
                   label="Student Name"
                   variant="bordered"
+                  value={name}
                   isRequired
                   color={isNameInvalid ? "danger" : "default"}
                   errorMessage={isNameInvalid ? "You must enter a name" : ""}
@@ -109,7 +142,9 @@ export default function RegistrationForm({ event, addRegistration, isOpen, onOpe
                   onClose={() => setGradeTouched(true)}
                   onSelectionChange={setGrade}
                 >
-                  {(animal) => <SelectItem>{animal.label}</SelectItem>}
+                 {grades.map((g, i) => (
+                    <SelectItem key={i.toString()}>{g.label}</SelectItem>
+                  ))}
                 </Select>
               </ModalBody>
               <ModalFooter>
