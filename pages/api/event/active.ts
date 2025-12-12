@@ -29,6 +29,7 @@ export default async function handler(
                     },
                 },
             },
+            orderBy: { date: 'asc' },
         })
 
         const serialized = activeEvents.map((event) => ({

@@ -4,7 +4,7 @@ interface Props {
     event: Event
 }
 
-export default function InactiveEventTable({ event }: Props) {
+export default function EventTopContent({ event }: Props) {
     return (
         <>
             <p className="block text-xl">{event.name}</p>

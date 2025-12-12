@@ -22,9 +22,12 @@ import SignInButton from '@/components/SignInButton'
 import LogoutButton from '@/components/LogoutButton'
 
 export const Navbar = () => {
-    const { data: session, status } = useSession()
-
+    const { data: session } = useSession()
     const user = session?.user
+    const navbarItems = [
+        ...siteConfig.navItems,
+        ...(user?.admin ? [{ label: 'Admin', href: '/admin' }] : []),
+    ]
     return (
         <HeroUINavbar maxWidth="xl" position="sticky">
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
@@ -40,7 +43,7 @@ export const Navbar = () => {
                     </NextLink>
                 </NavbarBrand>
                 <ul className="hidden lg:flex gap-4 justify-start ml-2">
-                    {siteConfig.navItems.map((item) => (
+                    {navbarItems.map((item) => (
                         <NavbarItem key={item.href}>
                             <NextLink
                                 className={clsx(
@@ -84,7 +87,7 @@ export const Navbar = () => {
 
             <NavbarMenu>
                 <div className="mx-4 mt-2 flex flex-col gap-2">
-                    {siteConfig.navItems.map((item, index) => (
+                    {navbarItems.map((item, index) => (
                         <NavbarMenuItem key={`${item}-${index}`}>
                             <Link
                                 color={

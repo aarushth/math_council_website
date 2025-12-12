@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import InactiveEventTable from '@/components/InactiveEventTable'
+import InactiveEventTable from './InactiveEventTable'
 import { useSession } from 'next-auth/react'
 import { Spinner } from '@heroui/react'
 import type { Event } from '@/components/primitives'

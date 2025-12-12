@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import ActiveEventTable from '@/components/ActiveEventTable'
-import RegistrationForm from '@/components/RegistrationForm'
+import ActiveEventTable from './ActiveEventTable'
+import RegistrationForm from './RegistrationForm'
 import { useSession } from 'next-auth/react'
 import { Spinner, useDisclosure } from '@heroui/react'
 import type { Event, Registration } from '@/components/primitives'
@@ -85,7 +85,11 @@ export default function RegistrationPage() {
         )
     }
     if (status === 'unauthenticated' || !session?.user?.email) {
-        return <p className="p-6 text-center">Please log in to see events.</p>
+        return (
+            <p className="p-6 text-center">
+                Please log in to register for an event.
+            </p>
+        )
     }
 
     if (!events.length) return <p>No active events.</p>
