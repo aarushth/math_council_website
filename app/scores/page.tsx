@@ -32,10 +32,14 @@ export default function RegistrationPage() {
 
     if (!events.length) return <p>No scores found.</p>
 
+    const inactiveEvents = [...events].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    )
+
     return (
         <div className="max-w-3xl mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">Scores</h1>
-            {events.map((event) => (
+            {inactiveEvents.map((event) => (
                 <div key={event.id}>
                     <InactiveEventTable event={event} />
                 </div>

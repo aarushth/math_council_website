@@ -45,6 +45,7 @@ export const authOptions: NextAuthOptions = {
                     data: {
                         email: user.email,
                         name: user.name || '',
+                        admin: false,
                     },
                 })
             }
@@ -53,18 +54,29 @@ export const authOptions: NextAuthOptions = {
         },
 
         async jwt({ token, user }) {
-            if (user?.email) {
+            if (!token.id && user?.email) {
                 const dbUser = await prisma.user.findUnique({
                     where: { email: user.email },
                 })
-
                 if (dbUser) {
                     token.id = dbUser.id
                     token.admin = dbUser.admin
-                    token.name = dbUser.name
                     token.email = dbUser.email
+                    token.name = dbUser.name
+                }
+                return token
+            }
+
+            // 🔥 Always re-fetch user's current admin value from DB
+            if (token.id) {
+                const dbUser = await prisma.user.findUnique({
+                    where: { id: token.id },
+                })
+                if (dbUser) {
+                    token.admin = dbUser.admin
                 }
             }
+
             return token
         },
 

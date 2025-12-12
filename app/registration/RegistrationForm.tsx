@@ -15,7 +15,7 @@ import {
 } from '@heroui/react'
 import type { Selection } from '@heroui/react'
 interface Props {
-    event: Event
+    event: Event | null
     addRegistration: (eventId: number, r: Registration) => void
     updateRegistration: (eventId: number, r: Registration) => void
     isOpen: boolean
@@ -63,7 +63,10 @@ export default function RegistrationForm({
             setGrade(new Set())
         }
     }, [existingRegistration])
-
+    if (isOpen && event == null) {
+        errorToast()
+        return
+    }
     const isNameInvalid = name === '' && nameTouched
 
     const gradeNumber = Number(Array.from(grade)[0]) // fastest way
@@ -79,13 +82,13 @@ export default function RegistrationForm({
                         studentName: name,
                         grade: gradeNumber,
                         userId: session?.user.id,
-                        eventId: event.id,
+                        eventId: event!.id,
                     }),
                 })
 
                 if (!res.ok) throw new Error('Failed to create registration')
                 const newRegistration = await res.json()
-                addRegistration(event.id, newRegistration)
+                addRegistration(event!.id, newRegistration)
                 onClose()
             } catch (err) {
                 console.error(err)
@@ -108,7 +111,7 @@ export default function RegistrationForm({
                 if (!res.ok) throw new Error('Failed to update registration')
                 const data = await res.json()
                 const updatedRegistration = data.registration
-                updateRegistration(event.id, updatedRegistration)
+                updateRegistration(event!.id, updatedRegistration)
                 onClose()
             } catch (err) {
                 console.error(err)
@@ -137,7 +140,7 @@ export default function RegistrationForm({
                 {(onClose) => (
                     <>
                         <ModalHeader className="flex flex-col gap-1">
-                            Register for {event.name}
+                            Register for {event!.name}
                         </ModalHeader>
                         <ModalBody>
                             <Input

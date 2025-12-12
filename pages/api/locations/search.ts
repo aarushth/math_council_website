@@ -1,6 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/prisma/prisma' // adjust path if needed
 
+function sanitizeForFts(input: string): string {
+    let s = input.replace(/[^\w\s]/gi, '').trim()
+
+    return s
+}
+
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -19,13 +25,21 @@ export default async function handler(
                 .json({ message: "Query parameter 'q' is required" })
         }
 
-        // Use raw query to search FTS5 table
-        const results = await prisma.$queryRaw<{ address: string }[]>`
-      SELECT address
+        const cleaned = sanitizeForFts(q)
+        if (!cleaned) {
+            return res.status(200).json([]) // nothing meaningful after cleaning
+        }
+
+        // const tokens = cleaned.split(' ').map((t) => `${t}*`)
+        // const matchExpr = tokens.join(' ')
+        console.log(cleaned)
+
+        const results = await prisma.$queryRaw<
+            { address: string }[]
+        >`SELECT address
       FROM locations
-      WHERE address MATCH ${q + '*'}
-      LIMIT 5
-    `
+      WHERE address MATCH ${cleaned}
+      LIMIT 5`
 
         return res.status(200).json(results.map((r) => r.address))
     } catch (err) {

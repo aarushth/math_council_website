@@ -64,7 +64,6 @@ export default function ActiveEventTable({
                             event={event}
                             deleteRegistration={deleteRegistration}
                             editRegistration={(r) => {
-                                console.log(r)
                                 onRegisterClick(event, r)
                             }}
                         />
@@ -78,6 +77,7 @@ export default function ActiveEventTable({
 
     return (
         <Table
+            className="mb-5"
             aria-label={event.name + ' registration table'}
             topContent={<EventTopContent event={event} />}
             bottomContent={

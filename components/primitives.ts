@@ -40,26 +40,15 @@ export const title = tv({
     ],
 })
 
-export function errorToast() {
+export function errorToast(msg?: string) {
     addToast({
-        title: 'An error ocurred. Please try again later.',
+        title: msg ? msg : 'An error ocurred. Please try again later.',
         color: 'danger',
         timeout: 3000,
         shouldShowTimeoutProgress: true,
     })
 }
-export function formatEventDate(dateString: string) {
-    const date = new Date(dateString)
 
-    return date.toLocaleString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    })
-}
 export const subtitle = tv({
     base: 'w-full md:w-1/2 my-2 text-lg lg:text-xl text-default-600 block max-w-full',
     variants: {
@@ -77,7 +66,9 @@ export interface Event {
     name: string
     description: string
     date: string
-    totalScore: number
+    location: string
+    active: boolean
+    totalScore: number | null
     registrations: Registration[]
 }
 export interface Registration {
@@ -85,4 +76,6 @@ export interface Registration {
     studentName: string
     grade: number
     eventId: number
+    userId: number
+    score: number
 }

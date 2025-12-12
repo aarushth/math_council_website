@@ -1,44 +1,111 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Event } from '@/components/primitives'
-import { Spinner } from '@heroui/react'
+import { Button, Divider, Spinner, useDisclosure } from '@heroui/react'
 import AdminEventTable from './AdminEventTable'
-import LocationInput from './LocationInput'
+import EventForm from './EventForm'
+import { FaPlus } from 'react-icons/fa'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export default function AdminDashboard() {
-    const [value, setValue] = useState('')
+    const router = useRouter()
+    const { data: session, status } = useSession()
     const [loading, setLoading] = useState(true)
     const [events, setEvents] = useState<Event[]>([])
+    const { isOpen, onOpen, onOpenChange } = useDisclosure()
+    const [existingEvent, setExistingEvent] = useState<Event | null>(null)
+    function addEvent(event: Event) {
+        setEvents((prev) => {
+            const exists = prev.some((e) => e.id === event.id)
+
+            if (exists) {
+                return prev.map((e) => (e.id === event.id ? event : e))
+            }
+
+            return [...prev, event]
+        })
+    }
+    function deleteEvent(id: number) {
+        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id))
+    }
+    const activeEvents = [...events]
+        .filter((event) => event.active)
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+
+    const inactiveEvents = [...events]
+        .filter((event) => !event.active)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
     useEffect(() => {
         fetch('/api/event/events')
             .then((res) => res.json())
             .then((data) => {
-                setEvents(data.events)
+                setEvents(data)
                 setLoading(false)
-                console.log(data.events)
             })
     }, [])
 
-    if (loading) {
+    if (status === 'loading' || loading) {
         return (
             <div className="flex justify-center h-full">
                 <Spinner />
             </div>
         )
     }
-
-    if (!events.length) return <p>No Events found.</p>
+    if (status === 'unauthenticated' || !session?.user?.email) {
+        router.push('/')
+    }
 
     return (
         <>
-            {events.map((event) => (
+            <div className="flex flex-row justify-between">
+                <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
+                <Button
+                    color="success"
+                    variant="faded"
+                    startContent={<FaPlus />}
+                    onPress={onOpen}
+                >
+                    Create an Event
+                </Button>
+            </div>
+            {!events.length && <p>No events found.</p>}
+            <h1 className="text-xl mb-3 mt-6">Active Events</h1>
+            {activeEvents.map((event) => (
                 <div key={event.id}>
-                    <AdminEventTable event={event} />
+                    <AdminEventTable
+                        event={event}
+                        onEditClick={(e) => {
+                            setExistingEvent(e)
+                            onOpen()
+                        }}
+                        onDeleteEvent={deleteEvent}
+                    />
                 </div>
             ))}
-            <LocationInput placeholder="location" />
+            <Divider className="my-4" />
+            <h1 className="text-xl mb-3 mt-6">Inactive Events</h1>
+            {inactiveEvents.map((event) => (
+                <div key={event.id}>
+                    <AdminEventTable
+                        event={event}
+                        onEditClick={(e) => {
+                            setExistingEvent(e)
+                            onOpen()
+                        }}
+                        onDeleteEvent={deleteEvent}
+                    />
+                </div>
+            ))}
+            <EventForm
+                addEvent={addEvent}
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                existingEvent={existingEvent}
+                clearExisting={() => setExistingEvent(null)}
+            ></EventForm>
         </>
     )
 }

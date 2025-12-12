@@ -9,6 +9,7 @@ import type { Event, Registration } from '@/components/primitives'
 export default function RegistrationPage() {
     const { data: session, status } = useSession()
     const [events, setEvents] = useState<Event[]>([])
+    const [registerEvent, setRegisterEvent] = useState<Event | null>(null)
     const [loading, setLoading] = useState(true)
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const [existingRegistration, setExistingRegistration] =
@@ -94,30 +95,34 @@ export default function RegistrationPage() {
 
     if (!events.length) return <p>No active events.</p>
 
+    const activeEvents = [...events].sort(
+        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
+
     return (
         <div className="max-w-3xl mx-auto p-6">
             <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
-            {events.map((event) => (
-                <div key={event.id}>
-                    <ActiveEventTable
-                        event={event}
-                        onRegisterClick={(e, r) => {
-                            setExistingRegistration(r ? r : null)
-                            onOpen()
-                        }}
-                        onCancelRegistration={cancelRegistration}
-                    />
-                    <RegistrationForm
-                        event={event}
-                        addRegistration={addRegistrationToEvent}
-                        updateRegistration={updateRegistration}
-                        isOpen={isOpen}
-                        onOpenChange={onOpenChange}
-                        existingRegistration={existingRegistration}
-                        clearExisting={() => setExistingRegistration(null)}
-                    />
-                </div>
+            {activeEvents.map((event) => (
+                <ActiveEventTable
+                    key={event.id}
+                    event={event}
+                    onRegisterClick={(e, r) => {
+                        setExistingRegistration(r ? r : null)
+                        setRegisterEvent(e)
+                        onOpen()
+                    }}
+                    onCancelRegistration={cancelRegistration}
+                />
             ))}
+            <RegistrationForm
+                event={registerEvent}
+                addRegistration={addRegistrationToEvent}
+                updateRegistration={updateRegistration}
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                existingRegistration={existingRegistration}
+                clearExisting={() => setExistingRegistration(null)}
+            />
         </div>
     )
 }

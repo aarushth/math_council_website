@@ -39,7 +39,7 @@ export default function InactiveEventTable({ event }: Props) {
                     return cellValue === 0 ? 'KG' : cellValue
                 case 'score':
                     return cellValue != null
-                        ? `${cellValue} / ${event.totalScore}`
+                        ? `${cellValue} ${event.totalScore ? `/ ${event.totalScore}` : ''}`
                         : 'Score not available yet'
                 default:
                     return cellValue
@@ -50,6 +50,7 @@ export default function InactiveEventTable({ event }: Props) {
 
     return (
         <Table
+            className="mb-5"
             aria-label={event.name + ' scores table'}
             topContent={<EventTopContent event={event} />}
         >

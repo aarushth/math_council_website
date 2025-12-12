@@ -3,11 +3,9 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]'
 import { prisma } from '@/prisma/prisma'
 
-type Data = { error: string } | { events: any[] }
-
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Data>
+    res: NextApiResponse
 ) {
     // Only allow GET requests
     if (req.method !== 'GET') {
@@ -25,7 +23,12 @@ export default async function handler(
         const events = await prisma.event.findMany({
             orderBy: { date: 'asc' },
         })
-        return res.status(200).json({ events })
+        const serialized = events.map((event) => ({
+            ...event,
+            date: event.date.toISOString(),
+        }))
+
+        return res.status(200).json(serialized)
     } catch (error) {
         console.error('Error fetching events:', error)
         return res.status(500).json({ error: 'Internal server error' })

@@ -7,15 +7,21 @@ import {
     TableRow,
     TableCell,
 } from '@heroui/react'
-import { Event, Registration, errorToast } from '@/components/primitives'
-import { useCallback, Key } from 'react'
+import { errorToast, Event, Registration } from '@/components/primitives'
+import { useCallback, Key, useState } from 'react'
 import EventTopContent from '@/components/EventTopContent'
 
 interface Props {
     event: Event
+    onEditClick: (e: Event) => void
+    onDeleteEvent: (id: number) => void
 }
 
-export default function AdminEventTable({ event }: Props) {
+export default function AdminEventTable({
+    event,
+    onEditClick,
+    onDeleteEvent,
+}: Props) {
     const columns = [
         {
             key: 'studentName',
@@ -46,11 +52,29 @@ export default function AdminEventTable({ event }: Props) {
         },
         []
     )
-
+    async function deleteEvent(id: number) {
+        try {
+            const res = await fetch(`/api/event/${id}`, {
+                method: 'DELETE',
+            })
+            if (!res.ok) throw new Error('Failed to cancel event')
+            onDeleteEvent(event.id)
+        } catch (err) {
+            console.error(err)
+            errorToast()
+        }
+    }
     return (
         <Table
             aria-label={event.name + ' admin table'}
-            topContent={<EventTopContent event={event} />}
+            topContent={
+                <EventTopContent
+                    event={event}
+                    editAllowed={true}
+                    onEditClick={onEditClick}
+                    onDeleteClick={deleteEvent}
+                />
+            }
             className="mb-5"
         >
             <TableHeader columns={columns}>

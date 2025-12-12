@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Registration, Event } from './primitives'
+import { Registration, Event } from '@/components/primitives'
 import { Button, Popover, PopoverContent, PopoverTrigger } from '@heroui/react'
 import { MdDelete, MdEdit } from 'react-icons/md'
 
@@ -15,7 +15,7 @@ export default function RegistrationActionsCell({
     editRegistration: (registration: Registration) => void
 }) {
     const [isOpen, setIsOpen] = useState(false)
-
+    const iconSize = 20
     return (
         <div className="relative flex justify-center items-center gap-1">
             <Button
@@ -25,7 +25,7 @@ export default function RegistrationActionsCell({
                     editRegistration(registration)
                 }}
             >
-                <MdEdit size={15} />
+                <MdEdit size={iconSize} />
             </Button>
 
             <Popover
@@ -36,7 +36,7 @@ export default function RegistrationActionsCell({
             >
                 <PopoverTrigger>
                     <Button variant="light" color="danger">
-                        <MdDelete />
+                        <MdDelete size={iconSize} />
                     </Button>
                 </PopoverTrigger>
 
