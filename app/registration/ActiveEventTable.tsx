@@ -95,12 +95,7 @@ export default function ActiveEventTable({
         >
             <TableHeader columns={columns}>
                 {(column) => (
-                    <TableColumn
-                        // className={column.key === "actions"? "pr-20" : "pr-0"}
-                        className="text-center"
-                        key={column.key}
-                        // align={column.key === "actions" ? "end" : "start"}
-                    >
+                    <TableColumn className="text-center" key={column.key}>
                         {column.label}
                     </TableColumn>
                 )}

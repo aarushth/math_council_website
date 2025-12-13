@@ -233,7 +233,10 @@ export default function EventForm({
                                 <p className="text-small text-default-500">
                                     Users will {isActive ? '' : 'NOT '}be able
                                     to register for{' '}
-                                    {!name ? 'this event' : name}
+                                    {!name ? 'this event' : name}{' '}
+                                    {!isActive
+                                        ? ' but will be able to see their scores'
+                                        : ''}
                                 </p>
                             </div>
                             <NumberInput

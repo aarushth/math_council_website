@@ -44,7 +44,15 @@ export function errorToast(msg?: string) {
     addToast({
         title: msg ? msg : 'An error ocurred. Please try again later.',
         color: 'danger',
-        timeout: 3000,
+        timeout: 4000,
+        shouldShowTimeoutProgress: true,
+    })
+}
+export function successToast(msg?: string) {
+    addToast({
+        title: msg ? msg : 'Changes Saved Successfully.',
+        color: 'success',
+        timeout: 4000,
         shouldShowTimeoutProgress: true,
     })
 }
@@ -71,11 +79,16 @@ export interface Event {
     totalScore: number | null
     registrations: Registration[]
 }
+
+export interface User {
+    email: string
+}
 export interface Registration {
     id: number
     studentName: string
     grade: number
     eventId: number
     userId: number
+    user?: User
     score: number
 }

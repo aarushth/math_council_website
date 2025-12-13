@@ -1,5 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '@/prisma/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]'
 
 export default async function handler(
     req: NextApiRequest,
@@ -44,7 +46,26 @@ export default async function handler(
                     success: true,
                     registration: updatedRegistration,
                 })
+            case 'GET':
+                const session = await getServerSession(req, res, authOptions)
 
+                if (!session?.user?.admin) {
+                    return res.status(403).json({ error: 'Admin only' })
+                }
+                const allRegistrations = await prisma.registration.findMany({
+                    where: { eventId: registrationId },
+                    include: {
+                        user: {
+                            select: {
+                                email: true,
+                            },
+                        },
+                    },
+                })
+                return res.status(200).json({
+                    success: true,
+                    registration: allRegistrations,
+                })
             default:
                 return res.status(405).json({ message: 'Method Not Allowed' })
         }

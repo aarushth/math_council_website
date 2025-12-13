@@ -15,7 +15,6 @@ export default async function handler(
 
     const { id } = req.query
     const eventId = Number(id)
-    console.log(eventId)
     if (!eventId || isNaN(eventId)) {
         return res.status(400).json({ message: 'Invalid event ID' })
     }
