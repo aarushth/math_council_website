@@ -3,74 +3,36 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model locations {
-  address Unsupported("")?
-
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model locations_config {
-  k Unsupported("")  @id
-  v Unsupported("")?
-
-  @@ignore
-}
-
-model locations_content {
-  id Int              @id @default(autoincrement())
-  c0 Unsupported("")?
-}
-
-model locations_data {
-  id    Int    @id @default(autoincrement())
-  block Bytes?
-}
-
-model locations_docsize {
-  id Int    @id @default(autoincrement())
-  sz Bytes?
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model locations_idx {
-  segid Unsupported("")
-  term  Unsupported("")
-  pgno  Unsupported("")?
-
-  @@id([segid, term])
-  @@ignore
-}
 model Event {
-    id            Int            @id @default(autoincrement())
-    name          String
-    description   String
-    date          DateTime
-    location      String
-    active        Boolean        @default(true)
-    totalScore    Int?
-    registrations Registration[]
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String
+  date          DateTime
+  location      String
+  active        Boolean        @default(true)
+  totalScore    Int?
+  registrations Registration[]
 }
+
 model User {
-    id            Int            @id @default(autoincrement())
-    email         String         @unique
-    name          String?
-    admin         Boolean        @default(false)
-    picture       String?
-    registrations Registration[]
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  name          String?
+  admin         Boolean        @default(false)
+  picture       String?
+  registrations Registration[]
 }
 
 model Registration {
-    id          Int    @id @default(autoincrement())
-    studentName String
-    grade       Int
-    userId      Int
-    eventId     Int
-    score       Int?
-    event       Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-    user        User   @relation(fields: [userId], references: [id])
+  id          Int    @id @default(autoincrement())
+  studentName String
+  grade       Int
+  userId      Int
+  eventId     Int
+  score       Int?
+  event       Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user        User   @relation(fields: [userId], references: [id])
 }

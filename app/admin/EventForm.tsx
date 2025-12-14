@@ -20,7 +20,6 @@ import {
     parseAbsolute,
     ZonedDateTime,
 } from '@internationalized/date'
-import LocationInput from './LocationInput'
 interface Props {
     addEvent: (event: Event) => void
     isOpen: boolean
@@ -214,13 +213,23 @@ export default function EventForm({
                                     }
                                 }}
                             />
-                            <LocationInput
-                                inputValue={location}
-                                setInputValue={setLocation}
-                                touched={locationTouched}
-                                setTouched={setLocationTouched}
+                            <Input
+                                label="Location"
+                                variant="bordered"
+                                value={location}
+                                isRequired
+                                color={isLocationInvalid ? 'danger' : 'default'}
+                                errorMessage={
+                                    isLocationInvalid
+                                        ? 'You must enter a location'
+                                        : ''
+                                }
                                 isInvalid={isLocationInvalid}
-                            ></LocationInput>
+                                onValueChange={setLocation}
+                                onFocusChange={(isFocused: boolean) => {
+                                    !isFocused && setLocationTouched(true)
+                                }}
+                            />
                             <div className="flex flex-row gap-4 items-center">
                                 <Switch
                                     defaultSelected

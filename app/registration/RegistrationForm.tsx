@@ -144,7 +144,7 @@ export default function RegistrationForm({
                         </ModalHeader>
                         <ModalBody>
                             <Input
-                                label="Student Name"
+                                label="Student Full Name"
                                 variant="bordered"
                                 value={name}
                                 isRequired

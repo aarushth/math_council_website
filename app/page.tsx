@@ -4,6 +4,8 @@ import { Event } from '@/components/primitives'
 import { ScrollShadow } from '@heroui/react'
 import { Spinner } from '@heroui/spinner'
 import { useEffect, useState } from 'react'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 import Slider from 'react-slick'
 
 export default function Home() {
@@ -13,7 +15,7 @@ export default function Home() {
     const settings = {
         dots: true,
         infinite: true,
-        slidesToShow: 3,
+        slidesToShow: 1,
         slidesToScroll: 1,
         autoplay: true,
         speed: 2000,
@@ -32,21 +34,15 @@ export default function Home() {
     if (loading) return <Spinner />
     return (
         <>
-            {/* <div className="inline-block max-w-xl text-center justify-center">
-                <span className={title()}>Make&nbsp;</span>
-                <span className={title({ color: 'violet' })}>
-                    beautiful&nbsp;
-                </span>
-                <br />
-                <span className={title()}>
-                    websites regardless of your design experience.
-                </span>
-                <div className={subtitle({ class: 'mt-4' })}>
-                    Beautiful, fast and modern React UI library.
-                </div>
-            </div> */}
-
-            <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
+            <Slider {...settings}>
+                <div className="bg-red-500 w-100 h-100"></div>
+                <div className="bg-blue-500 w-100 h-100"></div>
+                <div className="bg-green-500 w-100 h-100"></div>
+                <div className="bg-orange-500 w-100 h-100"></div>
+                <div className="bg-yellow-500 w-100 h-100"></div>
+                <div className="bg-purple-500 w-100 h-100"></div>
+            </Slider>
+            <h1 className="text-3xl font-bold mb-6 mt-10">Upcoming Events</h1>
             <ScrollShadow
                 className="flex flex-row gap-5 overflow-x-auto"
                 offset={100}

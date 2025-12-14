@@ -124,8 +124,9 @@ export default function AdminDashboard() {
                     </Button>
                 </div>
             </div>
-            {!events.length && <p>No events found.</p>}
-            <h1 className="text-xl mb-3 mt-6">Active Events</h1>
+
+            <h1 className="text-2xl mb-3 mt-6">Active Events</h1>
+            {!activeEvents.length && <p>No active events found.</p>}
             {activeEvents.map((event) => (
                 <div key={event.id}>
                     <AdminEventTable
@@ -139,7 +140,8 @@ export default function AdminDashboard() {
                 </div>
             ))}
             <Divider className="my-4" />
-            <h1 className="text-xl mb-3 mt-6">Inactive Events</h1>
+            <h1 className="text-2xl mb-3 mt-6">Inactive Events</h1>
+            {!inactiveEvents.length && <p>No inactive events found.</p>}
             {inactiveEvents.map((event) => (
                 <div key={event.id}>
                     <AdminEventTable

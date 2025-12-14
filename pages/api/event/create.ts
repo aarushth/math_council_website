@@ -21,7 +21,13 @@ export default async function handler(
         const { name, description, date, location, active, totalScore } =
             req.body
 
-        if (!name || !description || !date || !location || !active) {
+        if (
+            !name ||
+            !description ||
+            !date ||
+            !location ||
+            active == undefined
+        ) {
             return res.status(400).json({ message: 'Missing required fields' })
         }
 

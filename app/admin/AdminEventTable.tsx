@@ -19,8 +19,9 @@ import {
     successToast,
     User,
 } from '@/components/primitives'
-import { useCallback, Key, useState, useMemo } from 'react'
+import { useCallback, Key, useState, useMemo, useEffect } from 'react'
 import EventTopContent from '@/components/EventTopContent'
+import { useMediaQuery } from '@/components/useMediaQuery'
 import { FaList, FaSearch } from 'react-icons/fa'
 
 interface Props {
@@ -41,6 +42,7 @@ export default function AdminEventTable({
     const [page, setPage] = useState(1)
 
     const [filterValue, setFilterValue] = useState('')
+    const isDesktop = useMediaQuery('(min-width: 768px)')
 
     const hasSearchFilter = filterValue.trim().length > 0
 
@@ -96,7 +98,9 @@ export default function AdminEventTable({
             key: 'score',
             label: 'Score',
         },
-    ]
+    ].filter(
+        (column) => (isDesktop as unknown as Boolean) || column.key !== 'user'
+    )
     const saveScores = async () => {
         try {
             const payload = registrations.map((r) => ({
@@ -272,7 +276,4 @@ export default function AdminEventTable({
             </TableBody>
         </Table>
     )
-}
-function useMediaQuery(arg0: string) {
-    throw new Error('Function not implemented.')
 }
