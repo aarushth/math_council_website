@@ -38,8 +38,7 @@ export default async function handler(
             { address: string }[]
         >`SELECT address
       FROM locations
-      WHERE address MATCH ${cleaned}* 
-      ORDER BY rank
+      WHERE address MATCH ${cleaned}
       LIMIT 5`
 
         return res.status(200).json(results.map((r) => r.address))
