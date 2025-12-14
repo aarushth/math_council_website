@@ -27,8 +27,15 @@ declare module 'next-auth/jwt' {
 export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID || '',
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            authorization: {
+                params: {
+                    prompt: 'select_account', // forces Google login prompt
+                    // access_type: 'offline',
+                    response_type: 'code',
+                },
+            },
         }),
     ],
 
@@ -39,13 +46,14 @@ export const authOptions: NextAuthOptions = {
             let existingUser = await prisma.user.findUnique({
                 where: { email: user.email },
             })
-
+            console.log(user.image)
             if (!existingUser) {
                 existingUser = await prisma.user.create({
                     data: {
                         email: user.email,
                         name: user.name || '',
                         admin: false,
+                        picture: user.image,
                     },
                 })
             }

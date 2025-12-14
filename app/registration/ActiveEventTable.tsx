@@ -93,9 +93,9 @@ export default function ActiveEventTable({
                 </div>
             }
         >
-            <TableHeader columns={columns}>
+            <TableHeader className="mx-0" columns={columns}>
                 {(column) => (
-                    <TableColumn className="text-center" key={column.key}>
+                    <TableColumn className="text-center px-0" key={column.key}>
                         {column.label}
                     </TableColumn>
                 )}

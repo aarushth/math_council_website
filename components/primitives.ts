@@ -81,7 +81,11 @@ export interface Event {
 }
 
 export interface User {
+    id: number
+    name: string
     email: string
+    picture?: string
+    admin: boolean
 }
 export interface Registration {
     id: number

@@ -19,6 +19,7 @@ export default function RegistrationActionsCell({
     return (
         <div className="relative flex justify-center items-center gap-1">
             <Button
+                className="gap-0 min-w-0 px-2"
                 variant="light"
                 color="default"
                 onPress={() => {
@@ -35,7 +36,11 @@ export default function RegistrationActionsCell({
                 onOpenChange={setIsOpen}
             >
                 <PopoverTrigger>
-                    <Button variant="light" color="danger">
+                    <Button
+                        className="gap-0 min-w-0 px-2"
+                        variant="light"
+                        color="danger"
+                    >
                         <MdDelete size={iconSize} />
                     </Button>
                 </PopoverTrigger>

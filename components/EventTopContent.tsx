@@ -40,6 +40,7 @@ export default function EventTopContent({
                 {editAllowed && (
                     <div className="flex flex-row gap-3">
                         <Button
+                            className="gap-0 min-w-0 px-2"
                             variant="light"
                             onPress={() => onEditClick(event)}
                         >
@@ -52,7 +53,11 @@ export default function EventTopContent({
                             onOpenChange={setIsOpen}
                         >
                             <PopoverTrigger>
-                                <Button variant="light" color="danger">
+                                <Button
+                                    className="gap-0 min-w-0 px-2"
+                                    variant="light"
+                                    color="danger"
+                                >
                                     <MdDelete size={20} />
                                 </Button>
                             </PopoverTrigger>

@@ -41,6 +41,7 @@ export default function AdminEventTable({
     const [page, setPage] = useState(1)
 
     const [filterValue, setFilterValue] = useState('')
+
     const hasSearchFilter = filterValue.trim().length > 0
 
     const rowsPerPage = 4
@@ -69,6 +70,7 @@ export default function AdminEventTable({
 
         return filteredRegistrations.slice(start, end)
     }, [page, filteredRegistrations])
+
     const onSearchChange = useCallback((value?: string) => {
         if (value) {
             setFilterValue(value)
@@ -95,7 +97,6 @@ export default function AdminEventTable({
             label: 'Score',
         },
     ]
-
     const saveScores = async () => {
         try {
             const payload = registrations.map((r) => ({
@@ -197,9 +198,10 @@ export default function AdminEventTable({
                 registrationsLoaded ? (
                     <div className="flex w-full justify-between gap-5">
                         <Input
-                            className="flex-1"
+                            size="md"
+                            className="flex-1 max-w-sm px-0"
                             isClearable
-                            placeholder="Search"
+                            placeholder="   Search"
                             startContent={<FaSearch />}
                             value={filterValue}
                             variant="bordered"
@@ -216,12 +218,12 @@ export default function AdminEventTable({
                             onChange={(page) => setPage(page)}
                         />
                         <Button
-                            className="flex-1"
+                            className="flex-1 max-w-sm"
                             color="success"
                             isDisabled={!isChanges}
                             onPress={saveScores}
                         >
-                            Save Scores
+                            Save
                         </Button>
                     </div>
                 ) : (
@@ -237,7 +239,10 @@ export default function AdminEventTable({
         >
             <TableHeader columns={registrationsLoaded ? columns : []}>
                 {(column) => (
-                    <TableColumn className="text-center" key={column.key}>
+                    <TableColumn
+                        className="text-center px-0 max-width-1"
+                        key={column.key}
+                    >
                         {column.label}
                     </TableColumn>
                 )}
@@ -267,4 +272,7 @@ export default function AdminEventTable({
             </TableBody>
         </Table>
     )
+}
+function useMediaQuery(arg0: string) {
+    throw new Error('Function not implemented.')
 }

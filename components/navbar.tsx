@@ -19,17 +19,24 @@ import { ThemeSwitch } from '@/components/theme-switch'
 import { TbMathSymbols } from 'react-icons/tb'
 import { useSession } from 'next-auth/react'
 import SignInButton from '@/components/SignInButton'
-import LogoutButton from '@/components/LogoutButton'
+import SignOutButton from '@/components/LogoutButton'
+import { useState } from 'react'
 
 export const Navbar = () => {
     const { data: session } = useSession()
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
     const user = session?.user
     const navbarItems = [
         ...siteConfig.navItems,
         ...(user?.admin ? [{ label: 'Admin', href: '/admin' }] : []),
     ]
     return (
-        <HeroUINavbar maxWidth="xl" position="sticky">
+        <HeroUINavbar
+            maxWidth="xl"
+            position="sticky"
+            isMenuOpen={isMenuOpen}
+            onMenuOpenChange={setIsMenuOpen}
+        >
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <NavbarBrand as="li" className="gap-3 max-w-fit">
                     <NextLink
@@ -64,7 +71,7 @@ export const Navbar = () => {
                 className="hidden lg:flex basis-1/5 sm:basis-full"
                 justify="end"
             >
-                {!user ? <SignInButton /> : <LogoutButton />}
+                {!user ? <SignInButton /> : <SignOutButton />}
                 <ThemeSwitch />
             </NavbarContent>
 
@@ -72,7 +79,7 @@ export const Navbar = () => {
                 className="hidden md:flex lg:hidden basis-1 pl-4"
                 justify="end"
             >
-                {!user ? <SignInButton /> : <LogoutButton />}
+                {!user ? <SignInButton /> : <SignOutButton />}
                 <ThemeSwitch />
                 <NavbarMenuToggle />
             </NavbarContent>
@@ -90,21 +97,16 @@ export const Navbar = () => {
                     {navbarItems.map((item, index) => (
                         <NavbarMenuItem key={`${item}-${index}`}>
                             <Link
-                                color={
-                                    index === 2
-                                        ? 'primary'
-                                        : index ===
-                                            siteConfig.navItems.length - 1
-                                          ? 'danger'
-                                          : 'foreground'
-                                }
-                                href="#"
+                                color="foreground"
+                                href={item.href}
                                 size="lg"
+                                onPress={() => setIsMenuOpen(false)}
                             >
                                 {item.label}
                             </Link>
                         </NavbarMenuItem>
                     ))}
+                    {user ? <SignOutButton /> : <SignInButton />}
                 </div>
             </NavbarMenu>
         </HeroUINavbar>

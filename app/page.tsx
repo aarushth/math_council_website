@@ -1,15 +1,38 @@
-import { Link } from '@heroui/link'
-import { Snippet } from '@heroui/snippet'
-import { Code } from '@heroui/code'
-import { button as buttonStyles } from '@heroui/theme'
-
-import { siteConfig } from '@/config/site'
-import { title, subtitle } from '@/components/primitives'
+'use client'
+import EventCard from '@/components/EventCard'
+import { Event } from '@/components/primitives'
+import { ScrollShadow } from '@heroui/react'
+import { Spinner } from '@heroui/spinner'
+import { useEffect, useState } from 'react'
+import Slider from 'react-slick'
 
 export default function Home() {
+    const [events, setEvents] = useState<Event[]>([])
+    const [loading, setLoading] = useState(true)
+
+    const settings = {
+        dots: true,
+        infinite: true,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        autoplay: true,
+        speed: 2000,
+        autoplaySpeed: 2000,
+        cssEase: 'linear',
+    }
+    useEffect(() => {
+        fetch('/api/event/active')
+            .then((res) => res.json())
+            .then((data) => {
+                setEvents(data)
+                setLoading(false)
+            })
+    }, [])
+
+    if (loading) return <Spinner />
     return (
-        <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
-            <div className="inline-block max-w-xl text-center justify-center">
+        <>
+            {/* <div className="inline-block max-w-xl text-center justify-center">
                 <span className={title()}>Make&nbsp;</span>
                 <span className={title({ color: 'violet' })}>
                     beautiful&nbsp;
@@ -21,16 +44,18 @@ export default function Home() {
                 <div className={subtitle({ class: 'mt-4' })}>
                     Beautiful, fast and modern React UI library.
                 </div>
-            </div>
+            </div> */}
 
-            <div className="mt-8">
-                <Snippet hideCopyButton hideSymbol variant="bordered">
-                    <span>
-                        Get started by editing{' '}
-                        <Code color="primary">app/page.tsx</Code>
-                    </span>
-                </Snippet>
-            </div>
-        </section>
+            <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
+            <ScrollShadow
+                className="flex flex-row gap-5 overflow-x-auto"
+                offset={100}
+                orientation="horizontal"
+            >
+                {events.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                ))}
+            </ScrollShadow>
+        </>
     )
 }

@@ -15,29 +15,37 @@ export default async function handler(
         const session = await getServerSession(req, res, authOptions)
 
         if (!session?.user?.id) {
-            return res.status(401).json({ error: 'Not authenticated' })
-        }
+            const activeEvents = await prisma.event.findMany({
+                where: { active: true },
+                orderBy: { date: 'asc' },
+            })
+            const serialized = activeEvents.map((event) => ({
+                ...event,
+                date: event.date.toISOString(),
+            }))
 
-        const userId = Number(session.user.id)
+            return res.status(200).json(serialized)
+        } else {
+            const userId = Number(session.user.id)
 
-        const activeEvents = await prisma.event.findMany({
-            where: { active: true },
-            include: {
-                registrations: {
-                    where: {
-                        userId: userId,
+            const activeEvents = await prisma.event.findMany({
+                where: { active: true },
+                include: {
+                    registrations: {
+                        where: {
+                            userId: userId,
+                        },
                     },
                 },
-            },
-            orderBy: { date: 'asc' },
-        })
+                orderBy: { date: 'asc' },
+            })
+            const serialized = activeEvents.map((event) => ({
+                ...event,
+                date: event.date.toISOString(),
+            }))
 
-        const serialized = activeEvents.map((event) => ({
-            ...event,
-            date: event.date.toISOString(),
-        }))
-
-        return res.status(200).json(serialized)
+            return res.status(200).json(serialized)
+        }
     } catch (error) {
         console.error(
             'Error fetching active events with user registrations:',

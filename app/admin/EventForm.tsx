@@ -282,7 +282,7 @@ export default function EventForm({
                                     }
                                 }}
                             >
-                                Submit
+                                Save
                             </Button>
                         </ModalFooter>
                     </>

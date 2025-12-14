@@ -5,6 +5,7 @@ import RegistrationForm from './RegistrationForm'
 import { useSession } from 'next-auth/react'
 import { Spinner, useDisclosure } from '@heroui/react'
 import type { Event, Registration } from '@/components/primitives'
+import SignInButton from '@/components/SignInButton'
 
 export default function RegistrationPage() {
     const { data: session, status } = useSession()
@@ -87,9 +88,12 @@ export default function RegistrationPage() {
     }
     if (status === 'unauthenticated' || !session?.user?.email) {
         return (
-            <p className="p-6 text-center">
-                Please log in to register for an event.
-            </p>
+            <div className="flex flex-col items-center">
+                <p className="p-6 text-xl text-center">
+                    Please sign in to register for an event.
+                </p>
+                <SignInButton />
+            </div>
         )
     }
 

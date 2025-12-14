@@ -4,6 +4,7 @@ import InactiveEventTable from './InactiveEventTable'
 import { useSession } from 'next-auth/react'
 import { Spinner } from '@heroui/react'
 import type { Event } from '@/components/primitives'
+import SignInButton from '@/components/SignInButton'
 
 export default function RegistrationPage() {
     const { data: session, status } = useSession()
@@ -27,7 +28,14 @@ export default function RegistrationPage() {
         )
     }
     if (status === 'unauthenticated' || !session?.user?.email) {
-        return <p className="p-6 text-center">Please log in to see events.</p>
+        return (
+            <div className="flex flex-col items-center">
+                <p className="p-6 text-xl text-center">
+                    Please sign in to view your scores.
+                </p>
+                <SignInButton />
+            </div>
+        )
     }
 
     if (!events.length) return <p>No scores found.</p>

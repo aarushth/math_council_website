@@ -1,15 +1,15 @@
 'use client'
 import { signOut } from 'next-auth/react'
 import { Button } from '@heroui/button'
-function LogoutButton() {
+function SignOutButton() {
     return (
         <Button
             onPress={() => signOut({ callbackUrl: '/' })}
             variant="ghost"
-            color="primary"
+            color="danger"
         >
-            Logout
+            Sign Out
         </Button>
     )
 }
-export default LogoutButton
+export default SignOutButton
