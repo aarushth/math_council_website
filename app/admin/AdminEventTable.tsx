@@ -127,25 +127,27 @@ export default function AdminEventTable({
     }
 
     const renderCell = useCallback(
-        (registration: Registration, columnKey: Key) => {
-            const cellValue = registration[columnKey as keyof Registration]
-
+        (registration: Registration, columnKey: Key): React.ReactNode => {
             switch (columnKey) {
+                case 'studentName':
+                    return registration.studentName
+
                 case 'grade':
-                    return cellValue === 0 ? 'KG' : cellValue
+                    return registration.grade === 0 ? 'KG' : registration.grade
+
                 case 'user':
-                    const user = cellValue as unknown as User
-                    return user.email
+                    return registration.user?.email ?? ''
+
                 case 'score':
                     return (
                         <NumberInput
-                            placeholder={!cellValue ? 'Enter Score' : ''}
-                            minValue={0}
-                            maxValue={
-                                event.totalScore ? event.totalScore : undefined
+                            placeholder={
+                                !registration.score ? 'Enter Score' : ''
                             }
+                            minValue={0}
+                            maxValue={event.totalScore ?? undefined}
                             isClearable
-                            value={Number(cellValue)}
+                            value={Number(registration.score)}
                             onValueChange={(e) => {
                                 setIsChanges(true)
                                 setRegistrations((prev) =>
@@ -158,8 +160,9 @@ export default function AdminEventTable({
                             }}
                         />
                     )
+
                 default:
-                    return cellValue
+                    return null
             }
         },
         []

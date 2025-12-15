@@ -8,7 +8,7 @@ import {
     TableCell,
 } from '@heroui/react'
 import { Event, Registration } from '@/components/primitives'
-import { useCallback, Key } from 'react'
+import { useCallback, Key, ReactNode } from 'react'
 import EventTopContent from '@/components/EventTopContent'
 
 interface Props {
@@ -31,18 +31,18 @@ export default function InactiveEventTable({ event }: Props) {
         },
     ]
     const renderCell = useCallback(
-        (registration: Registration, columnKey: Key) => {
-            const cellValue = registration[columnKey as keyof Registration]
-
+        (registration: Registration, columnKey: Key): ReactNode => {
             switch (columnKey) {
+                case 'studentName':
+                    return registration.studentName
                 case 'grade':
-                    return cellValue === 0 ? 'KG' : cellValue
+                    return registration.grade === 0 ? 'KG' : registration.grade
                 case 'score':
-                    return cellValue != null
-                        ? `${cellValue} ${event.totalScore ? `/ ${event.totalScore}` : ''}`
+                    return registration.score != null
+                        ? `${registration.score} ${event.totalScore ? `/ ${event.totalScore}` : ''}`
                         : 'Score not available yet'
                 default:
-                    return cellValue
+                    return null
             }
         },
         []

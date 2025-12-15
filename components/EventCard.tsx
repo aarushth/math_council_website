@@ -4,12 +4,14 @@ import { Card } from '@heroui/react'
 import { Event } from './primitives'
 import { useDateFormatter } from '@react-aria/i18n'
 import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
+import { useRouter } from 'next/navigation'
 
 interface Props {
     event: Event
 }
 
 export default function EventCard({ event }: Props) {
+    const router = useRouter()
     let formatter = useDateFormatter({
         weekday: 'long',
         year: 'numeric',
@@ -20,7 +22,11 @@ export default function EventCard({ event }: Props) {
         timeZoneName: 'short',
     })
     return (
-        <Card className="p-5 gap-2 w-60 md:w-100 shrink-0 mb-5">
+        <Card
+            isPressable
+            onPress={() => router.push('/registration')}
+            className="p-5 gap-2 w-60 md:w-100 shrink-0 mb-5"
+        >
             <p className="block text-xl ">{event.name}</p>
             <p className="block text-xs text-body">{event.description}</p>
 

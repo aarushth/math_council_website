@@ -9,7 +9,7 @@ import {
 } from '@heroui/react'
 import { Event, Registration, errorToast } from '@/components/primitives'
 import RegistrationActions from './RegistrationActions'
-import { useCallback, Key } from 'react'
+import { useCallback, Key, ReactNode } from 'react'
 import EventTopContent from '@/components/EventTopContent'
 import { FaPlus } from 'react-icons/fa'
 
@@ -51,12 +51,10 @@ export default function ActiveEventTable({
         },
     ]
     const renderCell = useCallback(
-        (registration: Registration, columnKey: Key) => {
-            const cellValue = registration[columnKey as keyof Registration]
-
+        (registration: Registration, columnKey: Key): ReactNode => {
             switch (columnKey) {
                 case 'grade':
-                    return cellValue === 0 ? 'KG' : cellValue
+                    return registration.grade === 0 ? 'KG' : registration.grade
                 case 'actions':
                     return (
                         <RegistrationActions
@@ -68,8 +66,10 @@ export default function ActiveEventTable({
                             }}
                         />
                     )
+                case 'studentName':
+                    return registration.studentName
                 default:
-                    return cellValue
+                    return null
             }
         },
         []
