@@ -7,16 +7,12 @@ import { usePathname, useSearchParams } from 'next/navigation'
 
 function SignInButton() {
     const pathname = usePathname()
-    const searchParams = useSearchParams()
-
-    const query = searchParams?.toString()
-    const callbackUrl = query ? `${pathname}?${query}` : pathname || undefined
 
     return (
         <Button
             onPress={() =>
                 signIn('google', {
-                    callbackUrl,
+                    pathname,
                     prompt: 'select_account',
                 })
             }
