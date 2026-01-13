@@ -24,6 +24,7 @@ export default function UserCard({ user, onRoleChange }: Props) {
                 avatarProps={{
                     showFallback: true,
                     src: user.picture ? user.picture : undefined,
+                    imgProps: { loading: 'lazy', decoding: 'async' },
                 }}
                 description={user.email}
                 name={user.name}

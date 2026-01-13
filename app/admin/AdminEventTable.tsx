@@ -235,7 +235,7 @@ export default function AdminEventTable({
                     </div>
                 ) : (
                     <div
-                        className="cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 hover:text-black"
+                        className="cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
                         onClick={onLoadRegistrationsClick}
                     >
                         <FaList className="size-5" />

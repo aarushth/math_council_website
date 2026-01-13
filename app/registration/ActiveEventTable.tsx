@@ -82,7 +82,7 @@ export default function ActiveEventTable({
             topContent={<EventTopContent event={event} />}
             bottomContent={
                 <div
-                    className="cursor-pointer text-green-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-green-500 hover:text-black"
+                    className="cursor-pointer text-primary-300 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
                     onClick={() => onRegisterClick(event)}
                 >
                     <FaPlus className="size-5"></FaPlus>

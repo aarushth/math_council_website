@@ -9,7 +9,7 @@ import {
     NavbarMenuItem,
 } from '@heroui/navbar'
 
-import { Link } from '@heroui/link'
+import { Link, Image } from '@heroui/react'
 import { link as linkStyles } from '@heroui/theme'
 import NextLink from 'next/link'
 import clsx from 'clsx'
@@ -33,36 +33,68 @@ export const Navbar = () => {
     return (
         <HeroUINavbar
             maxWidth="xl"
+            height={100}
             position="sticky"
             isMenuOpen={isMenuOpen}
             onMenuOpenChange={setIsMenuOpen}
         >
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
-                <NavbarBrand as="li" className="gap-3 max-w-fit">
+                <TbMathSymbols className="size-10 text-primary-300 mt-auto mb-5" />
+                <NavbarBrand as="li" className="gap-8 max-w-fit mt-auto mb-6 ">
                     <NextLink
-                        className="flex justify-start items-center gap-1"
                         href="/"
+                        className={clsx(
+                            linkStyles({ color: 'foreground' }),
+                            `
+                        text-xl
+                            lg:text-xl    
+      relative inline-block
+      after:absolute after:left-0 after:-bottom-2
+      after:h-[4px] after:w-full
+      after:bg-primary-300
+      after:origin-left
+      after:scale-x-0
+      after:transition-transform after:duration-300
+    
+      hover:after:scale-x-100
+      data-[active=true]:after:scale-x-100
+
+      data-[active=true]:text-primary
+      data-[active=true]:font-medium
+    `
+                        )}
                     >
-                        <TbMathSymbols className="size-7" />
-                        <p className="font-bold text-inherit">
+                        <p className="font-bold text-inherit text-primary-300">
                             EHS Math Council
                         </p>
                     </NextLink>
                 </NavbarBrand>
-                <ul className="hidden lg:flex gap-4 justify-start ml-2">
+                <ul className="hidden mt-auto mb-6 lg:flex gap-8 justify-start ml-2">
                     {navbarItems.map((item) => (
-                        <NavbarItem key={item.href}>
-                            <NextLink
-                                className={clsx(
-                                    linkStyles({ color: 'foreground' }),
-                                    'data-[active=true]:text-primary data-[active=true]:font-medium'
-                                )}
-                                color="foreground"
-                                href={item.href}
-                            >
-                                {item.label}
-                            </NextLink>
-                        </NavbarItem>
+                        <NextLink
+                            href={item.href}
+                            key={item.href}
+                            className={clsx(
+                                linkStyles({ color: 'foreground' }),
+                                `
+      relative inline-block
+      after:absolute after:left-0 after:-bottom-2
+      after:h-[4px] after:w-full
+      after:bg-primary-300
+      after:origin-left
+      after:scale-x-0
+      after:transition-transform after:duration-300
+
+      hover:after:scale-x-100
+      data-[active=true]:after:scale-x-100
+
+      data-[active=true]:text-primary
+      data-[active=true]:font-medium
+    `
+                            )}
+                        >
+                            {item.label}
+                        </NextLink>
                     ))}
                 </ul>
             </NavbarContent>
@@ -101,6 +133,22 @@ export const Navbar = () => {
                                 href={item.href}
                                 size="lg"
                                 onPress={() => setIsMenuOpen(false)}
+                                className="
+                                mb-3
+      relative inline-block
+      after:absolute after:left-0 after:-bottom-2
+      after:h-[4px] after:w-full
+      after:bg-primary-300
+      after:origin-left
+      after:scale-x-0
+      after:transition-transform after:duration-300
+
+      hover:after:scale-x-100
+      data-[active=true]:after:scale-x-100
+
+      data-[active=true]:text-primary
+      data-[active=true]:font-medium
+    "
                             >
                                 {item.label}
                             </Link>
