@@ -46,7 +46,6 @@ export const authOptions: NextAuthOptions = {
             let existingUser = await prisma.user.findUnique({
                 where: { email: user.email },
             })
-            console.log(user.image)
             if (!existingUser) {
                 existingUser = await prisma.user.create({
                     data: {
