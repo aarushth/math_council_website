@@ -19,11 +19,13 @@ import {
     successToast,
     User,
 } from '@/components/primitives'
-import { useCallback, Key, useState, useMemo, useEffect } from 'react'
+import { useCallback, Key, useState, useMemo } from 'react'
 import EventTopContent from '@/components/EventTopContent'
 import { useMediaQuery } from '@/components/useMediaQuery'
+import { useDateFormatter } from '@react-aria/i18n'
 import { FaList, FaSearch } from 'react-icons/fa'
-
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 interface Props {
     event: Event
     onEditClick: (e: Event) => void
@@ -47,7 +49,15 @@ export default function AdminEventTable({
     const hasSearchFilter = filterValue.trim().length > 0
 
     const rowsPerPage = 4
-
+    let formatter = useDateFormatter({
+        weekday: 'long',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        timeZoneName: 'short',
+    })
     const filteredRegistrations = useMemo(() => {
         let filteredRegs = [...registrations]
 
@@ -179,15 +189,73 @@ export default function AdminEventTable({
             errorToast()
         }
     }
-    async function onLoadRegistrationsClick() {
+    async function onLoadRegistrationsClick(): Promise<Registration[]> {
         setIsLoading(true)
-        fetch(`/api/registration/${event.id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setRegistrations(data.registration)
-                setRegistrationsLoaded(true)
-                setIsLoading(false)
-            })
+        try {
+            const res = await fetch(`/api/registration/${event.id}`)
+            const data = await res.json()
+
+            setRegistrations(data.registration)
+            setRegistrationsLoaded(true)
+            return data.registration
+        } catch (err) {
+            console.error('Failed to load registrations', err)
+            return []
+        } finally {
+            setIsLoading(false)
+        }
+    }
+    async function generatePDF() {
+        let regsToUse = registrations
+
+        // If registrations not loaded yet, fetch them
+        if (!registrationsLoaded) {
+            regsToUse = await onLoadRegistrationsClick()
+        }
+        const doc = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: 'a4',
+        })
+
+        // Title
+        doc.setFontSize(16)
+        doc.text(
+            `${event.name} Registrations - ${formatter.format(new Date(event.date))}`,
+            14,
+            15
+        )
+
+        // Prepare table rows
+        const tableBody = regsToUse.map((reg) => [
+            reg.studentName,
+            reg.grade.toString(),
+            reg.user?.email ?? 'N/A',
+        ])
+
+        // Create table
+        autoTable(doc, {
+            startY: 25,
+            head: [['Student Name', 'Grade', 'User Email']],
+            body: tableBody,
+            styles: {
+                fontSize: 10,
+            },
+        })
+
+        const pdfBlob = doc.output('blob')
+        const blobUrl = URL.createObjectURL(pdfBlob)
+        const printWindow = window.open(blobUrl)
+
+        if (!printWindow) {
+            console.error('Failed to open print window')
+            return
+        }
+
+        printWindow.onload = () => {
+            printWindow.focus()
+            printWindow.print()
+        }
     }
     return (
         <Table
@@ -198,6 +266,7 @@ export default function AdminEventTable({
                     editAllowed={true}
                     onEditClick={onEditClick}
                     onDeleteClick={deleteEvent}
+                    onPrintClick={generatePDF}
                 />
             }
             className="mb-5"

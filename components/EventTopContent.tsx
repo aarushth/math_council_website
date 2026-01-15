@@ -5,11 +5,13 @@ import { Button } from '@heroui/button'
 import { MdDelete, MdEdit } from 'react-icons/md'
 import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
 import { useState } from 'react'
+import { BiSolidPrinter } from 'react-icons/bi'
 interface Props {
     event: Event
     editAllowed?: boolean
     onEditClick?: (e: Event) => void
     onDeleteClick?: (id: number) => void
+    onPrintClick?: () => void
 }
 
 export default function EventTopContent({
@@ -17,6 +19,7 @@ export default function EventTopContent({
     editAllowed = false,
     onEditClick = (e: Event) => {},
     onDeleteClick = (id: number) => {},
+    onPrintClick = () => {},
 }: Props) {
     const [isOpen, setIsOpen] = useState(false)
     let formatter = useDateFormatter({
@@ -45,6 +48,13 @@ export default function EventTopContent({
                             onPress={() => onEditClick(event)}
                         >
                             <MdEdit size={20} />
+                        </Button>
+                        <Button
+                            className="gap-0 min-w-0 px-2"
+                            variant="light"
+                            onPress={() => onPrintClick()}
+                        >
+                            <BiSolidPrinter size={20} />
                         </Button>
                         <Popover
                             color="default"
