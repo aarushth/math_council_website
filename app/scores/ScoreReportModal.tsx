@@ -1,4 +1,3 @@
-import { Registration, Event } from '@/components/primitives'
 import {
     Modal,
     ModalContent,
@@ -10,12 +9,13 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Chip,
     Button,
 } from '@heroui/react'
-import { useCallback, useState, Key } from 'react'
+import { useCallback, Key } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
+
+import { Registration, Event } from '@/components/primitives'
 
 interface Props {
     registration: Registration
@@ -58,9 +58,9 @@ export default function EditScoreReportModal({
                     return (
                         <Button
                             className="min-w-30 disabled:opacity-100"
-                            variant="flat"
-                            isDisabled={true}
                             color={item.result ? 'success' : 'danger'}
+                            isDisabled={true}
+                            variant="flat"
                         >
                             {item.result ? <FaRegCheckCircle /> : <ImCross />}
                             {item.result ? 'Correct' : 'Incorrect'}
@@ -77,8 +77,8 @@ export default function EditScoreReportModal({
         <>
             <Modal
                 isOpen={isOpen}
-                onOpenChange={onOpenChange}
                 placement="center"
+                onOpenChange={onOpenChange}
             >
                 <ModalContent>
                     <ModalHeader className="flex flex-col gap-1">
@@ -96,8 +96,8 @@ export default function EditScoreReportModal({
                             <TableHeader columns={columns}>
                                 {(column) => (
                                     <TableColumn
-                                        className="text-center px-0 max-width-1"
                                         key={column.key}
+                                        className="text-center px-0 max-width-1"
                                     >
                                         {column.label}
                                     </TableColumn>
@@ -105,8 +105,8 @@ export default function EditScoreReportModal({
                             </TableHeader>
 
                             <TableBody
-                                items={scoreReportWithIndex}
                                 emptyContent={'event Total Score not Set'}
+                                items={scoreReportWithIndex}
                             >
                                 {(item) => (
                                     <TableRow key={item.index}>

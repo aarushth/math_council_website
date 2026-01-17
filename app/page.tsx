@@ -1,10 +1,11 @@
 'use client'
-import EventCard from '@/components/EventCard'
-import { Event } from '@/components/primitives'
-import { Card, ScrollShadow, Image } from '@heroui/react'
+import { ScrollShadow, Image } from '@heroui/react'
 import { Spinner } from '@heroui/spinner'
 import { useEffect, useState } from 'react'
 import Autoplay from 'embla-carousel-autoplay'
+
+import { Event } from '@/components/primitives'
+import EventCard from '@/components/EventCard'
 import {
     Carousel,
     CarouselContent,
@@ -25,6 +26,7 @@ export default function Home() {
     }, [])
 
     if (loading) return <Spinner />
+
     return (
         <>
             <Carousel
@@ -43,10 +45,10 @@ export default function Home() {
                         <CarouselItem key={index}>
                             <div className="flex items-center justify-center max-h-100 rounded-lg overflow-hidden">
                                 <Image
-                                    className="flex items-center justify-center w-full object-cover"
                                     alt={'homepage' + index}
+                                    className="flex items-center justify-center w-full object-cover"
                                     src={'/images/homepage' + index + '.jpg'}
-                                ></Image>
+                                />
                             </div>
                         </CarouselItem>
                     ))}

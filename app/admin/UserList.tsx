@@ -1,10 +1,12 @@
 'use client'
 
-import { errorToast, User } from '@/components/primitives'
 import { useMemo, useState } from 'react'
-import UserCard from './UserCard'
 import { Input, Spinner } from '@heroui/react'
 import { FaSearch } from 'react-icons/fa'
+
+import UserCard from './UserCard'
+
+import { errorToast, User } from '@/components/primitives'
 
 interface Props {
     users: User[]
@@ -27,6 +29,7 @@ export default function UserList({ users, updateUser }: Props) {
             )
         }
         console
+
         return filteredUsers
     }, [users, filterValue])
 
@@ -46,19 +49,20 @@ export default function UserList({ users, updateUser }: Props) {
 
             if (!res.ok) throw new Error('Failed to create registration')
             const updatedUser = await res.json()
+
             updateUser(updatedUser.user)
-        } catch (err) {
-            console.error(err)
+        } catch {
             errorToast()
         }
     }
+
     return (
         <>
             <div className="flex flex-row items-baseline gap-20">
                 <h1 className="text-xl mb-3 mt-6">Users</h1>
                 <Input
-                    className="flex-1"
                     isClearable
+                    className="flex-1"
                     placeholder="Search"
                     startContent={<FaSearch />}
                     value={filterValue}

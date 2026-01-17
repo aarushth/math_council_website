@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '@/prisma/prisma'
+
 import { getServerSession } from 'next-auth'
+
 import { authOptions } from '../auth/[...nextauth]'
+
+import { prisma } from '@/prisma/prisma'
 
 type UpdatePayload = {
     id: number
@@ -39,8 +42,7 @@ export default async function handler(
         )
 
         return res.status(200).json({ success: true })
-    } catch (error) {
-        console.error('Failed to update registrations:', error)
+    } catch {
         return res.status(500).json({ error: 'Internal server error' })
     }
 }

@@ -135,10 +135,10 @@ const Carousel = React.forwardRef<
             >
                 <div
                     ref={ref}
-                    onKeyDownCapture={handleKeyDown}
+                    aria-roledescription="carousel"
                     className={cn('relative', className)}
                     role="region"
-                    aria-roledescription="carousel"
+                    onKeyDownCapture={handleKeyDown}
                     {...props}
                 >
                     {children}
@@ -147,6 +147,7 @@ const Carousel = React.forwardRef<
         )
     }
 )
+
 Carousel.displayName = 'Carousel'
 
 const CarouselContent = React.forwardRef<
@@ -169,6 +170,7 @@ const CarouselContent = React.forwardRef<
         </div>
     )
 })
+
 CarouselContent.displayName = 'CarouselContent'
 
 const CarouselItem = React.forwardRef<
@@ -180,17 +182,18 @@ const CarouselItem = React.forwardRef<
     return (
         <div
             ref={ref}
-            role="group"
             aria-roledescription="slide"
             className={cn(
                 'min-w-0 shrink-0 grow-0 basis-full',
                 orientation === 'horizontal' ? 'pl-4' : 'pt-4',
                 className
             )}
+            role="group"
             {...props}
         />
     )
 })
+
 CarouselItem.displayName = 'CarouselItem'
 
 export { type CarouselApi, Carousel, CarouselContent, CarouselItem }

@@ -1,5 +1,4 @@
 'use client'
-import { errorToast, Event } from '@/components/primitives'
 import { useEffect, useState } from 'react'
 import {
     Modal,
@@ -20,6 +19,8 @@ import {
     parseAbsolute,
     ZonedDateTime,
 } from '@internationalized/date'
+
+import { errorToast, Event } from '@/components/primitives'
 interface Props {
     addEvent: (event: Event) => void
     isOpen: boolean
@@ -100,11 +101,10 @@ export default function EventForm({
 
                 if (!res.ok) throw new Error('Failed to create Event')
                 const newEvent = await res.json()
-                console.log(newEvent)
+
                 addEvent(newEvent)
                 onClose()
-            } catch (err) {
-                console.error(err)
+            } catch {
                 errorToast()
             }
         } else {
@@ -125,11 +125,10 @@ export default function EventForm({
                 if (!res.ok) throw new Error('Failed to update Event')
                 const data = await res.json()
                 const updatedEvent = data.event
-                console.log(data)
+
                 addEvent(updatedEvent)
                 onClose()
-            } catch (err) {
-                console.error(err)
+            } catch {
                 errorToast()
             }
         }
@@ -151,10 +150,10 @@ export default function EventForm({
         <Modal
             isOpen={isOpen}
             placement="center"
-            onOpenChange={onOpenChange}
             onClose={() => {
                 clearData()
             }}
+            onOpenChange={onOpenChange}
         >
             <ModalContent>
                 {(onClose) => (
@@ -166,24 +165,21 @@ export default function EventForm({
                         </ModalHeader>
                         <ModalBody>
                             <Input
-                                label="Event Name"
-                                variant="bordered"
-                                value={name}
                                 isRequired
                                 color={isNameInvalid ? 'danger' : 'default'}
                                 errorMessage={
                                     isNameInvalid ? 'You must enter a name' : ''
                                 }
                                 isInvalid={isNameInvalid}
-                                onValueChange={setName}
+                                label="Event Name"
+                                value={name}
+                                variant="bordered"
                                 onFocusChange={(isFocused: boolean) => {
                                     !isFocused && setNameTouched(true)
                                 }}
+                                onValueChange={setName}
                             />
                             <Textarea
-                                label="Event Description"
-                                variant="bordered"
-                                value={description}
                                 isRequired
                                 color={
                                     isDescriptionInvalid ? 'danger' : 'default'
@@ -194,19 +190,22 @@ export default function EventForm({
                                         : ''
                                 }
                                 isInvalid={isDescriptionInvalid}
-                                onValueChange={setDescription}
+                                label="Event Description"
+                                value={description}
+                                variant="bordered"
                                 onFocusChange={(isFocused: boolean) => {
                                     !isFocused && setDescriptionTouched(true)
                                 }}
-                            ></Textarea>
+                                onValueChange={setDescription}
+                            />
                             <DatePicker
                                 isRequired
-                                variant="bordered"
-                                label="Event Date & Time"
-                                granularity="minute"
                                 showMonthAndYearPickers
                                 defaultValue={now(getLocalTimeZone())}
+                                granularity="minute"
+                                label="Event Date & Time"
                                 value={date}
+                                variant="bordered"
                                 onChange={(value) => {
                                     if (value !== null) {
                                         setDate(value)
@@ -214,9 +213,6 @@ export default function EventForm({
                                 }}
                             />
                             <Input
-                                label="Location"
-                                variant="bordered"
-                                value={location}
                                 isRequired
                                 color={isLocationInvalid ? 'danger' : 'default'}
                                 errorMessage={
@@ -225,16 +221,19 @@ export default function EventForm({
                                         : ''
                                 }
                                 isInvalid={isLocationInvalid}
-                                onValueChange={setLocation}
+                                label="Location"
+                                value={location}
+                                variant="bordered"
                                 onFocusChange={(isFocused: boolean) => {
                                     !isFocused && setLocationTouched(true)
                                 }}
+                                onValueChange={setLocation}
                             />
                             <div className="flex flex-row gap-4 items-center">
                                 <Switch
                                     defaultSelected
-                                    size="md"
                                     isSelected={isActive}
+                                    size="md"
                                     onValueChange={setIsActive}
                                 >
                                     Active
@@ -249,21 +248,21 @@ export default function EventForm({
                                 </p>
                             </div>
                             <NumberInput
-                                label="Total Score"
-                                variant="bordered"
-                                minValue={0}
                                 isClearable
                                 color={
                                     isTotalScoreInvalid ? 'danger' : 'default'
                                 }
+                                description="Leave blank if unknown/not applicable"
                                 errorMessage={
                                     isTotalScoreInvalid
                                         ? 'total score must be greater than 0'
                                         : ''
                                 }
-                                description="Leave blank if unknown/not applicable"
                                 isInvalid={isTotalScoreInvalid}
+                                label="Total Score"
+                                minValue={0}
                                 value={totalScore}
+                                variant="bordered"
                                 onValueChange={setTotalScore}
                             />
                         </ModalBody>
@@ -279,8 +278,8 @@ export default function EventForm({
                             </Button>
                             <Button
                                 color="primary"
-                                variant={isSubmitDisabled ? 'faded' : 'solid'}
                                 isDisabled={isSubmitDisabled}
+                                variant={isSubmitDisabled ? 'faded' : 'solid'}
                                 onPress={() => {
                                     if (name === '' || description === '') {
                                         setDescriptionTouched(true)

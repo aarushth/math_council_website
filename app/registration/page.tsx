@@ -1,10 +1,13 @@
 'use client'
+import type { Event, Registration } from '@/components/primitives'
+
 import { useEffect, useState } from 'react'
-import ActiveEventTable from './ActiveEventTable'
-import RegistrationForm from './RegistrationForm'
 import { useSession } from 'next-auth/react'
 import { Spinner, useDisclosure } from '@heroui/react'
-import type { Event, Registration } from '@/components/primitives'
+
+import ActiveEventTable from './ActiveEventTable'
+import RegistrationForm from './RegistrationForm'
+
 import SignInButton from '@/components/SignInButton'
 
 export default function RegistrationPage() {
@@ -21,7 +24,6 @@ export default function RegistrationPage() {
         registration: Registration
     ) {
         if (!registration.id) {
-            console.error('Registration missing id!', registration)
             return
         }
         setEvents((prevEvents) =>
@@ -37,7 +39,6 @@ export default function RegistrationPage() {
     }
     function updateRegistration(eventId: number, registration: Registration) {
         if (!registration.id) {
-            console.error('Cannot update registration without id', registration)
             return
         }
         setEvents((prevEvents) =>
@@ -110,22 +111,22 @@ export default function RegistrationPage() {
                 <ActiveEventTable
                     key={event.id}
                     event={event}
+                    onCancelRegistration={cancelRegistration}
                     onRegisterClick={(e, r) => {
                         setExistingRegistration(r ? r : null)
                         setRegisterEvent(e)
                         onOpen()
                     }}
-                    onCancelRegistration={cancelRegistration}
                 />
             ))}
             <RegistrationForm
-                event={registerEvent}
                 addRegistration={addRegistrationToEvent}
-                updateRegistration={updateRegistration}
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                existingRegistration={existingRegistration}
                 clearExisting={() => setExistingRegistration(null)}
+                event={registerEvent}
+                existingRegistration={existingRegistration}
+                isOpen={isOpen}
+                updateRegistration={updateRegistration}
+                onOpenChange={onOpenChange}
             />
         </>
     )

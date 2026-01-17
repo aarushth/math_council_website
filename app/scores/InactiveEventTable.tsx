@@ -9,11 +9,13 @@ import {
     Button,
     useDisclosure,
 } from '@heroui/react'
-import { Event, Registration } from '@/components/primitives'
 import { useCallback, Key, ReactNode, useState } from 'react'
-import EventTopContent from '@/components/EventTopContent'
 import { FaClipboardCheck } from 'react-icons/fa'
+
 import ScoreReportModal from './ScoreReportModal'
+
+import EventTopContent from '@/components/EventTopContent'
+import { Event, Registration } from '@/components/primitives'
 import { useMediaQuery } from '@/components/useMediaQuery'
 
 interface Props {
@@ -30,7 +32,7 @@ export default function InactiveEventTable({ event }: Props) {
         onOpenChange: onScoreReportOpenChange,
     } = useDisclosure()
     const isDesktop: boolean = useMediaQuery('(min-width: 768px)')
-    console.log(isDesktop)
+
     const columns = [
         {
             key: 'studentName',
@@ -64,11 +66,11 @@ export default function InactiveEventTable({ event }: Props) {
                     return (
                         <Button
                             className="gap-3"
-                            variant="solid"
                             isDisabled={
                                 registration.score != null ? false : true
                             }
                             isIconOnly={!isDesktop}
+                            variant="solid"
                             onPress={() => {
                                 setCurrentRegistration(registration)
                                 onScoreReportOpen()
@@ -94,19 +96,20 @@ export default function InactiveEventTable({ event }: Props) {
     return (
         <>
             <ScoreReportModal
-                registration={currentRegistration!}
                 event={event}
                 isOpen={isScoreReportOpen}
+                registration={currentRegistration!}
                 onOpenChange={onScoreReportOpenChange}
-            ></ScoreReportModal>
+            />
             <Table
-                className="mb-5"
                 aria-label={event.name + ' scores table'}
+                className="mb-5"
                 topContent={<EventTopContent event={event} />}
             >
                 <TableHeader columns={columns}>
                     {(column) => {
                         let className = ''
+
                         if (column.key === 'actions') {
                             className = 'w-[1%] whitespace-nowrap text-center' // small fixed width
                         } else {

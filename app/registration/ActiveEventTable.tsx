@@ -6,12 +6,15 @@ import {
     TableBody,
     TableRow,
     TableCell,
+    Button,
 } from '@heroui/react'
-import { Event, Registration, errorToast } from '@/components/primitives'
-import RegistrationActions from './RegistrationActions'
 import { useCallback, Key, ReactNode } from 'react'
-import EventTopContent from '@/components/EventTopContent'
 import { FaPlus } from 'react-icons/fa'
+
+import RegistrationActions from './RegistrationActions'
+
+import { Event, Registration, errorToast } from '@/components/primitives'
+import EventTopContent from '@/components/EventTopContent'
 
 interface Props {
     event: Event
@@ -29,10 +32,10 @@ export default function ActiveEventTable({
             const res = await fetch(`/api/registration/${id}`, {
                 method: 'DELETE',
             })
+
             if (!res.ok) throw new Error('Failed to cancel registration')
             onCancelRegistration(event.id, id)
-        } catch (err) {
-            console.error(err)
+        } catch {
             errorToast()
         }
     }
@@ -58,12 +61,12 @@ export default function ActiveEventTable({
                 case 'actions':
                     return (
                         <RegistrationActions
-                            registration={registration}
-                            event={event}
                             deleteRegistration={deleteRegistration}
                             editRegistration={(r) => {
                                 onRegisterClick(event, r)
                             }}
+                            event={event}
+                            registration={registration}
                         />
                     )
                 case 'studentName':
@@ -77,32 +80,33 @@ export default function ActiveEventTable({
 
     return (
         <Table
-            className="mb-5"
             aria-label={event.name + ' registration table'}
-            topContent={<EventTopContent event={event} />}
             bottomContent={
-                <div
-                    className="cursor-pointer text-primary-300 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
-                    onClick={() => onRegisterClick(event)}
+                <Button
+                    className="bg-white/0 justify-start cursor-pointer text-primary-300 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
+                    size="lg"
+                    onPress={() => onRegisterClick(event)}
                 >
-                    <FaPlus className="size-5"></FaPlus>
+                    <FaPlus className="size-5" />
                     <p>
                         Register a{event.registrations.length != 0 && 'nother'}{' '}
                         student
                     </p>
-                </div>
+                </Button>
             }
+            className="mb-5"
+            topContent={<EventTopContent event={event} />}
         >
             <TableHeader className="mx-0" columns={columns}>
                 {(column) => (
-                    <TableColumn className="text-center px-0" key={column.key}>
+                    <TableColumn key={column.key} className="text-center px-0">
                         {column.label}
                     </TableColumn>
                 )}
             </TableHeader>
             <TableBody
-                items={event.registrations || []}
                 emptyContent={'No registrations found.'}
+                items={event.registrations || []}
             >
                 {(item) => (
                     <TableRow key={item.id}>

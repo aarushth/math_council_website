@@ -1,4 +1,3 @@
-import { Registration, Event, errorToast } from '@/components/primitives'
 import {
     Modal,
     ModalContent,
@@ -16,6 +15,8 @@ import {
 import { useCallback, useEffect, useState, Key, useMemo } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
+
+import { Registration, Event, errorToast } from '@/components/primitives'
 
 interface Props {
     registration: Registration
@@ -37,12 +38,14 @@ export default function EditScoreReportModal({
 }: Props) {
     const [isSaveActive, setIsSaveActive] = useState(false)
     const [scoreReport, setScoreReport] = useState<boolean[]>([])
+
     useEffect(() => {
         if (isOpen) {
             if (registration.scoreReport.length != 0) {
                 const clonedScoreReport = structuredClone(
                     registration.scoreReport
                 )
+
                 setScoreReport(clonedScoreReport)
             } else {
                 setScoreReport(Array(event.totalScore!).fill(false))
@@ -78,8 +81,8 @@ export default function EditScoreReportModal({
                     return (
                         <Button
                             className="min-w-30"
-                            variant="flat"
                             color={item.result ? 'success' : 'danger'}
+                            variant="flat"
                             onPress={() => {
                                 // immutably toggle the result
                                 setScoreReport((prev) =>
@@ -100,6 +103,7 @@ export default function EditScoreReportModal({
         },
         []
     )
+
     async function submit(onClose: () => void) {
         try {
             const res = await fetch(`/api/registration/${registration.id}`, {
@@ -113,14 +117,15 @@ export default function EditScoreReportModal({
 
             if (!res.ok) throw new Error('Failed to update registration')
             const data = await res.json()
+
             updateRegistration(data.registration)
             setIsSaveActive(false)
             onClose()
-        } catch (err) {
-            console.error(err)
+        } catch {
             errorToast()
         }
     }
+
     return (
         <>
             <Modal
@@ -148,8 +153,8 @@ export default function EditScoreReportModal({
                                     <TableHeader columns={columns}>
                                         {(column) => (
                                             <TableColumn
-                                                className="text-center px-0 max-width-1"
                                                 key={column.key}
+                                                className="text-center px-0 max-width-1"
                                             >
                                                 {column.label}
                                             </TableColumn>
@@ -157,10 +162,10 @@ export default function EditScoreReportModal({
                                     </TableHeader>
 
                                     <TableBody
-                                        items={scoreReportWithIndex}
                                         emptyContent={
                                             'event Total Score not Set'
                                         }
+                                        items={scoreReportWithIndex}
                                     >
                                         {(item) => (
                                             <TableRow key={item.index}>

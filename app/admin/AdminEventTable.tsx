@@ -12,15 +12,17 @@ import {
     Button,
     useDisclosure,
 } from '@heroui/react'
-import { errorToast, Event, Registration } from '@/components/primitives'
 import { useCallback, Key, useState, useMemo } from 'react'
-import EventTopContent from '@/components/EventTopContent'
-import { useMediaQuery } from '@/components/useMediaQuery'
 import { FaClipboardCheck, FaList, FaSearch } from 'react-icons/fa'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { useAppDateFormatter } from '@/components/useAppDateFormatter'
+
 import EditScoreReportModal from './EditScoreReportModal'
+
+import { useAppDateFormatter } from '@/components/useAppDateFormatter'
+import { useMediaQuery } from '@/components/useMediaQuery'
+import EventTopContent from '@/components/EventTopContent'
+import { errorToast, Event, Registration } from '@/components/primitives'
 interface Props {
     event: Event
     onEditClick: (e: Event) => void
@@ -56,6 +58,7 @@ export default function AdminEventTable({
     const sortedRegistrations = registrations.sort((a, b) => {
         const gradeA = a.grade ?? 0
         const gradeB = b.grade ?? 0
+
         return gradeA - gradeB
     })
 
@@ -154,15 +157,16 @@ export default function AdminEventTable({
         },
         []
     )
+
     async function deleteEvent(id: number) {
         try {
             const res = await fetch(`/api/event/${id}`, {
                 method: 'DELETE',
             })
+
             if (!res.ok) throw new Error('Failed to cancel event')
             onDeleteEvent(event.id)
-        } catch (err) {
-            console.error(err)
+        } catch {
             errorToast()
         }
     }
@@ -174,10 +178,11 @@ export default function AdminEventTable({
 
             setRegistrations(data.registration)
             setRegistrationsLoaded(true)
-            console.log(data.registration)
+
             return data.registration
-        } catch (err) {
-            console.error('Failed to load registrations', err)
+        } catch {
+            errorToast('Failed to load registrations, please try again later')
+
             return []
         } finally {
             setIsLoading(false)
@@ -226,7 +231,8 @@ export default function AdminEventTable({
         const printWindow = window.open(blobUrl)
 
         if (!printWindow) {
-            console.error('Failed to open print window')
+            errorToast('Failed to open print window, please try again later')
+
             return
         }
 
@@ -237,10 +243,6 @@ export default function AdminEventTable({
     }
     function updateRegistration(updatedRegistration: Registration) {
         if (!updatedRegistration.id) {
-            console.error(
-                'Cannot update registration without id',
-                updatedRegistration
-            )
             return
         }
 
@@ -252,45 +254,36 @@ export default function AdminEventTable({
             )
         )
     }
+
     return (
         <>
             <EditScoreReportModal
-                registration={currentRegistration!}
-                updateRegistration={updateRegistration}
                 event={event}
                 isOpen={isScoreReportOpen}
+                registration={currentRegistration!}
+                updateRegistration={updateRegistration}
                 onOpenChange={onScoreReportOpenChange}
-            ></EditScoreReportModal>
+            />
             <Table
                 aria-label={event.name + ' admin table'}
-                topContent={
-                    <EventTopContent
-                        event={event}
-                        editAllowed={true}
-                        onEditClick={onEditClick}
-                        onDeleteClick={deleteEvent}
-                        onPrintClick={generatePDF}
-                    />
-                }
-                className="mb-5"
                 bottomContent={
                     registrationsLoaded ? (
                         <div className="grid w-full grid-cols-3 items-center">
                             <Pagination
-                                className="col-start-2 justify-self-center"
                                 isCompact
                                 showControls
                                 showShadow
+                                className="col-start-2 justify-self-center"
                                 color="primary"
                                 page={page}
                                 total={pages}
                                 onChange={(page) => setPage(page)}
                             />
                             <Input
-                                size="md"
-                                className="max-w-xs col-start-3 justify-self-end"
                                 isClearable
+                                className="max-w-xs col-start-3 justify-self-end"
                                 placeholder="Search"
+                                size="md"
                                 startContent={<FaSearch />}
                                 value={filterValue}
                                 variant="bordered"
@@ -299,14 +292,25 @@ export default function AdminEventTable({
                             />
                         </div>
                     ) : (
-                        <div
-                            className="cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
-                            onClick={onLoadRegistrationsClick}
+                        <Button
+                            className="bg-white/0 justify-start cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
+                            size="lg"
+                            onPress={onLoadRegistrationsClick}
                         >
                             <FaList className="size-5" />
                             <p>View Registrations</p>
-                        </div>
+                        </Button>
                     )
+                }
+                className="mb-5"
+                topContent={
+                    <EventTopContent
+                        editAllowed={true}
+                        event={event}
+                        onDeleteClick={deleteEvent}
+                        onEditClick={onEditClick}
+                        onPrintClick={generatePDF}
+                    />
                 }
             >
                 <>
@@ -314,6 +318,7 @@ export default function AdminEventTable({
                         <TableHeader columns={columns}>
                             {(column) => {
                                 let className = ''
+
                                 if (column.key === 'actions') {
                                     className =
                                         'w-[1%] whitespace-nowrap text-right' // small fixed width
@@ -335,7 +340,6 @@ export default function AdminEventTable({
                 </>
 
                 <TableBody
-                    items={registrationsPaginated || []}
                     emptyContent={
                         isLoading ? (
                             <Spinner />
@@ -345,6 +349,7 @@ export default function AdminEventTable({
                             ''
                         )
                     }
+                    items={registrationsPaginated || []}
                 >
                     {(item) => (
                         <TableRow key={item.id}>

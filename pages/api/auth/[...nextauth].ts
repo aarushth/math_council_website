@@ -1,5 +1,6 @@
 import NextAuth, { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
+
 import { prisma } from '@/prisma/prisma'
 
 declare module 'next-auth' {
@@ -46,6 +47,7 @@ export const authOptions: NextAuthOptions = {
             let existingUser = await prisma.user.findUnique({
                 where: { email: user.email },
             })
+
             if (!existingUser) {
                 existingUser = await prisma.user.create({
                     data: {
@@ -65,12 +67,14 @@ export const authOptions: NextAuthOptions = {
                 const dbUser = await prisma.user.findUnique({
                     where: { email: user.email },
                 })
+
                 if (dbUser) {
                     token.id = dbUser.id
                     token.admin = dbUser.admin
                     token.email = dbUser.email
                     token.name = dbUser.name
                 }
+
                 return token
             }
 
@@ -79,6 +83,7 @@ export const authOptions: NextAuthOptions = {
                 const dbUser = await prisma.user.findUnique({
                     where: { id: token.id },
                 })
+
                 if (dbUser) {
                     token.admin = dbUser.admin
                 }
@@ -94,6 +99,7 @@ export const authOptions: NextAuthOptions = {
                 session.user.name = token.name as string
                 session.user.email = token.email as string
             }
+
             return session
         },
     },

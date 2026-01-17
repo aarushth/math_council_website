@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+
 import { prisma } from '@/prisma/prisma'
 
 export default async function handler(
@@ -27,8 +28,7 @@ export default async function handler(
         })
 
         res.status(201).json(registration)
-    } catch (error) {
-        console.error('Error creating registration:', error)
+    } catch {
         res.status(500).json({ message: 'Internal server error' })
     }
 }

@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '@/prisma/prisma'
+
 import { getServerSession } from 'next-auth'
+
 import { authOptions } from '../auth/[...nextauth]'
+
+import { prisma } from '@/prisma/prisma'
 
 export default async function handler(
     req: NextApiRequest,
@@ -20,6 +23,7 @@ export default async function handler(
                 const deletedRegistration = await prisma.registration.delete({
                     where: { id: registrationId },
                 })
+
                 return res.status(200).json({
                     success: true,
                     registration: deletedRegistration,
@@ -89,6 +93,7 @@ export default async function handler(
                         },
                     },
                 })
+
                 return res.status(200).json({
                     success: true,
                     registration: allRegistrations,
@@ -97,7 +102,6 @@ export default async function handler(
                 return res.status(405).json({ message: 'Method Not Allowed' })
         }
     } catch (error: any) {
-        console.error('Error handling registration:', error)
         return res.status(500).json({
             success: false,
             message: error.message || 'Server error',

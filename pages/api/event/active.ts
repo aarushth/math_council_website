@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '@/prisma/prisma'
+
 import { getServerSession } from 'next-auth'
+
+import { prisma } from '@/prisma/prisma'
 import { authOptions } from '@/pages/api/auth/[...nextauth]'
 
 export default async function handler(
@@ -46,11 +48,7 @@ export default async function handler(
 
             return res.status(200).json(serialized)
         }
-    } catch (error) {
-        console.error(
-            'Error fetching active events with user registrations:',
-            error
-        )
+    } catch {
         return res.status(500).json({ error: 'Failed to fetch events' })
     }
 }

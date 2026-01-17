@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Event, User } from '@/components/primitives'
 import {
     Button,
     Divider,
@@ -13,12 +12,15 @@ import {
     Spinner,
     useDisclosure,
 } from '@heroui/react'
-import AdminEventTable from './AdminEventTable'
-import EventForm from './EventForm'
 import { FaPlus, FaUsers } from 'react-icons/fa'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+
+import EventForm from './EventForm'
+import AdminEventTable from './AdminEventTable'
 import UserList from './UserList'
+
+import { Event, User } from '@/components/primitives'
 
 export default function AdminDashboard() {
     const router = useRouter()
@@ -37,6 +39,7 @@ export default function AdminDashboard() {
         onOpenChange: onDrawerOpenChange,
     } = useDisclosure()
     const [existingEvent, setExistingEvent] = useState<Event | null>(null)
+
     function addEvent(event: Event) {
         setEvents((prev) => {
             const exists = prev.some((e) => e.id === event.id)
@@ -97,8 +100,8 @@ export default function AdminDashboard() {
                 <div className="flex gap-5 flex-col md:flex-row">
                     <Button
                         color="default"
-                        variant="faded"
                         startContent={<FaUsers />}
+                        variant="faded"
                         onPress={() => {
                             if (users.length <= 0) {
                                 fetch('/api/user/users')
@@ -116,8 +119,8 @@ export default function AdminDashboard() {
                     </Button>
                     <Button
                         color="success"
-                        variant="faded"
                         startContent={<FaPlus />}
+                        variant="faded"
                         onPress={onModalOpen}
                     >
                         Create an Event
@@ -131,11 +134,11 @@ export default function AdminDashboard() {
                 <div key={event.id}>
                     <AdminEventTable
                         event={event}
+                        onDeleteEvent={deleteEvent}
                         onEditClick={(e) => {
                             setExistingEvent(e)
                             onModalOpen()
                         }}
-                        onDeleteEvent={deleteEvent}
                     />
                 </div>
             ))}
@@ -146,21 +149,21 @@ export default function AdminDashboard() {
                 <div key={event.id}>
                     <AdminEventTable
                         event={event}
+                        onDeleteEvent={deleteEvent}
                         onEditClick={(e) => {
                             setExistingEvent(e)
                             onModalOpen()
                         }}
-                        onDeleteEvent={deleteEvent}
                     />
                 </div>
             ))}
             <EventForm
                 addEvent={addEvent}
+                clearExisting={() => setExistingEvent(null)}
+                existingEvent={existingEvent}
                 isOpen={isModalOpen}
                 onOpenChange={onModalOpenChange}
-                existingEvent={existingEvent}
-                clearExisting={() => setExistingEvent(null)}
-            ></EventForm>
+            />
 
             <Drawer isOpen={isDrawerOpen} onOpenChange={onDrawerOpenChange}>
                 <DrawerContent>
@@ -171,8 +174,8 @@ export default function AdminDashboard() {
                             </DrawerHeader>
                             <DrawerBody>
                                 <UserList
-                                    users={users}
                                     updateUser={updateUser}
+                                    users={users}
                                 />
                             </DrawerBody>
                             <DrawerFooter>

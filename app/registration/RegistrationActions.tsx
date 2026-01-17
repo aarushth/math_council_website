@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Registration, Event } from '@/components/primitives'
 import { Button, Popover, PopoverContent, PopoverTrigger } from '@heroui/react'
 import { MdDelete, MdEdit } from 'react-icons/md'
+
+import { Registration, Event } from '@/components/primitives'
 
 export default function RegistrationActionsCell({
     registration,
@@ -16,12 +17,13 @@ export default function RegistrationActionsCell({
 }) {
     const [isOpen, setIsOpen] = useState(false)
     const iconSize = 20
+
     return (
         <div className="relative flex justify-center items-center gap-3">
             <Button
                 className="gap-0 min-w-0 px-2"
-                variant="light"
                 color="default"
+                variant="light"
                 onPress={() => {
                     editRegistration(registration)
                 }}
@@ -30,16 +32,16 @@ export default function RegistrationActionsCell({
             </Button>
 
             <Popover
-                color="default"
                 backdrop="opaque"
+                color="default"
                 isOpen={isOpen}
                 onOpenChange={setIsOpen}
             >
                 <PopoverTrigger>
                     <Button
                         className="gap-0 min-w-0 px-2"
-                        variant="light"
                         color="danger"
+                        variant="light"
                     >
                         <MdDelete size={iconSize} />
                     </Button>
@@ -48,7 +50,7 @@ export default function RegistrationActionsCell({
                 <PopoverContent className="flex flex-col gap-4 p-4">
                     <p className="max-w-xs text-center">
                         Are you sure you want to cancel{' '}
-                        {registration.studentName}'s registration for{' '}
+                        {registration.studentName}&apos;s registration for{' '}
                         {event.name}?
                     </p>
 

@@ -1,9 +1,12 @@
 'use client'
+import type { Event } from '@/components/primitives'
+
 import { useEffect, useState } from 'react'
-import InactiveEventTable from './InactiveEventTable'
 import { useSession } from 'next-auth/react'
 import { Spinner } from '@heroui/react'
-import type { Event } from '@/components/primitives'
+
+import InactiveEventTable from './InactiveEventTable'
+
 import SignInButton from '@/components/SignInButton'
 
 export default function RegistrationPage() {

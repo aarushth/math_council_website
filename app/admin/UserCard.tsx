@@ -1,6 +1,5 @@
 'use client'
 
-import { User as PrimitiveUser } from '@/components/primitives'
 import {
     User,
     Chip,
@@ -10,8 +9,9 @@ import {
     DropdownMenu,
     DropdownItem,
 } from '@heroui/react'
-import { useState } from 'react'
 import { BsThreeDotsVertical } from 'react-icons/bs'
+
+import { User as PrimitiveUser } from '@/components/primitives'
 
 interface Props {
     user: PrimitiveUser
@@ -28,10 +28,10 @@ export default function UserCard({ user, onRoleChange }: Props) {
                 }}
                 description={user.email}
                 name={user.name}
-            ></User>
+            />
             <Chip
-                size="sm"
                 color={user.admin ? 'danger' : 'default'}
+                size="sm"
                 variant="flat"
             >
                 {user.admin ? 'admin' : 'user'}
@@ -39,22 +39,18 @@ export default function UserCard({ user, onRoleChange }: Props) {
             {!user.admin && (
                 <Dropdown>
                     <DropdownTrigger>
-                        <Button
-                            className="gap-0 min-w-0 px-2"
-                            variant="light"
-                            onPress={() => console.log('click')}
-                        >
+                        <Button className="gap-0 min-w-0 px-2" variant="light">
                             <BsThreeDotsVertical size={20} />
                         </Button>
                     </DropdownTrigger>
                     <DropdownMenu
                         aria-label="Static Actions"
-                        onAction={(key) => {
+                        onAction={() => {
                             onRoleChange(user)
                         }}
                     >
                         <DropdownItem key="changeRole">
-                            Promote to Admin
+                            Change Role
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>

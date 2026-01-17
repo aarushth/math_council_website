@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '@/prisma/prisma'
+
 import { getServerSession } from 'next-auth'
+
 import { authOptions } from '../auth/[...nextauth]'
+
+import { prisma } from '@/prisma/prisma'
 
 export default async function handler(
     req: NextApiRequest,
@@ -15,6 +18,7 @@ export default async function handler(
 
     const { id } = req.query
     const eventId = Number(id)
+
     if (!eventId || isNaN(eventId)) {
         return res.status(400).json({ message: 'Invalid event ID' })
     }
@@ -25,6 +29,7 @@ export default async function handler(
                 const deletedEvent = await prisma.event.delete({
                     where: { id: eventId },
                 })
+
                 return res.status(200).json({
                     success: true,
                     event: deletedEvent,
@@ -72,7 +77,6 @@ export default async function handler(
                 return res.status(405).json({ message: 'Method Not Allowed' })
         }
     } catch (error: any) {
-        console.error('Error handling event:', error)
         return res.status(500).json({
             success: false,
             message: error.message || 'Server error',

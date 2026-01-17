@@ -1,5 +1,6 @@
 'use client'
-import { errorToast, Event, Registration } from '@/components/primitives'
+import type { Selection } from '@heroui/react'
+
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import {
@@ -13,7 +14,9 @@ import {
     SelectItem,
     Input,
 } from '@heroui/react'
-import type { Selection } from '@heroui/react'
+
+import { errorToast, Event, Registration } from '@/components/primitives'
+
 interface Props {
     event: Event | null
     addRegistration: (eventId: number, r: Registration) => void
@@ -65,6 +68,7 @@ export default function RegistrationForm({
     }, [existingRegistration])
     if (isOpen && event == null) {
         errorToast()
+
         return
     }
     const isNameInvalid = name === '' && nameTouched
@@ -72,6 +76,7 @@ export default function RegistrationForm({
     const gradeNumber = Number(Array.from(grade)[0]) // fastest way
     const isGradeInvalid = Number.isNaN(gradeNumber) && gradeTouched
     const isSubmitDisabled = isGradeInvalid || isNameInvalid
+
     async function handleSubmit(onClose: () => void) {
         if (!isEditing) {
             try {
@@ -79,7 +84,7 @@ export default function RegistrationForm({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        studentName: name,
+                        studentName: name.trim(),
                         grade: gradeNumber,
                         userId: session?.user.id,
                         eventId: event!.id,
@@ -88,10 +93,10 @@ export default function RegistrationForm({
 
                 if (!res.ok) throw new Error('Failed to create registration')
                 const newRegistration = await res.json()
+
                 addRegistration(event!.id, newRegistration)
                 onClose()
-            } catch (err) {
-                console.error(err)
+            } catch {
                 errorToast()
             }
         } else {
@@ -102,7 +107,7 @@ export default function RegistrationForm({
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            studentName: name,
+                            studentName: name.trim(),
                             grade: gradeNumber,
                         }),
                     }
@@ -111,10 +116,10 @@ export default function RegistrationForm({
                 if (!res.ok) throw new Error('Failed to update registration')
                 const data = await res.json()
                 const updatedRegistration = data.registration
+
                 updateRegistration(event!.id, updatedRegistration)
                 onClose()
-            } catch (err) {
-                console.error(err)
+            } catch {
                 errorToast()
             }
         }
@@ -131,10 +136,10 @@ export default function RegistrationForm({
         <Modal
             isOpen={isOpen}
             placement="center"
-            onOpenChange={onOpenChange}
             onClose={() => {
                 clearData()
             }}
+            onOpenChange={onOpenChange}
         >
             <ModalContent>
                 {(onClose) => (
@@ -144,33 +149,33 @@ export default function RegistrationForm({
                         </ModalHeader>
                         <ModalBody>
                             <Input
-                                label="Student Full Name"
-                                variant="bordered"
-                                value={name}
                                 isRequired
                                 color={isNameInvalid ? 'danger' : 'default'}
                                 errorMessage={
                                     isNameInvalid ? 'You must enter a name' : ''
                                 }
                                 isInvalid={isNameInvalid}
-                                onValueChange={setName}
+                                label="Student Full Name"
+                                value={name}
+                                variant="bordered"
                                 onFocusChange={(isFocused: boolean) => {
                                     !isFocused && setNameTouched(true)
                                 }}
+                                onValueChange={setName}
                             />
                             <Select
-                                className="max-w-xl"
-                                variant="bordered"
-                                items={grades}
-                                label="Grade Level"
                                 isRequired
+                                className="max-w-xl"
                                 errorMessage={
                                     isGradeInvalid
                                         ? 'You must pick a grade'
                                         : ''
                                 }
                                 isInvalid={isGradeInvalid}
+                                items={grades}
+                                label="Grade Level"
                                 selectedKeys={grade}
+                                variant="bordered"
                                 onClose={() => setGradeTouched(true)}
                                 onSelectionChange={setGrade}
                             >
@@ -193,8 +198,8 @@ export default function RegistrationForm({
                             </Button>
                             <Button
                                 color="primary"
-                                variant={isSubmitDisabled ? 'faded' : 'solid'}
                                 isDisabled={isSubmitDisabled}
+                                variant={isSubmitDisabled ? 'faded' : 'solid'}
                                 onPress={() => {
                                     if (
                                         Number.isNaN(gradeNumber) ||

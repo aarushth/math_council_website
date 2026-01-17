@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { prisma } from '@/prisma/prisma'
+
 import { getServerSession } from 'next-auth'
+
 import { authOptions } from '../auth/[...nextauth]'
+
+import { prisma } from '@/prisma/prisma'
 
 export default async function handler(
     req: NextApiRequest,
@@ -43,8 +46,7 @@ export default async function handler(
         })
 
         res.status(201).json(event)
-    } catch (error) {
-        console.error('Error creating registration:', error)
+    } catch {
         res.status(500).json({ message: 'Internal server error' })
     }
 }

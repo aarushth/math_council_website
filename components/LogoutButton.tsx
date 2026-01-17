@@ -4,9 +4,9 @@ import { Button } from '@heroui/button'
 function SignOutButton() {
     return (
         <Button
-            onPress={() => signOut({ callbackUrl: '/' })}
-            variant="ghost"
             color="danger"
+            variant="ghost"
+            onPress={() => signOut({ callbackUrl: '/' })}
         >
             Sign Out
         </Button>
