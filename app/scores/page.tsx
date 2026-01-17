@@ -45,13 +45,11 @@ export default function RegistrationPage() {
     )
 
     return (
-        <div className="max-w-3xl mx-auto p-6">
+        <>
             <h1 className="text-3xl font-bold mb-6">Scores</h1>
             {inactiveEvents.map((event) => (
-                <div key={event.id}>
-                    <InactiveEventTable event={event} />
-                </div>
+                <InactiveEventTable key={event.id} event={event} />
             ))}
-        </div>
+        </>
     )
 }

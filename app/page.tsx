@@ -1,7 +1,7 @@
 'use client'
 import EventCard from '@/components/EventCard'
 import { Event } from '@/components/primitives'
-import { Card, ScrollShadow } from '@heroui/react'
+import { Card, ScrollShadow, Image } from '@heroui/react'
 import { Spinner } from '@heroui/spinner'
 import { useEffect, useState } from 'react'
 import Autoplay from 'embla-carousel-autoplay'
@@ -9,8 +9,6 @@ import {
     Carousel,
     CarouselContent,
     CarouselItem,
-    CarouselNext,
-    CarouselPrevious,
 } from '@/components/ui/carousel'
 
 export default function Home() {
@@ -43,25 +41,23 @@ export default function Home() {
                 <CarouselContent>
                     {Array.from({ length: 5 }).map((_, index) => (
                         <CarouselItem key={index}>
-                            <div className="p-1">
-                                <Card>
-                                    <div className="flex items-center justify-center p-6">
-                                        <span className="text-4xl font-semibold">
-                                            {index + 1}
-                                        </span>
-                                    </div>
-                                </Card>
+                            <div className="flex items-center justify-center max-h-100 rounded-lg overflow-hidden">
+                                <Image
+                                    className="flex items-center justify-center w-full object-cover"
+                                    alt={'homepage' + index}
+                                    src={'/images/homepage' + index + '.jpg'}
+                                ></Image>
                             </div>
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
             </Carousel>
-            <h1 className="text-3xl font-bold mb-6 mt-10">Upcoming Events</h1>
+            <h1 className="text-3xl font-bold mb-6 mt-5 md:mt-10">
+                Upcoming Events
+            </h1>
             {events.length == 0 && <p>No upcoming Events</p>}
             <ScrollShadow
-                className="flex flex-row gap-5 overflow-x-auto p-5"
+                className="flex flex-row gap-5 overflow-x-auto px-2"
                 offset={100}
                 orientation="horizontal"
             >

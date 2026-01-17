@@ -25,27 +25,54 @@ export default async function handler(
                     registration: deletedRegistration,
                 })
 
-            case 'PUT':
-                const { studentName, grade } = req.body
+            case 'PUT': {
+                const { studentName, grade, score, scoreReport } = req.body
 
-                if (!studentName || grade === undefined) {
-                    return res
-                        .status(400)
-                        .json({ message: 'studentName and grade are required' })
+                // Build update payload dynamically
+                const data: any = {}
+
+                if (studentName !== undefined) {
+                    if (!studentName) {
+                        return res
+                            .status(400)
+                            .json({ message: 'studentName cannot be empty' })
+                    }
+                    data.studentName = studentName
+                }
+
+                if (grade !== undefined) {
+                    data.grade = Number(grade)
+                }
+
+                if (score !== undefined) {
+                    data.score = Number(score)
+                }
+
+                if (scoreReport !== undefined) {
+                    if (!Array.isArray(scoreReport)) {
+                        return res
+                            .status(400)
+                            .json({ message: 'scoreReport must be an array' })
+                    }
+                    data.scoreReport = scoreReport
+                }
+
+                if (Object.keys(data).length === 0) {
+                    return res.status(400).json({
+                        message: 'No valid fields provided for update',
+                    })
                 }
 
                 const updatedRegistration = await prisma.registration.update({
                     where: { id: registrationId },
-                    data: {
-                        studentName,
-                        grade: Number(grade),
-                    },
+                    data,
                 })
 
                 return res.status(200).json({
                     success: true,
                     registration: updatedRegistration,
                 })
+            }
             case 'GET':
                 const session = await getServerSession(req, res, authOptions)
 

@@ -35,6 +35,7 @@ model Registration {
   userId      Int
   eventId     Int
   score       Int?
+  scoreReport Boolean[]
   event       Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user        User   @relation(fields: [userId], references: [id])
 }

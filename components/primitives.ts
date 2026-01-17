@@ -95,4 +95,5 @@ export interface Registration {
     userId: number
     user?: User
     score: number
+    scoreReport: boolean[]
 }

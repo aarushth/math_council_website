@@ -9,23 +9,18 @@ import {
     Spinner,
     Input,
     Pagination,
-    NumberInput,
     Button,
+    useDisclosure,
 } from '@heroui/react'
-import {
-    errorToast,
-    Event,
-    Registration,
-    successToast,
-    User,
-} from '@/components/primitives'
+import { errorToast, Event, Registration } from '@/components/primitives'
 import { useCallback, Key, useState, useMemo } from 'react'
 import EventTopContent from '@/components/EventTopContent'
 import { useMediaQuery } from '@/components/useMediaQuery'
-import { useDateFormatter } from '@react-aria/i18n'
-import { FaList, FaSearch } from 'react-icons/fa'
+import { FaClipboardCheck, FaList, FaSearch } from 'react-icons/fa'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { useAppDateFormatter } from '@/components/useAppDateFormatter'
+import EditScoreReportModal from './EditScoreReportModal'
 interface Props {
     event: Event
     onEditClick: (e: Event) => void
@@ -40,24 +35,31 @@ export default function AdminEventTable({
     const [registrationsLoaded, setRegistrationsLoaded] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [registrations, setRegistrations] = useState<Registration[]>([])
-    const [isChanges, setIsChanges] = useState(false)
     const [page, setPage] = useState(1)
-
     const [filterValue, setFilterValue] = useState('')
-    const isDesktop = useMediaQuery('(min-width: 768px)')
+    const [currentRegistration, setCurrentRegistration] = useState<
+        Registration | undefined
+    >(undefined)
+    const {
+        isOpen: isScoreReportOpen,
+        onOpen: onScoreReportOpen,
+        onOpenChange: onScoreReportOpenChange,
+    } = useDisclosure()
+    const isDesktop: boolean = useMediaQuery('(min-width: 768px)')
 
     const hasSearchFilter = filterValue.trim().length > 0
 
     const rowsPerPage = 4
-    let formatter = useDateFormatter({
-        weekday: 'long',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZoneName: 'short',
+    let formatter = useAppDateFormatter()
+
+    //sorting
+    const sortedRegistrations = registrations.sort((a, b) => {
+        const gradeA = a.grade ?? 0
+        const gradeB = b.grade ?? 0
+        return gradeA - gradeB
     })
+
+    //search
     const filteredRegistrations = useMemo(() => {
         let filteredRegs = [...registrations]
 
@@ -72,9 +74,11 @@ export default function AdminEventTable({
                         .includes(filterValue.toLowerCase())
             )
         }
-        console
+
         return filteredRegs
-    }, [registrations, filterValue])
+    }, [sortedRegistrations, filterValue])
+
+    //pagination
     const pages = Math.ceil(filteredRegistrations.length / rowsPerPage)
     const registrationsPaginated = useMemo(() => {
         const start = (page - 1) * rowsPerPage
@@ -108,33 +112,11 @@ export default function AdminEventTable({
             key: 'score',
             label: 'Score',
         },
-    ].filter(
-        (column) => (isDesktop as unknown as Boolean) || column.key !== 'user'
-    )
-    const saveScores = async () => {
-        try {
-            const payload = registrations.map((r) => ({
-                id: r.id,
-                score: r.score,
-            }))
-
-            const res = await fetch('/api/registration/scores', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            })
-
-            if (!res.ok) {
-                throw new Error('Failed to save scores')
-            }
-            setIsChanges(false)
-            successToast()
-        } catch (err) {
-            errorToast()
-        }
-    }
+        {
+            key: 'actions',
+            label: '',
+        },
+    ].filter((column) => isDesktop || column.key !== 'user')
 
     const renderCell = useCallback(
         (registration: Registration, columnKey: Key): React.ReactNode => {
@@ -149,28 +131,23 @@ export default function AdminEventTable({
                     return registration.user?.email ?? ''
 
                 case 'score':
+                    return registration.score !== null
+                        ? `${registration.score} ${event.totalScore ? `/ ${event.totalScore}` : ''}`
+                        : 'Score not entered yet'
+                case 'actions':
                     return (
-                        <NumberInput
-                            placeholder={
-                                !registration.score ? 'Enter Score' : ''
-                            }
-                            minValue={0}
-                            maxValue={event.totalScore ?? undefined}
-                            isClearable
-                            value={Number(registration.score)}
-                            onValueChange={(e) => {
-                                setIsChanges(true)
-                                setRegistrations((prev) =>
-                                    prev.map((r) =>
-                                        r.id === registration.id
-                                            ? { ...r, score: e }
-                                            : r
-                                    )
-                                )
+                        <Button
+                            className="gap-3"
+                            variant="solid"
+                            onPress={() => {
+                                setCurrentRegistration(registration)
+                                onScoreReportOpen()
                             }}
-                        />
+                        >
+                            <FaClipboardCheck size={20} />
+                            <p>Edit Score Report</p>
+                        </Button>
                     )
-
                 default:
                     return null
             }
@@ -197,6 +174,7 @@ export default function AdminEventTable({
 
             setRegistrations(data.registration)
             setRegistrationsLoaded(true)
+            console.log(data.registration)
             return data.registration
         } catch (err) {
             console.error('Failed to load registrations', err)
@@ -206,7 +184,7 @@ export default function AdminEventTable({
         }
     }
     async function generatePDF() {
-        let regsToUse = registrations
+        let regsToUse = sortedRegistrations
 
         // If registrations not loaded yet, fetch them
         if (!registrationsLoaded) {
@@ -257,95 +235,128 @@ export default function AdminEventTable({
             printWindow.print()
         }
     }
-    return (
-        <Table
-            aria-label={event.name + ' admin table'}
-            topContent={
-                <EventTopContent
-                    event={event}
-                    editAllowed={true}
-                    onEditClick={onEditClick}
-                    onDeleteClick={deleteEvent}
-                    onPrintClick={generatePDF}
-                />
-            }
-            className="mb-5"
-            bottomContent={
-                registrationsLoaded ? (
-                    <div className="flex w-full justify-between gap-5">
-                        <Input
-                            size="md"
-                            className="flex-1 max-w-sm px-0"
-                            isClearable
-                            placeholder="   Search"
-                            startContent={<FaSearch />}
-                            value={filterValue}
-                            variant="bordered"
-                            onClear={() => setFilterValue('')}
-                            onValueChange={onSearchChange}
-                        />
-                        <Pagination
-                            isCompact
-                            showControls
-                            showShadow
-                            color="primary"
-                            page={page}
-                            total={pages}
-                            onChange={(page) => setPage(page)}
-                        />
-                        <Button
-                            className="flex-1 max-w-sm"
-                            color="success"
-                            isDisabled={!isChanges}
-                            onPress={saveScores}
-                        >
-                            Save
-                        </Button>
-                    </div>
-                ) : (
-                    <div
-                        className="cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
-                        onClick={onLoadRegistrationsClick}
-                    >
-                        <FaList className="size-5" />
-                        <p>View Registrations</p>
-                    </div>
-                )
-            }
-        >
-            <TableHeader columns={registrationsLoaded ? columns : []}>
-                {(column) => (
-                    <TableColumn
-                        className="text-center px-0 max-width-1"
-                        key={column.key}
-                    >
-                        {column.label}
-                    </TableColumn>
-                )}
-            </TableHeader>
+    function updateRegistration(updatedRegistration: Registration) {
+        if (!updatedRegistration.id) {
+            console.error(
+                'Cannot update registration without id',
+                updatedRegistration
+            )
+            return
+        }
 
-            <TableBody
-                items={registrationsPaginated || []}
-                emptyContent={
-                    isLoading ? (
-                        <Spinner />
-                    ) : registrationsLoaded ? (
-                        'No registrations yet'
+        setRegistrations((prev) =>
+            prev.map((registration) =>
+                registration.id === updatedRegistration.id
+                    ? { ...registration, ...updatedRegistration }
+                    : registration
+            )
+        )
+    }
+    return (
+        <>
+            <EditScoreReportModal
+                registration={currentRegistration!}
+                updateRegistration={updateRegistration}
+                event={event}
+                isOpen={isScoreReportOpen}
+                onOpenChange={onScoreReportOpenChange}
+            ></EditScoreReportModal>
+            <Table
+                aria-label={event.name + ' admin table'}
+                topContent={
+                    <EventTopContent
+                        event={event}
+                        editAllowed={true}
+                        onEditClick={onEditClick}
+                        onDeleteClick={deleteEvent}
+                        onPrintClick={generatePDF}
+                    />
+                }
+                className="mb-5"
+                bottomContent={
+                    registrationsLoaded ? (
+                        <div className="grid w-full grid-cols-3 items-center">
+                            <Pagination
+                                className="col-start-2 justify-self-center"
+                                isCompact
+                                showControls
+                                showShadow
+                                color="primary"
+                                page={page}
+                                total={pages}
+                                onChange={(page) => setPage(page)}
+                            />
+                            <Input
+                                size="md"
+                                className="max-w-xs col-start-3 justify-self-end"
+                                isClearable
+                                placeholder="Search"
+                                startContent={<FaSearch />}
+                                value={filterValue}
+                                variant="bordered"
+                                onClear={() => setFilterValue('')}
+                                onValueChange={onSearchChange}
+                            />
+                        </div>
                     ) : (
-                        ''
+                        <div
+                            className="cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
+                            onClick={onLoadRegistrationsClick}
+                        >
+                            <FaList className="size-5" />
+                            <p>View Registrations</p>
+                        </div>
                     )
                 }
             >
-                {(item) => (
-                    <TableRow key={item.id}>
-                        {(columnKey) => (
-                            <TableCell className="text-center">
-                                {renderCell(item, columnKey)}
-                            </TableCell>
-                        )}
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
+                <>
+                    {registrationsLoaded && (
+                        <TableHeader columns={columns}>
+                            {(column) => {
+                                let className = ''
+                                if (column.key === 'actions') {
+                                    className =
+                                        'w-[1%] whitespace-nowrap text-right' // small fixed width
+                                } else {
+                                    className = 'text-center' // flexibly expands
+                                }
+
+                                return (
+                                    <TableColumn
+                                        key={column.key}
+                                        className={className}
+                                    >
+                                        {column.label}
+                                    </TableColumn>
+                                )
+                            }}
+                        </TableHeader>
+                    )}
+                </>
+
+                <TableBody
+                    items={registrationsPaginated || []}
+                    emptyContent={
+                        isLoading ? (
+                            <Spinner />
+                        ) : registrationsLoaded ? (
+                            'No registrations yet'
+                        ) : (
+                            ''
+                        )
+                    }
+                >
+                    {(item) => (
+                        <TableRow key={item.id}>
+                            {(columnKey) => (
+                                <TableCell className="text-center">
+                                    {renderCell(item, columnKey)}
+                                </TableCell>
+                            )}
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+        </>
     )
 }

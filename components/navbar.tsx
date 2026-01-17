@@ -45,26 +45,10 @@ export const Navbar = () => {
                         href="/"
                         className={clsx(
                             linkStyles({ color: 'foreground' }),
-                            `
-                        text-xl
-                            lg:text-xl    
-      relative inline-block
-      after:absolute after:left-0 after:-bottom-2
-      after:h-[4px] after:w-full
-      after:bg-primary-300
-      after:origin-left
-      after:scale-x-0
-      after:transition-transform after:duration-300
-    
-      hover:after:scale-x-100
-      data-[active=true]:after:scale-x-100
-
-      data-[active=true]:text-primary
-      data-[active=true]:font-medium
-    `
+                            'text-xl lg:text-xl underline-hover-active'
                         )}
                     >
-                        <p className="font-bold text-inherit text-primary-300">
+                        <p className="font-bold text-primary-300 text-lg sm:text-base">
                             EHS Math Council
                         </p>
                     </NextLink>
@@ -76,21 +60,7 @@ export const Navbar = () => {
                             key={item.href}
                             className={clsx(
                                 linkStyles({ color: 'foreground' }),
-                                `
-      relative inline-block
-      after:absolute after:left-0 after:-bottom-2
-      after:h-[4px] after:w-full
-      after:bg-primary-300
-      after:origin-left
-      after:scale-x-0
-      after:transition-transform after:duration-300
-
-      hover:after:scale-x-100
-      data-[active=true]:after:scale-x-100
-
-      data-[active=true]:text-primary
-      data-[active=true]:font-medium
-    `
+                                'underline-hover-active'
                             )}
                         >
                             {item.label}
@@ -133,22 +103,7 @@ export const Navbar = () => {
                                 href={item.href}
                                 size="lg"
                                 onPress={() => setIsMenuOpen(false)}
-                                className="
-                                mb-3
-      relative inline-block
-      after:absolute after:left-0 after:-bottom-2
-      after:h-[4px] after:w-full
-      after:bg-primary-300
-      after:origin-left
-      after:scale-x-0
-      after:transition-transform after:duration-300
-
-      hover:after:scale-x-100
-      data-[active=true]:after:scale-x-100
-
-      data-[active=true]:text-primary
-      data-[active=true]:font-medium
-    "
+                                className="mb-3 underline-hover-active"
                             >
                                 {item.label}
                             </Link>

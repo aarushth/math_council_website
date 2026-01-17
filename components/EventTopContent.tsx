@@ -1,11 +1,11 @@
 import { Event } from '@/components/primitives'
 import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
-import { useDateFormatter } from '@react-aria/i18n'
 import { Button } from '@heroui/button'
 import { MdDelete, MdEdit } from 'react-icons/md'
 import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
 import { useState } from 'react'
 import { BiSolidPrinter } from 'react-icons/bi'
+import { useAppDateFormatter } from './useAppDateFormatter'
 interface Props {
     event: Event
     editAllowed?: boolean
@@ -22,35 +22,27 @@ export default function EventTopContent({
     onPrintClick = () => {},
 }: Props) {
     const [isOpen, setIsOpen] = useState(false)
-    let formatter = useDateFormatter({
-        weekday: 'long',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZoneName: 'short',
-    })
+    let formatter = useAppDateFormatter()
     return (
         <>
             <div className="flex flex-row justify-between items-center">
                 <div className="flex flex-col gap-3">
                     <p className="block text-xl">{event.name}</p>
-                    <p className="block text-xs -my-2 text-body">
+                    <p className="block text-xs -my-2 text-body text-white/80">
                         {event.description}
                     </p>
                 </div>
                 {editAllowed && (
                     <div className="flex flex-row gap-3">
                         <Button
-                            className="gap-0 min-w-0 px-2"
+                            isIconOnly
                             variant="light"
                             onPress={() => onEditClick(event)}
                         >
                             <MdEdit size={20} />
                         </Button>
                         <Button
-                            className="gap-0 min-w-0 px-2"
+                            isIconOnly
                             variant="light"
                             onPress={() => onPrintClick()}
                         >
@@ -64,7 +56,7 @@ export default function EventTopContent({
                         >
                             <PopoverTrigger>
                                 <Button
-                                    className="gap-0 min-w-0 px-2"
+                                    isIconOnly
                                     variant="light"
                                     color="danger"
                                 >
@@ -94,15 +86,15 @@ export default function EventTopContent({
                     </div>
                 )}
             </div>
-            <div className="flex flex-row gap-4 mt-1">
-                <FaCalendar className="size-4"></FaCalendar>
+            <div className="flex flex-row gap-4 mt-1 text-white/80">
+                <FaCalendar className="size-4" opacity={80}></FaCalendar>
                 <p className="text-xs font-normal text-body text-center">
                     {formatter.format(new Date(event.date))}
                 </p>
             </div>
-            <div className="flex flex-row gap-4">
+            <div className="flex flex-row gap-4 text-white/80">
                 <FaMapMarkerAlt className="size-4"></FaMapMarkerAlt>
-                <p className="text-xs font-normal text-body">
+                <p className="text-xs font-normal text-body ">
                     {event.location}
                 </p>
             </div>

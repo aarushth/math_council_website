@@ -17,7 +17,7 @@ export default function RegistrationActionsCell({
     const [isOpen, setIsOpen] = useState(false)
     const iconSize = 20
     return (
-        <div className="relative flex justify-center items-center gap-1">
+        <div className="relative flex justify-center items-center gap-3">
             <Button
                 className="gap-0 min-w-0 px-2"
                 variant="light"
