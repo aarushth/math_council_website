@@ -1,0 +1,10 @@
+# Make all text files use LF in the repo
+* text=auto eol=lf
+
+# Optional: force specific file types to always use LF
+*.ts   text eol=lf
+*.tsx  text eol=lf
+*.js   text eol=lf
+*.jsx  text eol=lf
+*.css  text eol=lf
+*.html text eol=lf
