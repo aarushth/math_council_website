@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import { Spinner, useDisclosure } from '@heroui/react'
 
 import ActiveEventTable from './ActiveEventTable'
-import RegistrationForm from './RegistrationForm'
+import RegistrationModal from './RegistrationModal'
 
 import SignInButton from '@/components/SignInButton'
 
@@ -119,7 +119,7 @@ export default function RegistrationPage() {
                     }}
                 />
             ))}
-            <RegistrationForm
+            <RegistrationModal
                 addRegistration={addRegistrationToEvent}
                 clearExisting={() => setExistingRegistration(null)}
                 event={registerEvent}

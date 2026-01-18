@@ -47,7 +47,7 @@ export const Navbar = () => {
                         )}
                         href="/"
                     >
-                        <p className="font-bold text-primary-300 text-lg sm:text-base">
+                        <p className="font-bold text-primary-300 mb-2 sm:mb-0 text-sm sm:text-xl">
                             EHS Math Council
                         </p>
                     </NextLink>

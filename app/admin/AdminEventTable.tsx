@@ -18,6 +18,7 @@ import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
 import EditScoreReportModal from './EditScoreReportModal'
+import PrintModal from './PrintModal'
 
 import { useAppDateFormatter } from '@/components/useAppDateFormatter'
 import { useMediaQuery } from '@/components/useMediaQuery'
@@ -47,6 +48,12 @@ export default function AdminEventTable({
         onOpen: onScoreReportOpen,
         onOpenChange: onScoreReportOpenChange,
     } = useDisclosure()
+    const {
+        isOpen: isPrintOpen,
+        onOpen: onPrintOpen,
+        onOpenChange: onPrintOpenChange,
+    } = useDisclosure()
+
     const isDesktop: boolean = useMediaQuery('(min-width: 768px)')
 
     const hasSearchFilter = filterValue.trim().length > 0
@@ -188,13 +195,32 @@ export default function AdminEventTable({
             setIsLoading(false)
         }
     }
-    async function generatePDF() {
+
+    function updateRegistration(updatedRegistration: Registration) {
+        if (!updatedRegistration.id) {
+            return
+        }
+
+        setRegistrations((prev) =>
+            prev.map((registration) =>
+                registration.id === updatedRegistration.id
+                    ? { ...registration, ...updatedRegistration }
+                    : registration
+            )
+        )
+    }
+
+    async function generatePDF(range: number[]) {
         let regsToUse = sortedRegistrations
 
         // If registrations not loaded yet, fetch them
         if (!registrationsLoaded) {
             regsToUse = await onLoadRegistrationsClick()
         }
+        regsToUse = regsToUse.filter(
+            (registration) =>
+                registration.grade >= range[0] && registration.grade <= range[1]
+        )
         const doc = new jsPDF({
             orientation: 'landscape',
             unit: 'mm',
@@ -212,7 +238,7 @@ export default function AdminEventTable({
         // Prepare table rows
         const tableBody = regsToUse.map((reg) => [
             reg.studentName,
-            reg.grade.toString(),
+            reg.grade === 0 ? 'KG' : reg.grade.toString(),
             reg.user?.email ?? 'N/A',
         ])
 
@@ -241,19 +267,6 @@ export default function AdminEventTable({
             printWindow.print()
         }
     }
-    function updateRegistration(updatedRegistration: Registration) {
-        if (!updatedRegistration.id) {
-            return
-        }
-
-        setRegistrations((prev) =>
-            prev.map((registration) =>
-                registration.id === updatedRegistration.id
-                    ? { ...registration, ...updatedRegistration }
-                    : registration
-            )
-        )
-    }
 
     return (
         <>
@@ -263,6 +276,12 @@ export default function AdminEventTable({
                 registration={currentRegistration!}
                 updateRegistration={updateRegistration}
                 onOpenChange={onScoreReportOpenChange}
+            />
+            <PrintModal
+                event={event}
+                isOpen={isPrintOpen}
+                onOpenChange={onPrintOpenChange}
+                onPrintEvent={generatePDF}
             />
             <Table
                 aria-label={event.name + ' admin table'}
@@ -309,7 +328,7 @@ export default function AdminEventTable({
                         event={event}
                         onDeleteClick={deleteEvent}
                         onEditClick={onEditClick}
-                        onPrintClick={generatePDF}
+                        onPrintClick={onPrintOpen}
                     />
                 }
             >

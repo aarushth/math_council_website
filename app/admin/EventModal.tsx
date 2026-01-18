@@ -29,7 +29,7 @@ interface Props {
     clearExisting: () => void
 }
 
-export default function EventForm({
+export default function EventModal({
     addEvent,
     isOpen,
     onOpenChange,

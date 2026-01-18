@@ -39,7 +39,7 @@ const grades = [
     { key: '8', label: '8th Grade' },
 ]
 
-export default function RegistrationForm({
+export default function RegistrationModal({
     event,
     addRegistration,
     updateRegistration,
