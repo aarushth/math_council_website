@@ -13,7 +13,6 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     const toastShown = useRef(false)
 
     useEffect(() => {
-        console.log(session)
         if (session && !toastShown.current) {
             addToast({
                 title: 'Logged in as ' + session.user.email,
@@ -22,5 +21,6 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
             toastShown.current = true
         }
     }, [session])
+
     return <>{children}</>
 }

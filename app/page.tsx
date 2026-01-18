@@ -15,6 +15,7 @@ import {
 export default function Home() {
     const [events, setEvents] = useState<Event[]>([])
     const [loading, setLoading] = useState(true)
+
     useEffect(() => {
         fetch('/api/event/active')
             .then((res) => res.json())
@@ -58,8 +59,8 @@ export default function Home() {
             </h1>
             {events.length == 0 && <p>No upcoming Events</p>}
             <ScrollShadow
-                className="flex flex-row gap-5 overflow-x-auto px-2 pb-5"
                 hideScrollBar
+                className="flex flex-row gap-5 overflow-x-auto px-2 pb-5"
                 offset={100}
                 orientation="horizontal"
                 onWheel={(e) => {

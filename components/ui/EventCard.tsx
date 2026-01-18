@@ -19,8 +19,8 @@ export default function EventCard({ event }: Props) {
         <Card
             isHoverable
             isPressable
-            onPress={() => router.push('/registration')}
             className="min-w-50 md:w-100"
+            onPress={() => router.push('/registration')}
         >
             <CardBody className="text-white/80 gap-4 p-5 flex flex-col justify-between">
                 <div>
@@ -31,13 +31,13 @@ export default function EventCard({ event }: Props) {
                 </div>
                 <div>
                     <div className="flex flex-row gap-4 mb-2 items-center">
-                        <FaCalendar size={18} className="shrink-0" />
+                        <FaCalendar className="shrink-0" size={18} />
                         <p className="text-xs md:text-sm flex-1">
                             {formatter.format(new Date(event.date))}
                         </p>
                     </div>
                     <div className="flex flex-row gap-4 items-center">
-                        <FaMapMarkerAlt size={18} className="shrink-0" />
+                        <FaMapMarkerAlt className="shrink-0" size={18} />
                         <p className="text-xs md:text-sm flex-1">
                             {event.location}
                         </p>

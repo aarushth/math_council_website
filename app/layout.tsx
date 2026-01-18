@@ -4,11 +4,12 @@ import clsx from 'clsx'
 
 import { UIProviders } from '../components/providers/UIProviders'
 
+import LayoutWrapper from './LayoutWrapper'
+
 import { siteConfig } from '@/config/site'
 import { fontSans } from '@/config/fonts'
 import { Navbar } from '@/components/ui/navbar'
 import ClientProvider from '@/components/providers/ClientProvider'
-import LayoutWrapper from './LayoutWrapper'
 
 export const metadata: Metadata = {
     title: {
