@@ -1,13 +1,12 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { Input, Spinner } from '@heroui/react'
+import { addToast, Input, Spinner } from '@heroui/react'
 import { FaSearch } from 'react-icons/fa'
 
 import UserCard from './UserCard'
 
 import { User } from '@/lib/primitives'
-import { errorToast } from '@/lib/toasts'
 
 interface Props {
     users: User[]
@@ -53,7 +52,7 @@ export default function UserList({ users, updateUser }: Props) {
 
             updateUser(updatedUser.user)
         } catch {
-            errorToast()
+            addToast({ title: 'An error ocurred. Please try again later.' })
         }
     }
 

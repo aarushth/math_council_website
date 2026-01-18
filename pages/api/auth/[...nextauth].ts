@@ -32,8 +32,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
             authorization: {
                 params: {
-                    prompt: 'select_account', // forces Google login prompt
-                    // access_type: 'offline',
+                    prompt: 'select_account',
                     response_type: 'code',
                 },
             },
@@ -78,7 +77,6 @@ export const authOptions: NextAuthOptions = {
                 return token
             }
 
-            // 🔥 Always re-fetch user's current admin value from DB
             if (token.id) {
                 const dbUser = await prisma.user.findUnique({
                     where: { id: token.id },

@@ -7,6 +7,7 @@ import {
     TableRow,
     TableCell,
     Button,
+    addToast,
 } from '@heroui/react'
 import { useCallback, Key, ReactNode } from 'react'
 import { FaPlus } from 'react-icons/fa'
@@ -15,7 +16,6 @@ import RegistrationActions from './RegistrationActions'
 
 import { Event, Registration } from '@/lib/primitives'
 import EventTopContent from '@/components/ui/EventTopContent'
-import { errorToast } from '@/lib/toasts'
 
 interface Props {
     event: Event
@@ -37,7 +37,7 @@ export default function ActiveEventTable({
             if (!res.ok) throw new Error('Failed to cancel registration')
             onCancelRegistration(event.id, id)
         } catch {
-            errorToast()
+            addToast({ title: 'An error ocurred. Please try again later.' })
         }
     }
     const columns = [

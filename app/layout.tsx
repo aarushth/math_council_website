@@ -2,12 +2,13 @@ import '@/styles/globals.css'
 import { Metadata, Viewport } from 'next'
 import clsx from 'clsx'
 
-import { Providers } from './providers'
+import { UIProviders } from '../components/providers/UIProviders'
 
 import { siteConfig } from '@/config/site'
 import { fontSans } from '@/config/fonts'
 import { Navbar } from '@/components/ui/navbar'
 import ClientProvider from '@/components/providers/ClientProvider'
+import LayoutWrapper from './LayoutWrapper'
 
 export const metadata: Metadata = {
     title: {
@@ -42,7 +43,7 @@ export default function RootLayout({
                 )}
             >
                 <ClientProvider>
-                    <Providers
+                    <UIProviders
                         themeProps={{
                             attribute: 'class',
                             defaultTheme: 'dark',
@@ -51,10 +52,10 @@ export default function RootLayout({
                         <div className="relative flex flex-col h-screen">
                             <Navbar />
                             <main className="container mx-auto max-w-9xl pt-5 px-6 grow">
-                                {children}
+                                <LayoutWrapper>{children}</LayoutWrapper>
                             </main>
                         </div>
-                    </Providers>
+                    </UIProviders>
                 </ClientProvider>
             </body>
         </html>

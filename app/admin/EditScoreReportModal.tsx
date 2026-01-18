@@ -11,13 +11,13 @@ import {
     TableBody,
     TableRow,
     TableCell,
+    addToast,
 } from '@heroui/react'
 import { useCallback, useEffect, useState, Key, useMemo } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
 
 import { Registration, Event } from '@/lib/primitives'
-import { errorToast } from '@/lib/toasts'
 
 interface Props {
     registration: Registration
@@ -123,7 +123,7 @@ export default function EditScoreReportModal({
             setIsSaveActive(false)
             onClose()
         } catch {
-            errorToast()
+            addToast({ title: 'An error ocurred. Please try again later.' })
         }
     }
 

@@ -15,7 +15,6 @@ function SignInButton() {
             onPress={() =>
                 signIn('google', {
                     pathname,
-                    prompt: 'select_account',
                 })
             }
         >

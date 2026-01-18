@@ -11,6 +11,7 @@ import {
     Pagination,
     Button,
     useDisclosure,
+    addToast,
 } from '@heroui/react'
 import { useCallback, Key, useState, useMemo } from 'react'
 import { FaClipboardCheck, FaList, FaSearch } from 'react-icons/fa'
@@ -24,7 +25,7 @@ import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
 import { useMediaQuery } from '@/components/hooks/useMediaQuery'
 import EventTopContent from '@/components/ui/EventTopContent'
 import { Event, Registration } from '@/lib/primitives'
-import { errorToast } from '@/lib/toasts'
+
 interface Props {
     event: Event
     onEditClick: (e: Event) => void
@@ -175,7 +176,7 @@ export default function AdminEventTable({
             if (!res.ok) throw new Error('Failed to cancel event')
             onDeleteEvent(event.id)
         } catch {
-            errorToast()
+            addToast({ title: 'An error ocurred. Please try again later.' })
         }
     }
     async function onLoadRegistrationsClick(): Promise<Registration[]> {
@@ -189,7 +190,9 @@ export default function AdminEventTable({
 
             return data.registration
         } catch {
-            errorToast('Failed to load registrations, please try again later')
+            addToast({
+                title: 'Failed to load registrations, please try again later',
+            })
 
             return []
         } finally {
@@ -258,7 +261,9 @@ export default function AdminEventTable({
         const printWindow = window.open(blobUrl)
 
         if (!printWindow) {
-            errorToast('Failed to open print window, please try again later')
+            addToast({
+                title: 'Failed to open print window, please try again later',
+            })
 
             return
         }

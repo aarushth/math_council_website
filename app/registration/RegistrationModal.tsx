@@ -13,10 +13,10 @@ import {
     Select,
     SelectItem,
     Input,
+    addToast,
 } from '@heroui/react'
 
 import { Event, Registration } from '@/lib/primitives'
-import { errorToast } from '@/lib/toasts'
 
 interface Props {
     event: Event | null
@@ -68,7 +68,7 @@ export default function RegistrationModal({
         }
     }, [existingRegistration])
     if (isOpen && event == null) {
-        errorToast()
+        addToast({ title: 'An error ocurred. Please try again later.' })
 
         return
     }
@@ -98,7 +98,7 @@ export default function RegistrationModal({
                 addRegistration(event!.id, newRegistration)
                 onClose()
             } catch {
-                errorToast()
+                addToast({ title: 'An error ocurred. Please try again later.' })
             }
         } else {
             try {
@@ -121,7 +121,7 @@ export default function RegistrationModal({
                 updateRegistration(event!.id, updatedRegistration)
                 onClose()
             } catch {
-                errorToast()
+                addToast({ title: 'An error ocurred. Please try again later.' })
             }
         }
     }

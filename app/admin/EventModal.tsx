@@ -15,6 +15,7 @@ import {
     Card,
     CardBody,
     Spinner,
+    addToast,
 } from '@heroui/react'
 import {
     getLocalTimeZone,
@@ -28,7 +29,6 @@ import { FaFileUpload } from 'react-icons/fa'
 import { FaFileCircleCheck } from 'react-icons/fa6'
 
 import { Event } from '@/lib/primitives'
-import { errorToast } from '@/lib/toasts'
 
 interface Props {
     addEvent: (event: Event) => void
@@ -124,7 +124,7 @@ export default function EventModal({
                 addEvent(newEvent)
                 onClose()
             } catch {
-                errorToast()
+                addToast({ title: 'An error ocurred. Please try again later.' })
             }
         } else {
             try {
@@ -149,7 +149,7 @@ export default function EventModal({
                 addEvent(updatedEvent)
                 onClose()
             } catch {
-                errorToast()
+                addToast({ title: 'An error ocurred. Please try again later.' })
             }
         }
     }
@@ -180,7 +180,7 @@ export default function EventModal({
             setBlobUrl(newBlob.url)
             setIsBlobLoading(false)
         } catch {
-            errorToast()
+            addToast({ title: 'An error ocurred. Please try again later.' })
         }
         setIsBlobLoading(false)
     }
@@ -362,16 +362,18 @@ export default function EventModal({
                                     </Card>
                                 )}
                             </Dropzone>
-                            <Button
-                                className="mb-4"
-                                color="danger"
-                                variant="light"
-                                onPress={() => {
-                                    setBlobUrl(undefined)
-                                }}
-                            >
-                                Delete Current Question & Solution PDF
-                            </Button>
+                            {blobUrl !== undefined && (
+                                <Button
+                                    className="mb-4"
+                                    color="danger"
+                                    variant="light"
+                                    onPress={() => {
+                                        setBlobUrl(undefined)
+                                    }}
+                                >
+                                    Delete Current Question & Solution PDF
+                                </Button>
+                            )}
                         </ModalBody>
                         <ModalFooter>
                             <Button

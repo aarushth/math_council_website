@@ -1,11 +1,11 @@
 'use client'
 
 import { Card, CardBody, CardFooter, Divider } from '@heroui/react'
-import { useDateFormatter } from '@react-aria/i18n'
 import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 
 import { Event } from '../../lib/primitives'
+import { useAppDateFormatter } from '../hooks/useAppDateFormatter'
 
 interface Props {
     event: Event
@@ -13,38 +13,35 @@ interface Props {
 
 export default function EventCard({ event }: Props) {
     const router = useRouter()
-    let formatter = useDateFormatter({
-        weekday: 'long',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        timeZoneName: 'short',
-    })
+    let formatter = useAppDateFormatter()
 
     return (
         <Card
             isHoverable
             isPressable
             onPress={() => router.push('/registration')}
+            className="min-w-50 md:w-100"
         >
-            <CardBody className="text-white/80 gap-4 p-5">
+            <CardBody className="text-white/80 gap-4 p-5 flex flex-col justify-between">
                 <div>
-                    <p className="block text-xl text-white">{event.name}</p>
-                    <p className="block text-xs text-body">
+                    <p className="text-lg text-white">{event.name}</p>
+                    <p className="text-xs text-body line-clamp-4">
                         {event.description}
                     </p>
                 </div>
-                <div className="flex flex-row gap-4">
-                    <FaCalendar size={15} />
-                    <p className="text-xs font-normal text-body text-center">
-                        {formatter.format(new Date(event.date))}
-                    </p>
-                </div>
-                <div className="flex flex-row gap-4">
-                    <FaMapMarkerAlt size={15} />
-                    <p className="text-xs">{event.location}</p>
+                <div>
+                    <div className="flex flex-row gap-4 mb-2 items-center">
+                        <FaCalendar size={18} className="shrink-0" />
+                        <p className="text-xs md:text-sm flex-1">
+                            {formatter.format(new Date(event.date))}
+                        </p>
+                    </div>
+                    <div className="flex flex-row gap-4 items-center">
+                        <FaMapMarkerAlt size={18} className="shrink-0" />
+                        <p className="text-xs md:text-sm flex-1">
+                            {event.location}
+                        </p>
+                    </div>
                 </div>
             </CardBody>
             <Divider />

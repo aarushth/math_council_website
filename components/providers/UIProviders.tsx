@@ -21,13 +21,20 @@ declare module '@react-types/shared' {
     }
 }
 
-export function Providers({ children, themeProps }: ProvidersProps) {
+export function UIProviders({ children, themeProps }: ProvidersProps) {
     const router = useRouter()
 
     return (
         <HeroUIProvider navigate={router.push}>
             <NextThemesProvider {...themeProps}>
-                <ToastProvider placement="top-center" />
+                <ToastProvider
+                    placement="top-center"
+                    toastProps={{
+                        timeout: 4000,
+                        shouldShowTimeoutProgress: true,
+                        color: 'danger',
+                    }}
+                />
                 {children}
             </NextThemesProvider>
         </HeroUIProvider>
