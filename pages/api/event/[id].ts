@@ -43,6 +43,7 @@ export default async function handler(
                     location,
                     active,
                     totalScore,
+                    questionPdf,
                 } = req.body
 
                 if (
@@ -65,6 +66,7 @@ export default async function handler(
                         location: location,
                         active: active,
                         totalScore: totalScore,
+                        questionPdf: questionPdf,
                     },
                 })
 

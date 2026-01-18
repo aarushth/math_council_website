@@ -5,9 +5,9 @@ import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
 import { useState } from 'react'
 import { BiSolidPrinter } from 'react-icons/bi'
 
-import { useAppDateFormatter } from './useAppDateFormatter'
+import { useAppDateFormatter } from '../hooks/useAppDateFormatter'
 
-import { Event } from '@/components/primitives'
+import { Event } from '@/lib/primitives'
 interface Props {
     event: Event
     editAllowed?: boolean
@@ -31,7 +31,7 @@ export default function EventTopContent({
             <div className="flex flex-row justify-between items-center">
                 <div className="flex flex-col gap-3">
                     <p className="block text-xl">{event.name}</p>
-                    <p className="block text-xs -my-2 text-body text-white/80">
+                    <p className="block text-xs -my-2 text-white/80">
                         {event.description}
                     </p>
                 </div>
@@ -90,16 +90,14 @@ export default function EventTopContent({
                 )}
             </div>
             <div className="flex flex-row gap-4 mt-1 text-white/80">
-                <FaCalendar className="size-4" opacity={80} />
-                <p className="text-xs font-normal text-body text-center">
+                <FaCalendar opacity={80} size={15} />
+                <p className="text-xs">
                     {formatter.format(new Date(event.date))}
                 </p>
             </div>
             <div className="flex flex-row gap-4 text-white/80">
-                <FaMapMarkerAlt className="size-4" />
-                <p className="text-xs font-normal text-body ">
-                    {event.location}
-                </p>
+                <FaMapMarkerAlt size={15} />
+                <p className="text-xs">{event.location}</p>
             </div>
         </>
     )

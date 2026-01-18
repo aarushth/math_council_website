@@ -16,7 +16,8 @@ import { useCallback, useEffect, useState, Key, useMemo } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
 
-import { Registration, Event, errorToast } from '@/components/primitives'
+import { Registration, Event } from '@/lib/primitives'
+import { errorToast } from '@/lib/toasts'
 
 interface Props {
     registration: Registration

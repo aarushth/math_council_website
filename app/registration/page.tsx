@@ -1,5 +1,5 @@
 'use client'
-import type { Event, Registration } from '@/components/primitives'
+import type { Event, Registration } from '@/lib/primitives'
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
@@ -8,7 +8,7 @@ import { Spinner, useDisclosure } from '@heroui/react'
 import ActiveEventTable from './ActiveEventTable'
 import RegistrationModal from './RegistrationModal'
 
-import SignInButton from '@/components/SignInButton'
+import SignInButton from '@/components/ui/SignInButton'
 
 export default function RegistrationPage() {
     const { data: session, status } = useSession()

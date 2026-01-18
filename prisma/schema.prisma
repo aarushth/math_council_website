@@ -16,6 +16,7 @@ model Event {
   location      String
   active        Boolean        @default(true)
   totalScore    Int?
+  questionPdf   String?
   registrations Registration[]
 }
 

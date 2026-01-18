@@ -12,6 +12,9 @@ import {
     DatePicker,
     Switch,
     NumberInput,
+    Card,
+    CardBody,
+    Spinner,
 } from '@heroui/react'
 import {
     getLocalTimeZone,
@@ -19,8 +22,14 @@ import {
     parseAbsolute,
     ZonedDateTime,
 } from '@internationalized/date'
+import Dropzone from 'react-dropzone'
+import { upload } from '@vercel/blob/client'
+import { FaFileUpload } from 'react-icons/fa'
+import { FaFileCircleCheck } from 'react-icons/fa6'
 
-import { errorToast, Event } from '@/components/primitives'
+import { Event } from '@/lib/primitives'
+import { errorToast } from '@/lib/toasts'
+
 interface Props {
     addEvent: (event: Event) => void
     isOpen: boolean
@@ -50,6 +59,9 @@ export default function EventModal({
     const [isActive, setIsActive] = useState(true)
     const [totalScore, setTotalScore] = useState<number | undefined>(undefined)
 
+    const [blobUrl, setBlobUrl] = useState<string | undefined>(undefined)
+    const [isblobLoading, setIsBlobLoading] = useState(false)
+
     const isEditing = !!existingEvent
 
     useEffect(() => {
@@ -62,6 +74,11 @@ export default function EventModal({
             setTotalScore(
                 existingEvent.totalScore ? existingEvent.totalScore : undefined
             )
+            setBlobUrl(
+                existingEvent.questionPdf
+                    ? existingEvent.questionPdf
+                    : undefined
+            )
         } else {
             setName('')
             setDescription('')
@@ -69,6 +86,7 @@ export default function EventModal({
             setLocation('')
             setIsActive(true)
             setTotalScore(undefined)
+            setBlobUrl(undefined)
         }
     }, [existingEvent])
 
@@ -90,12 +108,13 @@ export default function EventModal({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name: name,
-                        description: description,
+                        name: name.trim(),
+                        description: description.trim(),
                         date: date.toDate().toISOString(),
-                        location: location,
+                        location: location.trim(),
                         active: isActive,
                         totalScore: totalScore,
+                        questionPdf: blobUrl ? blobUrl : null,
                     }),
                 })
 
@@ -113,12 +132,13 @@ export default function EventModal({
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        name: name,
-                        description: description,
+                        name: name.trim(),
+                        description: description.trim(),
                         date: date.toDate().toISOString(),
-                        location: location,
+                        location: location.trim(),
                         active: isActive,
                         totalScore: totalScore,
+                        questionPdf: blobUrl ? blobUrl : null,
                     }),
                 })
 
@@ -143,7 +163,26 @@ export default function EventModal({
         setNameTouched(false)
         setDescriptionTouched(false)
         setLocationTouched(false)
+        setBlobUrl(undefined)
         clearExisting()
+    }
+    async function uploadPDF(files: File[]) {
+        const file = files[0]
+
+        if (!file) return
+        setIsBlobLoading(true)
+        try {
+            const newBlob = await upload(file.name, file, {
+                access: 'public',
+                handleUploadUrl: '/api/blob/upload',
+            })
+
+            setBlobUrl(newBlob.url)
+            setIsBlobLoading(false)
+        } catch {
+            errorToast()
+        }
+        setIsBlobLoading(false)
     }
 
     return (
@@ -181,6 +220,7 @@ export default function EventModal({
                             />
                             <Textarea
                                 isRequired
+                                className="mb-4"
                                 color={
                                     isDescriptionInvalid ? 'danger' : 'default'
                                 }
@@ -214,6 +254,7 @@ export default function EventModal({
                             />
                             <Input
                                 isRequired
+                                className="mb-4"
                                 color={isLocationInvalid ? 'danger' : 'default'}
                                 errorMessage={
                                     isLocationInvalid
@@ -249,6 +290,7 @@ export default function EventModal({
                             </div>
                             <NumberInput
                                 isClearable
+                                className="mb-4"
                                 color={
                                     isTotalScoreInvalid ? 'danger' : 'default'
                                 }
@@ -265,6 +307,71 @@ export default function EventModal({
                                 variant="bordered"
                                 onValueChange={setTotalScore}
                             />
+                            <Dropzone
+                                accept={{
+                                    'application/pdf': ['.pdf'],
+                                }}
+                                multiple={false}
+                                onDrop={(acceptedFiles) =>
+                                    uploadPDF(acceptedFiles)
+                                }
+                            >
+                                {({ getRootProps, getInputProps }) => (
+                                    <Card className="p-3">
+                                        <CardBody
+                                            className={`border-2 border-dashed rounded-lg ${
+                                                blobUrl !== undefined
+                                                    ? 'border-green-500'
+                                                    : 'border-white/60'
+                                            }`}
+                                        >
+                                            <div {...getRootProps()}>
+                                                <input {...getInputProps()} />
+                                                <div className="flex flex-col items-center p-3">
+                                                    {blobUrl !== undefined ? (
+                                                        <>
+                                                            <FaFileCircleCheck
+                                                                className="text-green-500"
+                                                                size={30}
+                                                            />
+                                                            <p className="text-sm mt-3 text-green-500">
+                                                                File Uploaded
+                                                                Successfully
+                                                            </p>
+                                                        </>
+                                                    ) : isblobLoading ? (
+                                                        <Spinner />
+                                                    ) : (
+                                                        <>
+                                                            <FaFileUpload
+                                                                size={30}
+                                                            />
+                                                            <p className="text-sm mt-3">
+                                                                Upload Question
+                                                                & Solutions PDF
+                                                            </p>
+                                                            <p className="text-xs text-white/80 mt-2">
+                                                                Accepted File
+                                                                Types: .pdf
+                                                            </p>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </CardBody>
+                                    </Card>
+                                )}
+                            </Dropzone>
+                            <Button
+                                className="mb-4"
+                                color="danger"
+                                variant="light"
+                                onPress={() => {
+                                    setBlobUrl(undefined)
+                                }}
+                            >
+                                Delete Current Question & Solution PDF
+                            </Button>
                         </ModalBody>
                         <ModalFooter>
                             <Button
@@ -278,7 +385,7 @@ export default function EventModal({
                             </Button>
                             <Button
                                 color="primary"
-                                isDisabled={isSubmitDisabled}
+                                isDisabled={isSubmitDisabled || isblobLoading}
                                 variant={isSubmitDisabled ? 'faded' : 'solid'}
                                 onPress={() => {
                                     if (name === '' || description === '') {

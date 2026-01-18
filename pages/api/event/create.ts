@@ -21,8 +21,15 @@ export default async function handler(
     }
 
     try {
-        const { name, description, date, location, active, totalScore } =
-            req.body
+        const {
+            name,
+            description,
+            date,
+            location,
+            active,
+            totalScore,
+            questionPdf,
+        } = req.body
 
         if (
             !name ||
@@ -42,6 +49,7 @@ export default async function handler(
                 location: location,
                 active: active,
                 totalScore: totalScore,
+                questionPdf: questionPdf,
             },
         })
 

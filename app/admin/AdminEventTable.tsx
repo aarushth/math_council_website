@@ -20,10 +20,11 @@ import autoTable from 'jspdf-autotable'
 import EditScoreReportModal from './EditScoreReportModal'
 import PrintModal from './PrintModal'
 
-import { useAppDateFormatter } from '@/components/useAppDateFormatter'
-import { useMediaQuery } from '@/components/useMediaQuery'
-import EventTopContent from '@/components/EventTopContent'
-import { errorToast, Event, Registration } from '@/components/primitives'
+import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
+import { useMediaQuery } from '@/components/hooks/useMediaQuery'
+import EventTopContent from '@/components/ui/EventTopContent'
+import { Event, Registration } from '@/lib/primitives'
+import { errorToast } from '@/lib/toasts'
 interface Props {
     event: Event
     onEditClick: (e: Event) => void

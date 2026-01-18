@@ -15,7 +15,8 @@ import {
     Input,
 } from '@heroui/react'
 
-import { errorToast, Event, Registration } from '@/components/primitives'
+import { Event, Registration } from '@/lib/primitives'
+import { errorToast } from '@/lib/toasts'
 
 interface Props {
     event: Event | null

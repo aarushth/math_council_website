@@ -10,13 +10,13 @@ import {
     useDisclosure,
 } from '@heroui/react'
 import { useCallback, Key, ReactNode, useState } from 'react'
-import { FaClipboardCheck } from 'react-icons/fa'
+import { FaClipboardCheck, FaFileAlt } from 'react-icons/fa'
 
 import ScoreReportModal from './ScoreReportModal'
 
-import EventTopContent from '@/components/EventTopContent'
-import { Event, Registration } from '@/components/primitives'
-import { useMediaQuery } from '@/components/useMediaQuery'
+import EventTopContent from '@/components/ui/EventTopContent'
+import { Event, Registration } from '@/lib/primitives'
+import { useMediaQuery } from '@/components/hooks/useMediaQuery'
 
 interface Props {
     event: Event
@@ -103,6 +103,20 @@ export default function InactiveEventTable({ event }: Props) {
             />
             <Table
                 aria-label={event.name + ' scores table'}
+                bottomContent={
+                    event.questionPdf && (
+                        <Button
+                            className="bg-white/0 justify-start cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
+                            size="lg"
+                            onPress={() => {
+                                window.open(event.questionPdf!, '_blank')
+                            }}
+                        >
+                            <FaFileAlt className="size-5" />
+                            <p>View Questions & Solutions</p>
+                        </Button>
+                    )
+                }
                 className="mb-5"
                 topContent={<EventTopContent event={event} />}
             >

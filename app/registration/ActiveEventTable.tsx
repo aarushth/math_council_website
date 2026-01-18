@@ -13,8 +13,9 @@ import { FaPlus } from 'react-icons/fa'
 
 import RegistrationActions from './RegistrationActions'
 
-import { Event, Registration, errorToast } from '@/components/primitives'
-import EventTopContent from '@/components/EventTopContent'
+import { Event, Registration } from '@/lib/primitives'
+import EventTopContent from '@/components/ui/EventTopContent'
+import { errorToast } from '@/lib/toasts'
 
 interface Props {
     event: Event

@@ -11,7 +11,7 @@ import {
 } from '@heroui/react'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 
-import { User as PrimitiveUser } from '@/components/primitives'
+import { User as PrimitiveUser } from '@/lib/primitives'
 
 interface Props {
     user: PrimitiveUser

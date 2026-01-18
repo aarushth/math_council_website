@@ -20,7 +20,7 @@ import EventForm from './EventModal'
 import AdminEventTable from './AdminEventTable'
 import UserList from './UserList'
 
-import { Event, User } from '@/components/primitives'
+import { Event, User } from '@/lib/primitives'
 
 export default function AdminDashboard() {
     const router = useRouter()

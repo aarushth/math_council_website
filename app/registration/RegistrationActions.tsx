@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Button, Popover, PopoverContent, PopoverTrigger } from '@heroui/react'
 import { MdDelete, MdEdit } from 'react-icons/md'
 
-import { Registration, Event } from '@/components/primitives'
+import { Registration, Event } from '@/lib/primitives'
 
 export default function RegistrationActionsCell({
     registration,

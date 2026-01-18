@@ -4,8 +4,8 @@ import { Spinner } from '@heroui/spinner'
 import { useEffect, useState } from 'react'
 import Autoplay from 'embla-carousel-autoplay'
 
-import { Event } from '@/components/primitives'
-import EventCard from '@/components/EventCard'
+import { Event } from '@/lib/primitives'
+import EventCard from '@/components/ui/EventCard'
 import {
     Carousel,
     CarouselContent,

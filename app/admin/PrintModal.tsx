@@ -10,7 +10,7 @@ import {
     Slider,
 } from '@heroui/react'
 
-import { Event } from '@/components/primitives'
+import { Event } from '@/lib/primitives'
 interface Props {
     isOpen: boolean
     onOpenChange: () => void

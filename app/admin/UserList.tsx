@@ -6,7 +6,8 @@ import { FaSearch } from 'react-icons/fa'
 
 import UserCard from './UserCard'
 
-import { errorToast, User } from '@/components/primitives'
+import { User } from '@/lib/primitives'
+import { errorToast } from '@/lib/toasts'
 
 interface Props {
     users: User[]
