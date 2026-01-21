@@ -1,11 +1,13 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  engineType = "client"
+  generatedFileExtension = "ts"
+  importFileExtension    = "ts"
+  output   = "./generated/prisma"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 model Event {
@@ -30,13 +32,13 @@ model User {
 }
 
 model Registration {
-  id          Int    @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   studentName String
   grade       Int
   userId      Int
   eventId     Int
   score       Int?
   scoreReport Boolean[]
-  event       Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user        User   @relation(fields: [userId], references: [id])
+  event       Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
 }

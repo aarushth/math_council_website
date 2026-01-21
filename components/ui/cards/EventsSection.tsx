@@ -33,7 +33,7 @@ export default function EventsSection() {
 
             <ScrollShadow
                 hideScrollBar
-                className="flex flex-row gap-5 overflow-x-auto px-2 pb-5"
+                className="flex flex-row gap-5 overflow-x-auto px-2 mb-30"
                 offset={100}
                 orientation="horizontal"
                 onWheel={(e) => {

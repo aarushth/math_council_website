@@ -94,7 +94,7 @@ export default function AdminDashboard() {
     }
 
     return (
-        <>
+        <div className="mb-30">
             <div className="flex flex-row justify-between">
                 <h1 className="text-3xl font-bold mb-6">Admin Dashboard</h1>
                 <div className="flex gap-5 flex-col md:flex-row">
@@ -191,6 +191,6 @@ export default function AdminDashboard() {
                     )}
                 </DrawerContent>
             </Drawer>
-        </>
+        </div>
     )
 }
