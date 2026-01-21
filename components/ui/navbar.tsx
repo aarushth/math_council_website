@@ -16,9 +16,9 @@ import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
 import { siteConfig } from '@/config/site'
-import { ThemeSwitch } from '@/components/ui/theme-switch'
-import SignInButton from '@/components/ui/SignInButton'
-import SignOutButton from '@/components/ui/SignOutButton'
+import { ThemeSwitch } from '@/components/ui/buttons/ThemeSwitchButton'
+import SignInButton from '@/components/ui/buttons/SignInButton'
+import SignOutButton from '@/components/ui/buttons/SignOutButton'
 
 export const Navbar = () => {
     const { data: session } = useSession()

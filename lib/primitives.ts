@@ -9,7 +9,6 @@ export interface Event {
     questionPdf: string | null
     registrations: Registration[]
 }
-
 export interface User {
     id: number
     name: string

@@ -5,9 +5,8 @@ import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { Spinner } from '@heroui/react'
 
-import InactiveEventTable from './InactiveEventTable'
-
-import SignInButton from '@/components/ui/SignInButton'
+import SignInButton from '@/components/ui/buttons/SignInButton'
+import InactiveEventTable from '@/components/ui/tables/InactiveEventTable'
 
 export default function RegistrationPage() {
     const { data: session, status } = useSession()

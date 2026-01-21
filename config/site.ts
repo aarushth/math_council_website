@@ -18,3 +18,11 @@ export const siteConfig = {
         },
     ],
 }
+
+export const homepagePictures = [
+    'homepage1.jpg',
+    'homepage2.jpg',
+    'homepage3.jpg',
+    'homepage4.jpg',
+    'homepage5.jpg',
+]

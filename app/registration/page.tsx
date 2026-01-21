@@ -5,10 +5,10 @@ import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { Spinner, useDisclosure } from '@heroui/react'
 
-import ActiveEventTable from './ActiveEventTable'
-import RegistrationModal from './RegistrationModal'
+import ActiveEventTable from '../../components/ui/tables/ActiveEventTable'
+import RegistrationModal from '../../components/ui/modals/RegistrationModal'
 
-import SignInButton from '@/components/ui/SignInButton'
+import SignInButton from '@/components/ui/buttons/SignInButton'
 
 export default function RegistrationPage() {
     const { data: session, status } = useSession()

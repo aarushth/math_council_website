@@ -1,32 +1,17 @@
 'use client'
-import { ScrollShadow, Image } from '@heroui/react'
-import { Spinner } from '@heroui/spinner'
-import { useEffect, useState } from 'react'
+
+import { Image } from '@heroui/image'
 import Autoplay from 'embla-carousel-autoplay'
 
-import { Event } from '@/lib/primitives'
-import EventCard from '@/components/ui/EventCard'
+import EventsSection from '@/components/ui/cards/EventsSection'
 import {
     Carousel,
     CarouselContent,
     CarouselItem,
 } from '@/components/ui/carousel'
+import { homepagePictures } from '@/config/site'
 
 export default function Home() {
-    const [events, setEvents] = useState<Event[]>([])
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        fetch('/api/event/active')
-            .then((res) => res.json())
-            .then((data) => {
-                setEvents(data)
-                setLoading(false)
-            })
-    }, [])
-
-    if (loading) return <Spinner />
-
     return (
         <>
             <Carousel
@@ -41,36 +26,25 @@ export default function Home() {
                 ]}
             >
                 <CarouselContent>
-                    {Array.from({ length: 5 }).map((_, index) => (
-                        <CarouselItem key={index}>
-                            <div className="flex items-center justify-center max-h-100 rounded-lg overflow-hidden">
+                    {homepagePictures.map((pictureUrl) => (
+                        <CarouselItem
+                            key={pictureUrl}
+                            className="rounded-lg overflow-hidden"
+                        >
+                            <div className="flex items-center justify-center max-h-100 md:max-h-120 rounded-lg overflow-hidden">
                                 <Image
-                                    alt={'homepage' + index}
-                                    className="flex items-center justify-center w-full object-cover"
-                                    src={'/images/homepage' + index + '.jpg'}
+                                    removeWrapper
+                                    alt={'homepage image: ' + pictureUrl}
+                                    className="w-full h-full object-cover"
+                                    src={'/homepageImages/' + pictureUrl}
                                 />
                             </div>
                         </CarouselItem>
                     ))}
                 </CarouselContent>
             </Carousel>
-            <h1 className="text-3xl font-bold mb-6 mt-5 md:mt-10">
-                Upcoming Events
-            </h1>
-            {events.length == 0 && <p>No upcoming Events</p>}
-            <ScrollShadow
-                hideScrollBar
-                className="flex flex-row gap-5 overflow-x-auto px-2 pb-5"
-                offset={100}
-                orientation="horizontal"
-                onWheel={(e) => {
-                    e.currentTarget.scrollLeft += e.deltaY
-                }}
-            >
-                {events.map((event) => (
-                    <EventCard key={event.id} event={event} />
-                ))}
-            </ScrollShadow>
+
+            <EventsSection />
         </>
     )
 }
