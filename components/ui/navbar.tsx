@@ -9,8 +9,6 @@ import {
     Link,
     link,
 } from '@heroui/react'
-
-// import NextLink from 'next/link'
 import clsx from 'clsx'
 import { TbMathSymbols } from 'react-icons/tb'
 import { useSession } from 'next-auth/react'

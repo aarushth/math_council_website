@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { FaPlus, FaUsers } from 'react-icons/fa'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-
 import {
     Button,
     Divider,

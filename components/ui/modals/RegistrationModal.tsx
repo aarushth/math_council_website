@@ -2,8 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-
-import { Event, Registration } from '@/lib/primitives'
 import {
     addToast,
     Button,
@@ -17,6 +15,8 @@ import {
     ModalFooter,
     ModalHeader,
 } from '@heroui/react'
+
+import { Event, Registration } from '@/lib/primitives'
 
 interface Props {
     event: Event | null
