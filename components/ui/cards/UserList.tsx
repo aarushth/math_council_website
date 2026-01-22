@@ -1,8 +1,10 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { addToast, Input, Spinner } from '@heroui/react'
+import { addToast } from '@heroui/toast'
 import { FaSearch } from 'react-icons/fa'
+import { Spinner } from '@heroui/spinner'
+import { Input } from '@heroui/input'
 
 import UserCard from './UserCard'
 

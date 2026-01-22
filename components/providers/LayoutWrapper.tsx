@@ -1,6 +1,6 @@
 'use client'
 
-import { addToast } from '@heroui/react'
+import { addToast } from '@heroui/toast'
 import { useSession } from 'next-auth/react'
 import { ReactNode, useEffect, useRef } from 'react'
 

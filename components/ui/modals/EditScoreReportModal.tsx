@@ -1,21 +1,23 @@
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Button,
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    addToast,
-} from '@heroui/react'
 import { useCallback, useEffect, useState, Key, useMemo } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
+import { addToast } from '@heroui/toast'
+import {
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+} from '@heroui/modal'
+import { Button } from '@heroui/button'
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
+} from '@heroui/table'
 
 import { Registration, Event } from '@/lib/primitives'
 

@@ -1,7 +1,7 @@
 'use client'
 
-import { Image } from '@heroui/image'
 import Autoplay from 'embla-carousel-autoplay'
+import { Image } from '@heroui/image'
 
 import EventsSection from '@/components/ui/cards/EventsSection'
 import {
@@ -31,7 +31,7 @@ export default function Home() {
                             key={pictureUrl}
                             className="rounded-lg overflow-hidden"
                         >
-                            <div className="flex items-center justify-center max-h-100 md:max-h-120 rounded-lg overflow-hidden">
+                            <div className="flex items-center pt-0 md:pt-50 justify-center max-h-110 md:max-h-130 rounded-lg overflow-hidden">
                                 <Image
                                     removeWrapper
                                     alt={'homepage image: ' + pictureUrl}

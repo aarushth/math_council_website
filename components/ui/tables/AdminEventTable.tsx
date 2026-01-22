@@ -1,30 +1,31 @@
 'use client'
-import {
-    Table,
-    TableHeader,
-    TableColumn,
-    TableBody,
-    TableRow,
-    TableCell,
-    Spinner,
-    Input,
-    Pagination,
-    Button,
-    useDisclosure,
-    addToast,
-} from '@heroui/react'
+
 import { useCallback, Key, useState, useMemo } from 'react'
 import { FaClipboardCheck, FaList, FaSearch } from 'react-icons/fa'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { useDisclosure } from '@heroui/modal'
+import { Button } from '@heroui/button'
+import { addToast } from '@heroui/toast'
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableColumn,
+    TableHeader,
+    TableRow,
+} from '@heroui/table'
+import { Pagination } from '@heroui/pagination'
+import { Input } from '@heroui/input'
+import { Spinner } from '@heroui/spinner'
 
-import EditScoreReportModal from '../modals/EditScoreReportModal'
 import PrintModal from '../modals/PrintModal'
+import EditScoreReportModal from '../modals/EditScoreReportModal'
 
+import { Event, Registration } from '@/lib/primitives'
+import EventTopContent from '@/components/ui/tables/EventTopContent'
 import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
 import { useMediaQuery } from '@/components/hooks/useMediaQuery'
-import EventTopContent from '@/components/ui/tables/EventTopContent'
-import { Event, Registration } from '@/lib/primitives'
 
 interface Props {
     event: Event
@@ -150,13 +151,13 @@ export default function AdminEventTable({
                     return (
                         <Button
                             className="gap-3"
+                            startContent={<FaClipboardCheck size={20} />}
                             variant="solid"
                             onPress={() => {
                                 setCurrentRegistration(registration)
                                 onScoreReportOpen()
                             }}
                         >
-                            <FaClipboardCheck size={20} />
                             <p>Edit Score Report</p>
                         </Button>
                     )
@@ -217,7 +218,6 @@ export default function AdminEventTable({
     async function generatePDF(range: number[]) {
         let regsToUse = sortedRegistrations
 
-        // If registrations not loaded yet, fetch them
         if (!registrationsLoaded) {
             regsToUse = await onLoadRegistrationsClick()
         }
@@ -231,7 +231,6 @@ export default function AdminEventTable({
             format: 'a4',
         })
 
-        // Title
         doc.setFontSize(16)
         doc.text(
             `${event.name} Registrations - ${formatter.format(new Date(event.date))}`,
@@ -239,14 +238,12 @@ export default function AdminEventTable({
             15
         )
 
-        // Prepare table rows
         const tableBody = regsToUse.map((reg) => [
             reg.studentName,
             reg.grade === 0 ? 'KG' : reg.grade.toString(),
             reg.user?.email ?? 'N/A',
         ])
 
-        // Create table
         autoTable(doc, {
             startY: 25,
             head: [['Student Name', 'Grade', 'User Email']],
@@ -320,9 +317,9 @@ export default function AdminEventTable({
                         <Button
                             className="bg-white/0 justify-start cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
                             size="lg"
+                            startContent={<FaList size={20} />}
                             onPress={onLoadRegistrationsClick}
                         >
-                            <FaList className="size-5" />
                             <p>View Registrations</p>
                         </Button>
                     )

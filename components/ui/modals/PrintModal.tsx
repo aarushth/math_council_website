@@ -2,13 +2,13 @@
 import { useState } from 'react'
 import {
     Modal,
-    ModalContent,
-    ModalHeader,
     ModalBody,
+    ModalContent,
     ModalFooter,
-    Button,
-    Slider,
-} from '@heroui/react'
+    ModalHeader,
+} from '@heroui/modal'
+import { Button } from '@heroui/button'
+import { Slider } from '@heroui/slider'
 
 import { Event } from '@/lib/primitives'
 interface Props {

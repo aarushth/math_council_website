@@ -2,7 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ScrollShadow } from '@heroui/react'
+import { ScrollShadow } from '@heroui/scroll-shadow'
 import { Spinner } from '@heroui/spinner'
 
 import EventCard from '@/components/ui/cards/EventCard'
@@ -33,7 +33,7 @@ export default function EventsSection() {
 
             <ScrollShadow
                 hideScrollBar
-                className="flex flex-row gap-5 overflow-x-auto px-2 mb-30"
+                className="flex flex-row gap-5 overflow-x-auto px-2 py-5 mb-30"
                 offset={100}
                 orientation="horizontal"
                 onWheel={(e) => {

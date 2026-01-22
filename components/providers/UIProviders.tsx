@@ -3,10 +3,10 @@
 import type { ThemeProviderProps } from 'next-themes'
 
 import * as React from 'react'
-import { HeroUIProvider } from '@heroui/react'
 import { useRouter } from 'next/navigation'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
-import { ToastProvider } from '@heroui/react'
+import { ToastProvider } from '@heroui/toast'
+import { HeroUIProvider } from '@heroui/system'
 
 export interface ProvidersProps {
     children: React.ReactNode

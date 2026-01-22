@@ -1,20 +1,19 @@
 'use client'
-import type { Selection } from '@heroui/react'
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import {
     Modal,
-    ModalContent,
-    ModalHeader,
     ModalBody,
+    ModalContent,
     ModalFooter,
-    Button,
-    Select,
-    SelectItem,
-    Input,
-    addToast,
-} from '@heroui/react'
+    ModalHeader,
+} from '@heroui/modal'
+import { Input } from '@heroui/input'
+import { Select, SelectItem } from '@heroui/select'
+import { Button } from '@heroui/button'
+import { addToast } from '@heroui/toast'
+import { SharedSelection } from '@heroui/system'
 
 import { Event, Registration } from '@/lib/primitives'
 
@@ -53,7 +52,7 @@ export default function RegistrationModal({
     const [name, setName] = useState('')
     const [nameTouched, setNameTouched] = useState(false)
 
-    const [grade, setGrade] = useState<Selection>(new Set([]))
+    const [grade, setGrade] = useState<SharedSelection>(new Set([]))
     const [gradeTouched, setGradeTouched] = useState(false)
 
     const isEditing = !!existingRegistration
@@ -178,7 +177,9 @@ export default function RegistrationModal({
                                 selectedKeys={grade}
                                 variant="bordered"
                                 onClose={() => setGradeTouched(true)}
-                                onSelectionChange={setGrade}
+                                onSelectionChange={(g: SharedSelection) => {
+                                    setGrade(g)
+                                }}
                             >
                                 {grades.map((g, i) => (
                                     <SelectItem key={i.toString()}>

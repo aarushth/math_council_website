@@ -6,11 +6,11 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Button,
-    useDisclosure,
-} from '@heroui/react'
+} from '@heroui/table'
 import { useCallback, Key, ReactNode, useState } from 'react'
 import { FaClipboardCheck, FaFileAlt } from 'react-icons/fa'
+import { useDisclosure } from '@heroui/modal'
+import { Button } from '@heroui/button'
 
 import ScoreReportModal from '@/components/ui/modals/ScoreReportModal'
 import EventTopContent from '@/components/ui/tables/EventTopContent'
@@ -69,13 +69,13 @@ export default function InactiveEventTable({ event }: Props) {
                                 registration.score != null ? false : true
                             }
                             isIconOnly={!isDesktop}
+                            startContent={<FaClipboardCheck size={20} />}
                             variant="solid"
                             onPress={() => {
                                 setCurrentRegistration(registration)
                                 onScoreReportOpen()
                             }}
                         >
-                            <FaClipboardCheck size={20} />
                             {isDesktop && (
                                 <span>
                                     {registration.score == null
@@ -107,11 +107,11 @@ export default function InactiveEventTable({ event }: Props) {
                         <Button
                             className="bg-white/0 justify-start cursor-pointer text-primary-500 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
                             size="lg"
+                            startContent={<FaFileAlt size={20} />}
                             onPress={() => {
                                 window.open(event.questionPdf!, '_blank')
                             }}
                         >
-                            <FaFileAlt className="size-5" />
                             <p>View Questions & Solutions</p>
                         </Button>
                     )

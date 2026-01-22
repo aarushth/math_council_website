@@ -3,7 +3,7 @@ import type { Event } from '@/lib/primitives'
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { Spinner } from '@heroui/react'
+import { Spinner } from '@heroui/spinner'
 
 import SignInButton from '@/components/ui/buttons/SignInButton'
 import InactiveEventTable from '@/components/ui/tables/InactiveEventTable'

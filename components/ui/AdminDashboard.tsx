@@ -1,24 +1,24 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import { FaPlus, FaUsers } from 'react-icons/fa'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useDisclosure } from '@heroui/modal'
+import { Spinner } from '@heroui/spinner'
+import { Divider } from '@heroui/divider'
 import {
-    Button,
-    Divider,
     Drawer,
     DrawerBody,
     DrawerContent,
     DrawerFooter,
     DrawerHeader,
-    Spinner,
-    useDisclosure,
-} from '@heroui/react'
-import { FaPlus, FaUsers } from 'react-icons/fa'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+} from '@heroui/drawer'
+import { Button } from '@heroui/button'
 
-import EventForm from './modals/EventModal'
-import AdminEventTable from './tables/AdminEventTable'
 import UserList from './cards/UserList'
+import AdminEventTable from './tables/AdminEventTable'
+import EventForm from './modals/EventModal'
 
 import { Event, User } from '@/lib/primitives'
 

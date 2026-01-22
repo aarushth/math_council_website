@@ -6,11 +6,11 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    Button,
-    addToast,
-} from '@heroui/react'
+} from '@heroui/table'
 import { useCallback, Key, ReactNode } from 'react'
 import { FaPlus } from 'react-icons/fa'
+import { addToast } from '@heroui/toast'
+import { Button } from '@heroui/button'
 
 import RegistrationActions from '../buttons/RegistrationActions'
 
@@ -86,27 +86,32 @@ export default function ActiveEventTable({
                 <Button
                     className="bg-white/0 justify-start cursor-pointer text-primary-300 flex flex-row items-center gap-2 p-2 rounded-xl hover:bg-primary-500 dark:hover:text-black hover:text-white"
                     size="lg"
+                    startContent={<FaPlus size={20} />}
                     onPress={() => onRegisterClick(event)}
                 >
-                    <FaPlus className="size-5" />
-                    <p>
-                        Register a{event.registrations.length != 0 && 'nother'}{' '}
-                        student
-                    </p>
+                    Register a{event.registrations.length != 0 && 'nother'}{' '}
+                    student
                 </Button>
             }
             className="mb-5"
             topContent={<EventTopContent event={event} />}
         >
-            <TableHeader className="mx-0" columns={columns}>
-                {(column) => (
-                    <TableColumn key={column.key} className="text-center px-0">
-                        {column.label}
-                    </TableColumn>
+            <>
+                {event.registrations.length > 0 && (
+                    <TableHeader className="mx-0" columns={columns}>
+                        {(column) => (
+                            <TableColumn
+                                key={column.key}
+                                className="text-center px-0"
+                            >
+                                {column.label}
+                            </TableColumn>
+                        )}
+                    </TableHeader>
                 )}
-            </TableHeader>
+            </>
             <TableBody
-                emptyContent={'No registrations found.'}
+                emptyContent="No registrations found"
                 items={event.registrations || []}
             >
                 {(item) => (
