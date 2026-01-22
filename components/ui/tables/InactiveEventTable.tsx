@@ -6,11 +6,11 @@ import {
     TableBody,
     TableRow,
     TableCell,
-} from '@heroui/table'
+    Button,
+    useDisclosure,
+} from '@heroui/react'
 import { useCallback, Key, ReactNode, useState } from 'react'
 import { FaClipboardCheck, FaFileAlt } from 'react-icons/fa'
-import { useDisclosure } from '@heroui/modal'
-import { Button } from '@heroui/button'
 
 import ScoreReportModal from '@/components/ui/modals/ScoreReportModal'
 import EventTopContent from '@/components/ui/tables/EventTopContent'

@@ -4,20 +4,21 @@ import { useCallback, Key, useState, useMemo } from 'react'
 import { FaClipboardCheck, FaList, FaSearch } from 'react-icons/fa'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { useDisclosure } from '@heroui/modal'
-import { Button } from '@heroui/button'
-import { addToast } from '@heroui/toast'
+
 import {
+    addToast,
+    Button,
+    Input,
+    Pagination,
+    Spinner,
     Table,
     TableBody,
     TableCell,
     TableColumn,
     TableHeader,
     TableRow,
-} from '@heroui/table'
-import { Pagination } from '@heroui/pagination'
-import { Input } from '@heroui/input'
-import { Spinner } from '@heroui/spinner'
+    useDisclosure,
+} from '@heroui/react'
 
 import PrintModal from '../modals/PrintModal'
 import EditScoreReportModal from '../modals/EditScoreReportModal'

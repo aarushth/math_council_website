@@ -1,15 +1,15 @@
 'use client'
 
 import { BsThreeDotsVertical } from 'react-icons/bs'
-import { User } from '@heroui/user'
-import { Chip } from '@heroui/chip'
 import {
     Dropdown,
     DropdownItem,
     DropdownMenu,
     DropdownTrigger,
-} from '@heroui/dropdown'
-import { Button } from '@heroui/button'
+    Button,
+    User,
+    Chip,
+} from '@heroui/react'
 
 import { User as PrimitiveUser } from '@/lib/primitives'
 

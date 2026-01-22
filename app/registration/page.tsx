@@ -3,8 +3,7 @@ import type { Event, Registration } from '@/lib/primitives'
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
-import { Spinner } from '@heroui/spinner'
-import { useDisclosure } from '@heroui/modal'
+import { Spinner, useDisclosure } from '@heroui/react'
 
 import ActiveEventTable from '../../components/ui/tables/ActiveEventTable'
 import RegistrationModal from '../../components/ui/modals/RegistrationModal'

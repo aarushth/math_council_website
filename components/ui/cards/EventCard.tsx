@@ -1,9 +1,8 @@
 'use client'
 
-import { Card, CardBody, CardFooter } from '@heroui/card'
+import { Card, CardBody, CardFooter, Divider } from '@heroui/react'
 import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
-import { Divider } from '@heroui/divider'
 
 import { Event } from '../../../lib/primitives'
 import { useAppDateFormatter } from '../../hooks/useAppDateFormatter'

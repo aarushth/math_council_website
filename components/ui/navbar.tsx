@@ -6,10 +6,11 @@ import {
     NavbarMenuToggle,
     NavbarBrand,
     NavbarMenuItem,
-} from '@heroui/navbar'
-import { Link } from '@heroui/link'
-import { link as linkStyles } from '@heroui/theme'
-import NextLink from 'next/link'
+    Link,
+    link,
+} from '@heroui/react'
+
+// import NextLink from 'next/link'
 import clsx from 'clsx'
 import { TbMathSymbols } from 'react-icons/tb'
 import { useSession } from 'next-auth/react'
@@ -40,9 +41,9 @@ export const Navbar = () => {
             <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
                 <TbMathSymbols className="size-10 text-primary-300 mt-auto mb-5" />
                 <NavbarBrand as="li" className="gap-8 max-w-fit mt-auto mb-6 ">
-                    <NextLink
+                    <Link
                         className={clsx(
-                            linkStyles({ color: 'foreground' }),
+                            link({ color: 'foreground' }),
                             'text-xl lg:text-xl underline-hover-active'
                         )}
                         href="/"
@@ -50,20 +51,20 @@ export const Navbar = () => {
                         <p className="font-bold text-primary-300 mb-2 sm:mb-0 text-sm sm:text-xl">
                             EHS Math Council
                         </p>
-                    </NextLink>
+                    </Link>
                 </NavbarBrand>
                 <ul className="hidden mt-auto mb-6 lg:flex gap-8 justify-start ml-2">
                     {navbarItems.map((item) => (
-                        <NextLink
+                        <Link
                             key={item.href}
                             className={clsx(
-                                linkStyles({ color: 'foreground' }),
+                                link({ color: 'foreground' }),
                                 'underline-hover-active'
                             )}
                             href={item.href}
                         >
                             {item.label}
-                        </NextLink>
+                        </Link>
                     ))}
                 </ul>
             </NavbarContent>

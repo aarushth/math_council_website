@@ -10,21 +10,24 @@ import Dropzone from 'react-dropzone'
 import { upload } from '@vercel/blob/client'
 import { FaFileUpload } from 'react-icons/fa'
 import { FaFileCircleCheck } from 'react-icons/fa6'
-import { addToast } from '@heroui/toast'
+
 import {
     Modal,
     ModalBody,
     ModalContent,
     ModalFooter,
     ModalHeader,
-} from '@heroui/modal'
-import { Button } from '@heroui/button'
-import { Card, CardBody } from '@heroui/card'
-import { Input, Textarea } from '@heroui/input'
-import { Spinner } from '@heroui/spinner'
-import { Switch } from '@heroui/switch'
-import { DatePicker } from '@heroui/date-picker'
-import { NumberInput } from '@heroui/number-input'
+    addToast,
+    Button,
+    Card,
+    CardBody,
+    Input,
+    Textarea,
+    Spinner,
+    Switch,
+    DatePicker,
+    NumberInput,
+} from '@heroui/react'
 
 import { Event } from '@/lib/primitives'
 

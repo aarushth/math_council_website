@@ -2,7 +2,7 @@
 
 import { signIn } from 'next-auth/react'
 import { FaGoogle } from 'react-icons/fa'
-import { Button } from '@heroui/button'
+import { Button } from '@heroui/react'
 import { usePathname } from 'next/navigation'
 
 function SignInButton() {

@@ -1,8 +1,7 @@
 import { useCallback, Key } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
-import { Button } from '@heroui/button'
-import { Modal, ModalContent, ModalHeader, ModalBody } from '@heroui/modal'
+
 import {
     TableHeader,
     TableColumn,
@@ -10,7 +9,12 @@ import {
     TableRow,
     TableCell,
     Table,
-} from '@heroui/table'
+    Button,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalHeader,
+} from '@heroui/react'
 
 import { Registration, Event } from '@/lib/primitives'
 

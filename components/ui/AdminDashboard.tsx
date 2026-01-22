@@ -4,17 +4,18 @@ import React, { useEffect, useState } from 'react'
 import { FaPlus, FaUsers } from 'react-icons/fa'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useDisclosure } from '@heroui/modal'
-import { Spinner } from '@heroui/spinner'
-import { Divider } from '@heroui/divider'
+
 import {
+    Button,
+    Divider,
     Drawer,
     DrawerBody,
     DrawerContent,
     DrawerFooter,
     DrawerHeader,
-} from '@heroui/drawer'
-import { Button } from '@heroui/button'
+    Spinner,
+    useDisclosure,
+} from '@heroui/react'
 
 import UserList from './cards/UserList'
 import AdminEventTable from './tables/AdminEventTable'

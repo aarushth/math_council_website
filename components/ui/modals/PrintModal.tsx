@@ -1,14 +1,14 @@
 'use client'
 import { useState } from 'react'
 import {
+    Button,
     Modal,
     ModalBody,
     ModalContent,
     ModalFooter,
     ModalHeader,
-} from '@heroui/modal'
-import { Button } from '@heroui/button'
-import { Slider } from '@heroui/slider'
+    Slider,
+} from '@heroui/react'
 
 import { Event } from '@/lib/primitives'
 interface Props {

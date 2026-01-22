@@ -1,7 +1,6 @@
 import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
-import { Button } from '@heroui/button'
 import { MdDelete, MdEdit } from 'react-icons/md'
-import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
+import { Popover, PopoverContent, PopoverTrigger, Button } from '@heroui/react'
 import { useState } from 'react'
 import { BiSolidPrinter } from 'react-icons/bi'
 

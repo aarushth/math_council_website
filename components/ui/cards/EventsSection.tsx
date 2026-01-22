@@ -2,8 +2,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ScrollShadow } from '@heroui/scroll-shadow'
-import { Spinner } from '@heroui/spinner'
+import { ScrollShadow, Spinner } from '@heroui/react'
 
 import EventCard from '@/components/ui/cards/EventCard'
 import { Event } from '@/lib/primitives'

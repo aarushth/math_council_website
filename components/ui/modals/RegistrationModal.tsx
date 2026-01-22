@@ -2,20 +2,21 @@
 
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
+
+import { Event, Registration } from '@/lib/primitives'
 import {
+    addToast,
+    Button,
+    Input,
+    Select,
+    SelectItem,
+    SharedSelection,
     Modal,
     ModalBody,
     ModalContent,
     ModalFooter,
     ModalHeader,
-} from '@heroui/modal'
-import { Input } from '@heroui/input'
-import { Select, SelectItem } from '@heroui/select'
-import { Button } from '@heroui/button'
-import { addToast } from '@heroui/toast'
-import { SharedSelection } from '@heroui/system'
-
-import { Event, Registration } from '@/lib/primitives'
+} from '@heroui/react'
 
 interface Props {
     event: Event | null

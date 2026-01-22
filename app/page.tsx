@@ -1,7 +1,7 @@
 'use client'
 
 import Autoplay from 'embla-carousel-autoplay'
-import { Image } from '@heroui/image'
+import { Image } from '@heroui/react'
 
 import EventsSection from '@/components/ui/cards/EventsSection'
 import {

@@ -1,6 +1,6 @@
 'use client'
 import { signOut } from 'next-auth/react'
-import { Button } from '@heroui/button'
+import { Button } from '@heroui/react'
 function SignOutButton() {
     return (
         <Button

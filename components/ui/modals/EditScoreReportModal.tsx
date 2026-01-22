@@ -1,23 +1,21 @@
 import { useCallback, useEffect, useState, Key, useMemo } from 'react'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { ImCross } from 'react-icons/im'
-import { addToast } from '@heroui/toast'
 import {
     Modal,
     ModalBody,
     ModalContent,
     ModalFooter,
     ModalHeader,
-} from '@heroui/modal'
-import { Button } from '@heroui/button'
-import {
     Table,
     TableBody,
     TableCell,
     TableColumn,
     TableHeader,
     TableRow,
-} from '@heroui/table'
+    addToast,
+    Button,
+} from '@heroui/react'
 
 import { Registration, Event } from '@/lib/primitives'
 

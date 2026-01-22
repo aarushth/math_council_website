@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@heroui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@heroui/popover'
+
+import { Popover, PopoverContent, PopoverTrigger, Button } from '@heroui/react'
 import { MdDelete, MdEdit } from 'react-icons/md'
 
 import { Registration, Event } from '@/lib/primitives'

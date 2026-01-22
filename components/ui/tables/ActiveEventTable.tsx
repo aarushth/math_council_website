@@ -6,11 +6,11 @@ import {
     TableBody,
     TableRow,
     TableCell,
-} from '@heroui/table'
+    addToast,
+    Button,
+} from '@heroui/react'
 import { useCallback, Key, ReactNode } from 'react'
 import { FaPlus } from 'react-icons/fa'
-import { addToast } from '@heroui/toast'
-import { Button } from '@heroui/button'
 
 import RegistrationActions from '../buttons/RegistrationActions'
 
