@@ -16,6 +16,7 @@
         "@internationalized/date": "^3.10.0",
         "@prisma/adapter-pg": "7.3.0",
         "@prisma/client": "7.3.0",
+        "@react-aria/i18n": "^3.12.14",
         "@react-aria/ssr": "3.9.10",
         "@react-aria/visually-hidden": "3.8.28",
         "@vercel/blob": "^2.0.0",
