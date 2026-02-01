@@ -9,6 +9,7 @@ import { siteConfig } from '@/config/site'
 import { fontSans } from '@/config/fonts'
 import { Navbar } from '@/components/ui/navbar'
 import ClientProvider from '@/components/providers/ClientProvider'
+import QueryProvider from '@/components/providers/QueryProvider'
 
 export const metadata: Metadata = {
     title: {
@@ -42,21 +43,23 @@ export default function RootLayout({
                     fontSans.variable
                 )}
             >
-                <ClientProvider>
-                    <UIProviders
-                        themeProps={{
-                            attribute: 'class',
-                            defaultTheme: 'dark',
-                        }}
-                    >
-                        <div className="relative flex flex-col h-screen">
-                            <Navbar />
-                            <main className="container mx-auto max-w-9xl pt-5 px-6 grow">
-                                <LayoutWrapper>{children}</LayoutWrapper>
-                            </main>
-                        </div>
-                    </UIProviders>
-                </ClientProvider>
+                <QueryProvider>
+                    <ClientProvider>
+                        <UIProviders
+                            themeProps={{
+                                attribute: 'class',
+                                defaultTheme: 'dark',
+                            }}
+                        >
+                            <div className="relative flex flex-col h-screen">
+                                <Navbar />
+                                <main className="container mx-auto max-w-9xl pt-5 px-6 grow">
+                                    <LayoutWrapper>{children}</LayoutWrapper>
+                                </main>
+                            </div>
+                        </UIProviders>
+                    </ClientProvider>
+                </QueryProvider>
             </body>
         </html>
     )

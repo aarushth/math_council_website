@@ -6,7 +6,6 @@ import {
     TableBody,
     TableRow,
     TableCell,
-    addToast,
     Button,
 } from '@heroui/react'
 import { useCallback, Key, ReactNode } from 'react'
@@ -16,30 +15,20 @@ import RegistrationActions from '../buttons/RegistrationActions'
 
 import { Event, Registration } from '@/lib/primitives'
 import EventTopContent from '@/components/ui/tables/EventTopContent'
+import { useDeleteRegistration } from '@/components/hooks/useRegistrationQueries'
 
 interface Props {
     event: Event
     onRegisterClick: (event: Event, registration?: Registration) => void
-    onCancelRegistration: (eventId: number, registrationId: number) => void
 }
 
-export default function ActiveEventTable({
-    event,
-    onRegisterClick,
-    onCancelRegistration,
-}: Props) {
-    async function deleteRegistration(id: number) {
-        try {
-            const res = await fetch(`/api/registration/${id}`, {
-                method: 'DELETE',
-            })
+export default function ActiveEventTable({ event, onRegisterClick }: Props) {
+    const deleteRegistrationMutation = useDeleteRegistration()
 
-            if (!res.ok) throw new Error('Failed to cancel registration')
-            onCancelRegistration(event.id, id)
-        } catch {
-            addToast({ title: 'An error ocurred. Please try again later.' })
-        }
+    function deleteRegistration(id: number) {
+        deleteRegistrationMutation.mutate({ id, eventId: event.id })
     }
+
     const columns = [
         {
             key: 'studentName',
@@ -76,7 +65,7 @@ export default function ActiveEventTable({
                     return null
             }
         },
-        []
+        [event, onRegisterClick]
     )
 
     return (

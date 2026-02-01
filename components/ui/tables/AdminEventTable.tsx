@@ -26,21 +26,24 @@ import { Event, Registration } from '@/lib/primitives'
 import EventTopContent from '@/components/ui/tables/EventTopContent'
 import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
 import { useMediaQuery } from '@/components/hooks/useMediaQuery'
+import {
+    useDeleteEvent,
+    useRegistrations,
+} from '@/components/hooks/useAdminQueries'
 
 interface Props {
     event: Event
     onEditClick: (e: Event) => void
-    onDeleteEvent: (id: number) => void
 }
 
-export default function AdminEventTable({
-    event,
-    onEditClick,
-    onDeleteEvent,
-}: Props) {
-    const [registrationsLoaded, setRegistrationsLoaded] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-    const [registrations, setRegistrations] = useState<Registration[]>([])
+export default function AdminEventTable({ event, onEditClick }: Props) {
+    const {
+        data: registrations = [],
+        refetch: refetchRegistrations,
+        isLoading,
+        isFetched,
+    } = useRegistrations(event.id)
+    const deleteEventMutation = useDeleteEvent()
     const [page, setPage] = useState(1)
     const [filterValue, setFilterValue] = useState('')
     const [currentRegistration, setCurrentRegistration] = useState<
@@ -64,17 +67,19 @@ export default function AdminEventTable({
     const rowsPerPage = 4
     let formatter = useAppDateFormatter()
 
-    //sorting
-    const sortedRegistrations = registrations.sort((a, b) => {
-        const gradeA = a.grade ?? 0
-        const gradeB = b.grade ?? 0
+    const sortedRegistrations = useMemo(
+        () =>
+            [...registrations].sort((a, b) => {
+                const gradeA = a.grade ?? 0
+                const gradeB = b.grade ?? 0
 
-        return gradeA - gradeB
-    })
+                return gradeA - gradeB
+            }),
+        [registrations]
+    )
 
-    //search
     const filteredRegistrations = useMemo(() => {
-        let filteredRegs = [...registrations]
+        let filteredRegs = [...sortedRegistrations]
 
         if (hasSearchFilter) {
             filteredRegs = filteredRegs.filter(
@@ -89,9 +94,8 @@ export default function AdminEventTable({
         }
 
         return filteredRegs
-    }, [sortedRegistrations, filterValue])
+    }, [sortedRegistrations, filterValue, hasSearchFilter])
 
-    //pagination
     const pages = Math.ceil(filteredRegistrations.length / rowsPerPage)
     const registrationsPaginated = useMemo(() => {
         const start = (page - 1) * rowsPerPage
@@ -165,60 +169,19 @@ export default function AdminEventTable({
                     return null
             }
         },
-        []
+        [event.totalScore, onScoreReportOpen]
     )
 
-    async function deleteEvent(id: number) {
-        try {
-            const res = await fetch(`/api/event/${id}`, {
-                method: 'DELETE',
-            })
-
-            if (!res.ok) throw new Error('Failed to cancel event')
-            onDeleteEvent(event.id)
-        } catch {
-            addToast({ title: 'An error ocurred. Please try again later.' })
-        }
-    }
     async function onLoadRegistrationsClick(): Promise<Registration[]> {
-        setIsLoading(true)
-        try {
-            const res = await fetch(`/api/registration/${event.id}`)
-            const data = await res.json()
+        const { data } = await refetchRegistrations()
 
-            setRegistrations(data.registration)
-            setRegistrationsLoaded(true)
-
-            return data.registration
-        } catch {
-            addToast({
-                title: 'Failed to load registrations, please try again later',
-            })
-
-            return []
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    function updateRegistration(updatedRegistration: Registration) {
-        if (!updatedRegistration.id) {
-            return
-        }
-
-        setRegistrations((prev) =>
-            prev.map((registration) =>
-                registration.id === updatedRegistration.id
-                    ? { ...registration, ...updatedRegistration }
-                    : registration
-            )
-        )
+        return data || []
     }
 
     async function generatePDF(range: number[]) {
         let regsToUse = sortedRegistrations
 
-        if (!registrationsLoaded) {
+        if (!isFetched) {
             regsToUse = await onLoadRegistrationsClick()
         }
         regsToUse = regsToUse.filter(
@@ -277,7 +240,6 @@ export default function AdminEventTable({
                 event={event}
                 isOpen={isScoreReportOpen}
                 registration={currentRegistration!}
-                updateRegistration={updateRegistration}
                 onOpenChange={onScoreReportOpenChange}
             />
             <PrintModal
@@ -289,7 +251,7 @@ export default function AdminEventTable({
             <Table
                 aria-label={event.name + ' admin table'}
                 bottomContent={
-                    registrationsLoaded ? (
+                    isFetched ? (
                         <div className="grid w-full grid-cols-3 items-center">
                             <Pagination
                                 isCompact
@@ -329,14 +291,14 @@ export default function AdminEventTable({
                     <EventTopContent
                         editAllowed={true}
                         event={event}
-                        onDeleteClick={deleteEvent}
+                        onDeleteClick={deleteEventMutation.mutate}
                         onEditClick={onEditClick}
                         onPrintClick={onPrintOpen}
                     />
                 }
             >
                 <>
-                    {registrationsLoaded && (
+                    {isFetched && (
                         <TableHeader columns={columns}>
                             {(column) => {
                                 let className = ''
@@ -365,7 +327,7 @@ export default function AdminEventTable({
                     emptyContent={
                         isLoading ? (
                             <Spinner />
-                        ) : registrationsLoaded ? (
+                        ) : isFetched ? (
                             'No registrations yet'
                         ) : (
                             ''

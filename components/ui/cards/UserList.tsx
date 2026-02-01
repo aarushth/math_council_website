@@ -1,20 +1,21 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { addToast, Spinner, Input } from '@heroui/react'
+import { Spinner, Input } from '@heroui/react'
 import { FaSearch } from 'react-icons/fa'
 
 import UserCard from './UserCard'
 
 import { User } from '@/lib/primitives'
+import { useUpdateUserRole } from '@/components/hooks/useAdminQueries'
 
 interface Props {
     users: User[]
-    updateUser: (u: User) => void
 }
-export default function UserList({ users, updateUser }: Props) {
+export default function UserList({ users }: Props) {
     const [filterValue, setFilterValue] = useState('')
     const hasSearchFilter = filterValue.trim().length > 0
+    const updateUserRoleMutation = useUpdateUserRole()
 
     const filteredUsers = useMemo(() => {
         let filteredUsers = [...users]
@@ -28,32 +29,19 @@ export default function UserList({ users, updateUser }: Props) {
                     user.email.toLowerCase().includes(filterValue.toLowerCase())
             )
         }
-        console
 
         return filteredUsers
-    }, [users, filterValue])
+    }, [users, filterValue, hasSearchFilter])
 
     if (users.length <= 0) {
         return <Spinner />
     }
 
-    async function changeRole(user: User) {
-        try {
-            const res = await fetch(`/api/user/${user.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    admin: !user.admin,
-                }),
-            })
-
-            if (!res.ok) throw new Error('Failed to create registration')
-            const updatedUser = await res.json()
-
-            updateUser(updatedUser.user)
-        } catch {
-            addToast({ title: 'An error ocurred. Please try again later.' })
-        }
+    function changeRole(user: User) {
+        updateUserRoleMutation.mutate({
+            id: user.id,
+            admin: !user.admin,
+        })
     }
 
     return (
