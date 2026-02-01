@@ -1,26 +1,14 @@
-// components/EventsSection.tsx
 'use client'
 
-import { useEffect, useState } from 'react'
 import { ScrollShadow, Spinner } from '@heroui/react'
 
 import EventCard from '@/components/ui/cards/EventCard'
-import { Event } from '@/lib/primitives'
+import { useActiveEvents } from '@/components/hooks/useRegistrationQueries'
 
 export default function EventsSection() {
-    const [events, setEvents] = useState<Event[]>([])
-    const [loading, setLoading] = useState(true)
+    const { data: events = [], isLoading } = useActiveEvents()
 
-    useEffect(() => {
-        fetch('/api/event/active')
-            .then((res) => res.json())
-            .then((data) => {
-                setEvents(data)
-                setLoading(false)
-            })
-    }, [])
-
-    if (loading) return <Spinner />
+    if (isLoading) return <Spinner />
 
     return (
         <>

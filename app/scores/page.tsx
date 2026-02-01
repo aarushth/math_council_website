@@ -1,28 +1,27 @@
 'use client'
-import type { Event } from '@/lib/primitives'
 
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { useSession } from 'next-auth/react'
 import { Spinner } from '@heroui/react'
 
 import SignInButton from '@/components/ui/buttons/SignInButton'
 import InactiveEventTable from '@/components/ui/tables/InactiveEventTable'
+import { useInactiveEvents } from '@/components/hooks/useScoresQueries'
 
 export default function RegistrationPage() {
     const { data: session, status } = useSession()
-    const [events, setEvents] = useState<Event[]>([])
-    const [loading, setLoading] = useState(true)
+    const { data: events = [], isLoading } = useInactiveEvents()
 
-    useEffect(() => {
-        fetch('/api/event/inactive')
-            .then((res) => res.json())
-            .then((data) => {
-                setEvents(data)
-                setLoading(false)
-            })
-    }, [])
+    const inactiveEvents = useMemo(
+        () =>
+            [...events].sort(
+                (a, b) =>
+                    new Date(b.date).getTime() - new Date(a.date).getTime()
+            ),
+        [events]
+    )
 
-    if (status === 'loading' || loading) {
+    if (status === 'loading' || isLoading) {
         return (
             <div className="flex justify-center h-full">
                 <Spinner />
@@ -41,10 +40,6 @@ export default function RegistrationPage() {
     }
 
     if (!events.length) return <p>No scores found.</p>
-
-    const inactiveEvents = [...events].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    )
 
     return (
         <>

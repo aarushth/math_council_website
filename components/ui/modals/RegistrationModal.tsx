@@ -17,11 +17,13 @@ import {
 } from '@heroui/react'
 
 import { Event, Registration } from '@/lib/primitives'
+import {
+    useCreateRegistration,
+    useUpdateRegistration,
+} from '@/components/hooks/useRegistrationQueries'
 
 interface Props {
     event: Event | null
-    addRegistration: (eventId: number, r: Registration) => void
-    updateRegistration: (eventId: number, r: Registration) => void
     isOpen: boolean
     onOpenChange: () => void
     existingRegistration?: Registration | null
@@ -42,8 +44,6 @@ const grades = [
 
 export default function RegistrationModal({
     event,
-    addRegistration,
-    updateRegistration,
     isOpen,
     onOpenChange,
     existingRegistration,
@@ -57,6 +57,8 @@ export default function RegistrationModal({
     const [gradeTouched, setGradeTouched] = useState(false)
 
     const isEditing = !!existingRegistration
+    const createRegistrationMutation = useCreateRegistration()
+    const updateRegistrationMutation = useUpdateRegistration()
 
     useEffect(() => {
         if (existingRegistration) {
@@ -68,7 +70,10 @@ export default function RegistrationModal({
         }
     }, [existingRegistration])
     if (isOpen && event == null) {
-        addToast({ title: 'An error ocurred. Please try again later.' })
+        addToast({
+            title: 'An Error Occured',
+            description: 'Please Try Again Later',
+        })
 
         return
     }
@@ -78,51 +83,32 @@ export default function RegistrationModal({
     const isGradeInvalid = Number.isNaN(gradeNumber) && gradeTouched
     const isSubmitDisabled = isGradeInvalid || isNameInvalid
 
-    async function handleSubmit(onClose: () => void) {
+    function handleSubmit(onClose: () => void) {
+        const registrationData = {
+            studentName: name.trim(),
+            grade: gradeNumber,
+            userId: session!.user.id,
+            eventId: event!.id,
+        }
+
         if (!isEditing) {
-            try {
-                const res = await fetch('/api/registration/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        studentName: name.trim(),
-                        grade: gradeNumber,
-                        userId: session?.user.id,
-                        eventId: event!.id,
-                    }),
-                })
-
-                if (!res.ok) throw new Error('Failed to create registration')
-                const newRegistration = await res.json()
-
-                addRegistration(event!.id, newRegistration)
-                onClose()
-            } catch {
-                addToast({ title: 'An error ocurred. Please try again later.' })
-            }
+            createRegistrationMutation.mutate(registrationData, {
+                onSuccess: () => {
+                    onClose()
+                },
+            })
         } else {
-            try {
-                const res = await fetch(
-                    `/api/registration/${existingRegistration.id}`,
-                    {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            studentName: name.trim(),
-                            grade: gradeNumber,
-                        }),
-                    }
-                )
-
-                if (!res.ok) throw new Error('Failed to update registration')
-                const data = await res.json()
-                const updatedRegistration = data.registration
-
-                updateRegistration(event!.id, updatedRegistration)
-                onClose()
-            } catch {
-                addToast({ title: 'An error ocurred. Please try again later.' })
-            }
+            updateRegistrationMutation.mutate(
+                {
+                    id: existingRegistration.id,
+                    ...registrationData,
+                },
+                {
+                    onSuccess: () => {
+                        onClose()
+                    },
+                }
+            )
         }
     }
     function clearData() {

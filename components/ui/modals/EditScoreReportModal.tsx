@@ -13,15 +13,14 @@ import {
     TableColumn,
     TableHeader,
     TableRow,
-    addToast,
     Button,
 } from '@heroui/react'
 
 import { Registration, Event } from '@/lib/primitives'
+import { useUpdateRegistration } from '@/components/hooks/useAdminQueries'
 
 interface Props {
     registration: Registration
-    updateRegistration: (registration: Registration) => void
     event: Event
     isOpen: boolean
     onOpenChange: (isOpen: boolean) => void
@@ -32,13 +31,13 @@ type ScoreReportRow = {
 }
 export default function EditScoreReportModal({
     registration,
-    updateRegistration,
     event,
     isOpen,
     onOpenChange,
 }: Props) {
     const [isSaveActive, setIsSaveActive] = useState(false)
     const [scoreReport, setScoreReport] = useState<boolean[]>([])
+    const updateRegistrationMutation = useUpdateRegistration(event.id)
 
     useEffect(() => {
         if (isOpen) {
@@ -53,7 +52,7 @@ export default function EditScoreReportModal({
             }
             setIsSaveActive(false)
         }
-    }, [isOpen, registration])
+    }, [isOpen, registration, event.totalScore])
     const score = useMemo(() => {
         return scoreReport.reduce((count, value) => count + (value ? 1 : 0), 0)
     }, [scoreReport])
@@ -105,26 +104,20 @@ export default function EditScoreReportModal({
         []
     )
 
-    async function submit(onClose: () => void) {
-        try {
-            const res = await fetch(`/api/registration/${registration.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    scoreReport: scoreReport,
-                    score: score,
-                }),
-            })
-
-            if (!res.ok) throw new Error('Failed to update registration')
-            const data = await res.json()
-
-            updateRegistration(data.registration)
-            setIsSaveActive(false)
-            onClose()
-        } catch {
-            addToast({ title: 'An error ocurred. Please try again later.' })
-        }
+    function submit(onClose: () => void) {
+        updateRegistrationMutation.mutate(
+            {
+                id: registration.id,
+                scoreReport: scoreReport,
+                score: score,
+            },
+            {
+                onSuccess: () => {
+                    setIsSaveActive(false)
+                    onClose()
+                },
+            }
+        )
     }
 
     return (

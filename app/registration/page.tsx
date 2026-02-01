@@ -1,7 +1,7 @@
 'use client'
 import type { Event, Registration } from '@/lib/primitives'
 
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { Spinner, useDisclosure } from '@heroui/react'
 
@@ -9,78 +9,26 @@ import ActiveEventTable from '../../components/ui/tables/ActiveEventTable'
 import RegistrationModal from '../../components/ui/modals/RegistrationModal'
 
 import SignInButton from '@/components/ui/buttons/SignInButton'
+import { useActiveEvents } from '@/components/hooks/useRegistrationQueries'
 
 export default function RegistrationPage() {
     const { data: session, status } = useSession()
-    const [events, setEvents] = useState<Event[]>([])
+    const { data: events = [], isLoading } = useActiveEvents()
     const [registerEvent, setRegisterEvent] = useState<Event | null>(null)
-    const [loading, setLoading] = useState(true)
     const { isOpen, onOpen, onOpenChange } = useDisclosure()
     const [existingRegistration, setExistingRegistration] =
         useState<Registration | null>(null)
 
-    function addRegistrationToEvent(
-        eventId: number,
-        registration: Registration
-    ) {
-        if (!registration.id) {
-            return
-        }
-        setEvents((prevEvents) =>
-            prevEvents.map((ev) =>
-                ev.id === eventId
-                    ? {
-                          ...ev,
-                          registrations: [...ev.registrations, registration],
-                      }
-                    : ev
-            )
-        )
-    }
-    function updateRegistration(eventId: number, registration: Registration) {
-        if (!registration.id) {
-            return
-        }
-        setEvents((prevEvents) =>
-            prevEvents.map((ev) =>
-                ev.id === eventId
-                    ? {
-                          ...ev,
-                          registrations: [
-                              ...ev.registrations.filter(
-                                  (r) => r.id !== registration.id
-                              ),
-                              registration,
-                          ],
-                      }
-                    : ev
-            )
-        )
-    }
-    function cancelRegistration(eventId: number, registrationId: number) {
-        setEvents((prevEvents) =>
-            prevEvents.map((ev) =>
-                ev.id === eventId
-                    ? {
-                          ...ev,
-                          registrations: ev.registrations.filter(
-                              (reg) => reg.id !== registrationId
-                          ),
-                      }
-                    : ev
-            )
-        )
-    }
-    useEffect(() => {
-        fetch('/api/event/active')
-            .then((res) => res.json())
-            .then((data) => {
-                setEvents(data)
-                setLoading(false)
-            })
-    }, [])
+    const activeEvents = useMemo(
+        () =>
+            [...events].sort(
+                (a, b) =>
+                    new Date(a.date).getTime() - new Date(b.date).getTime()
+            ),
+        [events]
+    )
 
-    if (status === 'loading' || loading) {
+    if (status === 'loading' || isLoading) {
         return (
             <div className="flex justify-center h-full">
                 <Spinner />
@@ -100,10 +48,6 @@ export default function RegistrationPage() {
 
     if (!events.length) return <p>No active events.</p>
 
-    const activeEvents = [...events].sort(
-        (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-    )
-
     return (
         <>
             <h1 className="text-3xl font-bold mb-6">Upcoming Events</h1>
@@ -111,7 +55,6 @@ export default function RegistrationPage() {
                 <ActiveEventTable
                     key={event.id}
                     event={event}
-                    onCancelRegistration={cancelRegistration}
                     onRegisterClick={(e, r) => {
                         setExistingRegistration(r ? r : null)
                         setRegisterEvent(e)
@@ -120,12 +63,10 @@ export default function RegistrationPage() {
                 />
             ))}
             <RegistrationModal
-                addRegistration={addRegistrationToEvent}
                 clearExisting={() => setExistingRegistration(null)}
                 event={registerEvent}
                 existingRegistration={existingRegistration}
                 isOpen={isOpen}
-                updateRegistration={updateRegistration}
                 onOpenChange={onOpenChange}
             />
         </>

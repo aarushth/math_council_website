@@ -29,9 +29,12 @@ import {
 } from '@heroui/react'
 
 import { Event } from '@/lib/primitives'
+import {
+    useCreateEvent,
+    useUpdateEvent,
+} from '@/components/hooks/useAdminQueries'
 
 interface Props {
-    addEvent: (event: Event) => void
     isOpen: boolean
     onOpenChange: () => void
     existingEvent?: Event | null
@@ -39,7 +42,6 @@ interface Props {
 }
 
 export default function EventModal({
-    addEvent,
     isOpen,
     onOpenChange,
     existingEvent,
@@ -63,6 +65,8 @@ export default function EventModal({
     const [isblobLoading, setIsBlobLoading] = useState(false)
 
     const isEditing = !!existingEvent
+    const createEventMutation = useCreateEvent()
+    const updateEventMutation = useUpdateEvent()
 
     useEffect(() => {
         if (existingEvent) {
@@ -102,55 +106,31 @@ export default function EventModal({
         isTotalScoreInvalid
 
     async function handleSubmit(onClose: () => void) {
+        const eventData = {
+            name: name.trim(),
+            description: description.trim(),
+            date: date.toDate().toISOString(),
+            location: location.trim(),
+            active: isActive,
+            totalScore: totalScore,
+            questionPdf: blobUrl ? blobUrl : null,
+        }
+
         if (!isEditing) {
-            try {
-                const res = await fetch('/api/event/create', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: name.trim(),
-                        description: description.trim(),
-                        date: date.toDate().toISOString(),
-                        location: location.trim(),
-                        active: isActive,
-                        totalScore: totalScore,
-                        questionPdf: blobUrl ? blobUrl : null,
-                    }),
-                })
-
-                if (!res.ok) throw new Error('Failed to create Event')
-                const newEvent = await res.json()
-
-                addEvent(newEvent)
-                onClose()
-            } catch {
-                addToast({ title: 'An error ocurred. Please try again later.' })
-            }
+            createEventMutation.mutate(eventData, {
+                onSuccess: () => {
+                    onClose()
+                },
+            })
         } else {
-            try {
-                const res = await fetch(`/api/event/${existingEvent.id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        name: name.trim(),
-                        description: description.trim(),
-                        date: date.toDate().toISOString(),
-                        location: location.trim(),
-                        active: isActive,
-                        totalScore: totalScore,
-                        questionPdf: blobUrl ? blobUrl : null,
-                    }),
-                })
-
-                if (!res.ok) throw new Error('Failed to update Event')
-                const data = await res.json()
-                const updatedEvent = data.event
-
-                addEvent(updatedEvent)
-                onClose()
-            } catch {
-                addToast({ title: 'An error ocurred. Please try again later.' })
-            }
+            updateEventMutation.mutate(
+                { id: existingEvent.id, ...eventData },
+                {
+                    onSuccess: () => {
+                        onClose()
+                    },
+                }
+            )
         }
     }
     function clearData() {

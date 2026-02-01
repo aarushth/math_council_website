@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { FaPlus, FaUsers } from 'react-icons/fa'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -20,14 +20,14 @@ import UserList from './cards/UserList'
 import AdminEventTable from './tables/AdminEventTable'
 import EventForm from './modals/EventModal'
 
-import { Event, User } from '@/lib/primitives'
+import { Event } from '@/lib/primitives'
+import { useEvents, useUsers } from '@/components/hooks/useAdminQueries'
 
 export default function AdminDashboard() {
     const router = useRouter()
     const { data: session, status } = useSession()
-    const [loading, setLoading] = useState(true)
-    const [events, setEvents] = useState<Event[]>([])
-    const [users, setUsers] = useState<User[]>([])
+    const { data: events = [], isLoading } = useEvents()
+    const { data: users = [], refetch: refetchUsers } = useUsers()
     const {
         isOpen: isModalOpen,
         onOpen: onModalOpen,
@@ -40,49 +40,29 @@ export default function AdminDashboard() {
     } = useDisclosure()
     const [existingEvent, setExistingEvent] = useState<Event | null>(null)
 
-    function addEvent(event: Event) {
-        setEvents((prev) => {
-            const exists = prev.some((e) => e.id === event.id)
+    const activeEvents = useMemo(
+        () =>
+            [...events]
+                .filter((event) => event.active)
+                .sort(
+                    (a, b) =>
+                        new Date(a.date).getTime() - new Date(b.date).getTime()
+                ),
+        [events]
+    )
 
-            if (exists) {
-                return prev.map((e) => (e.id === event.id ? event : e))
-            }
+    const inactiveEvents = useMemo(
+        () =>
+            [...events]
+                .filter((event) => !event.active)
+                .sort(
+                    (a, b) =>
+                        new Date(b.date).getTime() - new Date(a.date).getTime()
+                ),
+        [events]
+    )
 
-            return [...prev, event]
-        })
-    }
-    function updateUser(user: User) {
-        setUsers((prev) => {
-            const exists = prev.some((u) => u.id === user.id)
-
-            if (exists) {
-                return prev.map((u) => (u.id === user.id ? user : u))
-            }
-
-            return [...prev, user]
-        })
-    }
-    function deleteEvent(id: number) {
-        setEvents((prevEvents) => prevEvents.filter((event) => event.id !== id))
-    }
-    const activeEvents = [...events]
-        .filter((event) => event.active)
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-
-    const inactiveEvents = [...events]
-        .filter((event) => !event.active)
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-
-    useEffect(() => {
-        fetch('/api/event/')
-            .then((res) => res.json())
-            .then((data) => {
-                setEvents(data)
-                setLoading(false)
-            })
-    }, [])
-
-    if (status === 'loading' || loading) {
+    if (status === 'loading' || isLoading) {
         return (
             <div className="flex justify-center h-full">
                 <Spinner />
@@ -104,15 +84,9 @@ export default function AdminDashboard() {
                         variant="faded"
                         onPress={() => {
                             if (users.length <= 0) {
-                                fetch('/api/user/')
-                                    .then((res) => res.json())
-                                    .then((data) => {
-                                        setUsers(data)
-                                        onDrawerOpen()
-                                    })
-                            } else {
-                                onDrawerOpen()
+                                refetchUsers()
                             }
+                            onDrawerOpen()
                         }}
                     >
                         View Users
@@ -134,7 +108,6 @@ export default function AdminDashboard() {
                 <div key={event.id}>
                     <AdminEventTable
                         event={event}
-                        onDeleteEvent={deleteEvent}
                         onEditClick={(e) => {
                             setExistingEvent(e)
                             onModalOpen()
@@ -149,7 +122,6 @@ export default function AdminDashboard() {
                 <div key={event.id}>
                     <AdminEventTable
                         event={event}
-                        onDeleteEvent={deleteEvent}
                         onEditClick={(e) => {
                             setExistingEvent(e)
                             onModalOpen()
@@ -158,13 +130,11 @@ export default function AdminDashboard() {
                 </div>
             ))}
             <EventForm
-                addEvent={addEvent}
                 clearExisting={() => setExistingEvent(null)}
                 existingEvent={existingEvent}
                 isOpen={isModalOpen}
                 onOpenChange={onModalOpenChange}
             />
-
 
             <Drawer isOpen={isDrawerOpen} onOpenChange={onDrawerOpenChange}>
                 <DrawerContent>
@@ -174,10 +144,7 @@ export default function AdminDashboard() {
                                 Users
                             </DrawerHeader>
                             <DrawerBody>
-                                <UserList
-                                    updateUser={updateUser}
-                                    users={users}
-                                />
+                                <UserList users={users} />
                             </DrawerBody>
                             <DrawerFooter>
                                 <Button
