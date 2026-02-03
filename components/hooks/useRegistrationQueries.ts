@@ -27,7 +27,6 @@ export function useCreateRegistration() {
         mutationFn: async (registrationData: {
             studentName: string
             grade: number
-            userId: number
             eventId: number
         }): Promise<Registration> => {
             const res = await fetch('/api/registration/create', {

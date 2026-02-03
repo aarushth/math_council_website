@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSession } from 'next-auth/react'
 import {
     addToast,
     Button,
@@ -49,7 +48,6 @@ export default function RegistrationModal({
     existingRegistration,
     clearExisting,
 }: Props) {
-    const { data: session } = useSession()
     const [name, setName] = useState('')
     const [nameTouched, setNameTouched] = useState(false)
 
@@ -71,7 +69,7 @@ export default function RegistrationModal({
     }, [existingRegistration])
     if (isOpen && event == null) {
         addToast({
-            title: 'An Error Occured',
+            title: 'An Error Occurred',
             description: 'Please Try Again Later',
         })
 
@@ -87,7 +85,6 @@ export default function RegistrationModal({
         const registrationData = {
             studentName: name.trim(),
             grade: gradeNumber,
-            userId: session!.user.id,
             eventId: event!.id,
         }
 
