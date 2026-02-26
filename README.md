@@ -1,5 +1,8 @@
 # Math Council Website
 
+> [!WARNING]
+> Our web domain expires on Feb 25, 2027. Please renew it on Cloudflare before this date, it costs $10.13. If you don't renew it, the website **WILL NOT WORK**, and it will cost **$45** to restore the domain.
+
 ### Services Used
 
 Login in with club email and password on all services
@@ -28,7 +31,8 @@ Login in with club email and password on all services
     - BLOB_READ_WRITE_TOKEN
 5. You will also have to create a variable called `NEXTAUTH_URL` and set it to wherever you are hosting the dev server, eg: `http://localhost:3000`
 
-    > **DO NOT PUSH ANY ENVIRONMENT VARIABLES TO GITHUB**
+> [!WARNING]
+> **DO NOT PUSH ANY ENVIRONMENT VARIABLES TO GITHUB**
 
 6. Run `npx prisma generate` to generate prisma client for db connection
 7. Run `npm run dev` to launch dev server
