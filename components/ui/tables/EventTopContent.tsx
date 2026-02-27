@@ -1,6 +1,12 @@
-import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
+import { FaCalendar, FaFileAlt, FaMapMarkerAlt } from 'react-icons/fa'
 import { MdDelete, MdEdit } from 'react-icons/md'
-import { Popover, PopoverContent, PopoverTrigger, Button } from '@heroui/react'
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+    Button,
+    Tooltip,
+} from '@heroui/react'
 import { useState } from 'react'
 import { BiSolidPrinter } from 'react-icons/bi'
 
@@ -26,29 +32,54 @@ export default function EventTopContent({
 
     return (
         <>
-            <div className="flex flex-row justify-between items-center">
-                <div className="flex flex-col gap-3">
+            <div className="flex flex-row justify-between">
+                <div className="flex flex-1 flex-col gap-3">
                     <p className="block text-xl">{event.name}</p>
                     <p className="block text-xs -my-2 text-black/80 dark:text-white/80">
                         {event.description}
                     </p>
                 </div>
                 {editAllowed && (
-                    <div className="flex flex-row gap-3">
-                        <Button
-                            isIconOnly
-                            variant="light"
-                            onPress={() => onEditClick(event)}
-                        >
-                            <MdEdit size={20} />
-                        </Button>
-                        <Button
-                            isIconOnly
-                            variant="light"
-                            onPress={() => onPrintClick()}
-                        >
-                            <BiSolidPrinter size={20} />
-                        </Button>
+                    <div
+                        className={`grid ${event.questionPdf ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3'} gap-0 self-start`}
+                    >
+                        {event.questionPdf && (
+                            <Tooltip content="View Question and Answer PDF">
+                                <Button
+                                    isIconOnly
+                                    variant="light"
+                                    onPress={() => {
+                                        window.open(
+                                            event.questionPdf!,
+                                            '_blank'
+                                        )
+                                    }}
+                                >
+                                    <FaFileAlt size={20} />
+                                </Button>
+                            </Tooltip>
+                        )}
+
+                        <Tooltip content="Edit Event Details">
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                onPress={() => onEditClick(event)}
+                            >
+                                <MdEdit size={20} />
+                            </Button>
+                        </Tooltip>
+
+                        <Tooltip content="Print Event Registrations">
+                            <Button
+                                isIconOnly
+                                variant="light"
+                                onPress={() => onPrintClick()}
+                            >
+                                <BiSolidPrinter size={20} />
+                            </Button>
+                        </Tooltip>
+
                         <Popover
                             backdrop="opaque"
                             color="default"

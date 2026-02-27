@@ -42,10 +42,23 @@ export default function EditScoreReportModal({
     useEffect(() => {
         if (isOpen) {
             if (registration.scoreReport.length != 0) {
-                const clonedScoreReport = structuredClone(
+                let clonedScoreReport = structuredClone(
                     registration.scoreReport
                 )
 
+                if (clonedScoreReport.length > event.totalScore!) {
+                    clonedScoreReport = clonedScoreReport.slice(
+                        0,
+                        event.totalScore!
+                    )
+                } else if (clonedScoreReport.length < event.totalScore!) {
+                    clonedScoreReport = [
+                        ...clonedScoreReport,
+                        ...Array(
+                            event.totalScore! - clonedScoreReport.length
+                        ).fill(false),
+                    ]
+                }
                 setScoreReport(clonedScoreReport)
             } else {
                 setScoreReport(Array(event.totalScore!).fill(false))

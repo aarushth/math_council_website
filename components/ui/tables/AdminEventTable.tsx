@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, Key, useState, useMemo } from 'react'
+import { Key, useState, useMemo } from 'react'
 import { FaClipboardCheck, FaList, FaSearch } from 'react-icons/fa'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -104,14 +104,14 @@ export default function AdminEventTable({ event, onEditClick }: Props) {
         return filteredRegistrations.slice(start, end)
     }, [page, filteredRegistrations])
 
-    const onSearchChange = useCallback((value?: string) => {
+    const onSearchChange = (value?: string) => {
         if (value) {
             setFilterValue(value)
             setPage(1)
         } else {
             setFilterValue('')
         }
-    }, [])
+    }
     const columns = [
         {
             key: 'studentName',
@@ -135,42 +135,43 @@ export default function AdminEventTable({ event, onEditClick }: Props) {
         },
     ].filter((column) => isDesktop || column.key !== 'user')
 
-    const renderCell = useCallback(
-        (registration: Registration, columnKey: Key): React.ReactNode => {
-            switch (columnKey) {
-                case 'studentName':
-                    return registration.studentName
+    const renderCell = (
+        registration: Registration,
+        columnKey: Key
+    ): React.ReactNode => {
+        switch (columnKey) {
+            case 'studentName':
+                return registration.studentName
 
-                case 'grade':
-                    return registration.grade === 0 ? 'KG' : registration.grade
+            case 'grade':
+                return registration.grade === 0 ? 'KG' : registration.grade
 
-                case 'user':
-                    return registration.user?.email ?? ''
+            case 'user':
+                return registration.user?.email ?? ''
 
-                case 'score':
-                    return registration.score !== null
-                        ? `${registration.score} ${event.totalScore ? `/ ${event.totalScore}` : ''}`
-                        : 'Score not entered yet'
-                case 'actions':
-                    return (
-                        <Button
-                            className="gap-3"
-                            startContent={<FaClipboardCheck size={20} />}
-                            variant="solid"
-                            onPress={() => {
-                                setCurrentRegistration(registration)
-                                onScoreReportOpen()
-                            }}
-                        >
-                            <p>Edit Score Report</p>
-                        </Button>
-                    )
-                default:
-                    return null
-            }
-        },
-        [event.totalScore, onScoreReportOpen]
-    )
+            case 'score':
+                return registration.score !== null
+                    ? `${registration.score} ${event.totalScore ? `/ ${event.totalScore}` : ''}`
+                    : 'Score not entered yet'
+            case 'actions':
+                return (
+                    <Button
+                        className="gap-3"
+                        isIconOnly={!isDesktop}
+                        startContent={<FaClipboardCheck size={20} />}
+                        variant="solid"
+                        onPress={() => {
+                            setCurrentRegistration(registration)
+                            onScoreReportOpen()
+                        }}
+                    >
+                        {isDesktop && <span>Edit Score Report</span>}
+                    </Button>
+                )
+            default:
+                return null
+        }
+    }
 
     async function onLoadRegistrationsClick(): Promise<Registration[]> {
         const { data } = await refetchRegistrations()
@@ -249,6 +250,7 @@ export default function AdminEventTable({ event, onEditClick }: Props) {
                 onPrintEvent={generatePDF}
             />
             <Table
+                key={event.totalScore}
                 aria-label={event.name + ' admin table'}
                 bottomContent={
                     isFetched ? (
@@ -333,7 +335,7 @@ export default function AdminEventTable({ event, onEditClick }: Props) {
                             ''
                         )
                     }
-                    items={registrationsPaginated || []}
+                    items={registrationsPaginated}
                 >
                     {(item) => (
                         <TableRow key={item.id}>

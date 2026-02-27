@@ -28,6 +28,7 @@ export default function RegistrationPage() {
             </div>
         )
     }
+
     if (status === 'unauthenticated' || !session?.user?.email) {
         return (
             <div className="flex flex-col items-center">
@@ -38,7 +39,6 @@ export default function RegistrationPage() {
             </div>
         )
     }
-
     if (!events.length) return <p>No scores found.</p>
 
     return (
