@@ -19,9 +19,6 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
             })
             sessionStorage.setItem('toastShown', 'true')
         }
-        if (!session) {
-            sessionStorage.removeItem('toastShown')
-        }
     }, [session])
 
     return <>{children}</>

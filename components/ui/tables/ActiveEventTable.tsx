@@ -99,10 +99,7 @@ export default function ActiveEventTable({ event, onRegisterClick }: Props) {
                     </TableHeader>
                 )}
             </>
-            <TableBody
-                emptyContent="No registrations found"
-                items={event.registrations || []}
-            >
+            <TableBody items={event.registrations || []}>
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => (

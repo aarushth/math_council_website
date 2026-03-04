@@ -20,23 +20,13 @@ Login in with club email and password on all services
 ## Getting Started
 
 1. Clone repo
-2. Run `npm install` to install necessary packages
-3. Create a `.env` file to store environment Variables
-4. Login in to [Vercel](https://vercel.com/), Open the Project and click on Settings, then Environment Variables, and copy the following into your `.env`
-    - NEXTAUTH_SECRET
-    - DATABASE_URL
-    - DIRECT_URL
-    - GOOGLE_CLIENT_ID
-    - GOOGLE_CLIENT_SECRET
-    - BLOB_READ_WRITE_TOKEN
-5. You will also have to create a variable called `NEXTAUTH_URL` and set it to wherever you are hosting the dev server, eg: `http://localhost:3000`
-
-> [!WARNING]
-> **DO NOT PUSH ANY ENVIRONMENT VARIABLES TO GITHUB**
-
-6. Run `npx prisma generate` to generate prisma client for db connection
-7. Run `npm run dev` to launch dev server
-8. I recommend installing the `Prettier - Code formatter` and `Tailwind CSS IntelliSense` vscode extension to help with formatting and styling.
+2. Create a `.env` file to store environment Variables
+3. Login in to [Vercel](https://vercel.com/), Open the Project and click on Settings, then Environment Variables, and copy the following into your `.env` - NEXTAUTH_SECRET - DATABASE_URL - DIRECT_URL - GOOGLE_CLIENT_ID - GOOGLE_CLIENT_SECRET - BLOB_READ_WRITE_TOKEN
+    > [!WARNING] > **DO NOT PUSH ANY ENVIRONMENT VARIABLES TO GITHUB**
+4. You will also have to create a variable called `NEXTAUTH_URL` and set it to wherever you are hosting the dev server, eg: `http://localhost:3000`
+5. Run `npm install` to install necessary packages
+6. Run `npm run dev` to launch dev server
+7. I recommend installing the `Prettier - Code formatter` and `Tailwind CSS IntelliSense` vscode extension to help with formatting and styling.
 
 ## Making Changes
 
@@ -44,7 +34,7 @@ Do these steps before pushing any changes to the main branch. Vercel automatical
 
 1. Run `npx eslint . --fix` this runs the linter to catch any errors and fixes some automatically.
 2. It may give you some warnings or errors it can't fix, you will have to fix them manually. After fixing, run the command again to ensure no new errors are found.
-3. Run `npm run vercel-build`. This is a custom build script that vercel runs to deploy the website. If this succeeds you can safely push changes to the main branch.
+3. Run `npm run build`. If the build succeeds you can safely push changes to the main branch.
 
 ## Common Changes
 
@@ -74,7 +64,7 @@ Do these steps before pushing any changes to the main branch. Vercel automatical
 ## Best Practices
 
 - Try not to install new packages unless absolutely necessary
-    - Use [HeroUI](https://www.heroui.com/) components for any new things, to ensure easy theme management, reactivity, accessibility, etc.
+    - Use [HeroUI](https://www.heroui.com/) components for any new UI, to ensure easy theme management, reactivity, accessibility, etc.
     - If HeroUI doesn't have a relevant component you need, check [ShadCN](https://ui.shadcn.com/) before creating your own/installing another package
     - Try to do any styling with inbuilt component props. Use [TailwindCSS](https://tailwindcss.com/) for more customizability. Only write custom CSS when absolutely necessary (I only had to write some once).
     - Use [react-icons](https://react-icons.github.io/react-icons/) for any icons.
