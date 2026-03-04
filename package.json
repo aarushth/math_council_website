@@ -5,10 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "next dev --turbopack",
-        "build": "next build",
+        "build": "prisma generate && prisma migrate deploy && next build",
         "start": "next start",
         "lint": "eslint --fix",
-        "vercel-build": "prisma generate && prisma migrate deploy && next build",
         "postinstall": "prisma generate"
     },
     "dependencies": {

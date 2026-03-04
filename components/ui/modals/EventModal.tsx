@@ -26,7 +26,11 @@ import {
     Switch,
     DatePicker,
     NumberInput,
+    Tabs,
+    Tab,
 } from '@heroui/react'
+
+import GradeSlider from '../GradeSlider'
 
 import { Event } from '@/lib/primitives'
 import {
@@ -39,6 +43,12 @@ interface Props {
     onOpenChange: () => void
     existingEvent?: Event | null
     clearExisting: () => void
+}
+
+const gradeRanges: Record<string, number[]> = {
+    all: [0, 8],
+    elementary: [0, 5],
+    middle: [6, 8],
 }
 
 export default function EventModal({
@@ -64,6 +74,14 @@ export default function EventModal({
     const [blobUrl, setBlobUrl] = useState<string | undefined>(undefined)
     const [isblobLoading, setIsBlobLoading] = useState(false)
 
+    const [gradeRangeKey, setGradeRangeKey] = useState('all')
+    const [customGradeRange, setCustomGradeRange] = useState<number[]>([0, 8])
+
+    const gradeRange =
+        gradeRangeKey === 'custom'
+            ? customGradeRange
+            : gradeRanges[gradeRangeKey]
+
     const isEditing = !!existingEvent
     const createEventMutation = useCreateEvent()
     const updateEventMutation = useUpdateEvent()
@@ -83,14 +101,22 @@ export default function EventModal({
                     ? existingEvent.questionPdf
                     : undefined
             )
+
+            // Determine the grade range key based on minGrade and maxGrade
+            const eventRange = [existingEvent.minGrade, existingEvent.maxGrade]
+            const matchingKey = Object.entries(gradeRanges).find(
+                ([, range]) =>
+                    range[0] === eventRange[0] && range[1] === eventRange[1]
+            )?.[0]
+
+            if (matchingKey) {
+                setGradeRangeKey(matchingKey)
+            } else {
+                setCustomGradeRange(eventRange)
+                setGradeRangeKey('custom')
+            }
         } else {
-            setName('')
-            setDescription('')
-            setDate(now(getLocalTimeZone()))
-            setLocation('')
-            setIsActive(true)
-            setTotalScore(undefined)
-            setBlobUrl(undefined)
+            clearData()
         }
     }, [existingEvent])
 
@@ -113,6 +139,8 @@ export default function EventModal({
             location: location.trim(),
             active: isActive,
             totalScore: totalScore,
+            minGrade: gradeRange[0],
+            maxGrade: gradeRange[1],
             questionPdf: blobUrl ? blobUrl : null,
         }
 
@@ -144,6 +172,8 @@ export default function EventModal({
         setDescriptionTouched(false)
         setLocationTouched(false)
         setBlobUrl(undefined)
+        setGradeRangeKey('all')
+        setCustomGradeRange([0, 8])
         clearExisting()
     }
     async function uploadPDF(files: File[]) {
@@ -169,6 +199,7 @@ export default function EventModal({
         <Modal
             isOpen={isOpen}
             placement="center"
+            scrollBehavior="outside"
             onClose={() => {
                 clearData()
             }}
@@ -250,7 +281,30 @@ export default function EventModal({
                                 }}
                                 onValueChange={setLocation}
                             />
-                            <div className="flex flex-row gap-4 items-center">
+                            <p>Grade Range</p>
+                            <Tabs
+                                fullWidth
+                                aria-label="GradeRange"
+                                selectedKey={gradeRangeKey}
+                                variant="bordered"
+                                onSelectionChange={(key) => {
+                                    setGradeRangeKey(key as string)
+                                }}
+                            >
+                                <Tab key="all" title="all" />
+                                <Tab key="elementary" title="elementary" />
+                                <Tab key="middle" title="middle" />
+                                <Tab key="custom" title="custom" />
+                            </Tabs>
+                            <GradeSlider
+                                range={gradeRange}
+                                setRange={(range) => {
+                                    setCustomGradeRange(range)
+                                    setGradeRangeKey('custom')
+                                }}
+                                title=""
+                            />
+                            <div className="mt-5 flex flex-row gap-4 items-center">
                                 <Switch
                                     defaultSelected
                                     isSelected={isActive}

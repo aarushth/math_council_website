@@ -1,11 +1,11 @@
 'use client'
 
 import { Card, CardBody, CardFooter, Divider } from '@heroui/react'
-import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
+import { FaCalendar, FaMapMarkerAlt, FaUsers } from 'react-icons/fa'
 import { useRouter } from 'next/navigation'
 
-import { Event } from '../../../lib/primitives'
-import { useAppDateFormatter } from '../../hooks/useAppDateFormatter'
+import { Event, GRADES } from '@/lib/primitives'
+import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
 
 interface Props {
     event: Event
@@ -42,6 +42,12 @@ export default function EventCard({ event }: Props) {
                         <FaMapMarkerAlt className="shrink-0" size={18} />
                         <p className="text-xs md:text-sm flex-1">
                             {event.location}
+                        </p>
+                    </div>
+                    <div className="flex flex-row gap-4 items-center">
+                        <FaUsers className="shrink-0" size={18} />
+                        <p className="text-xs md:text-sm flex-1">
+                            {`Grades ${GRADES[event.minGrade]?.label} to ${GRADES[event.maxGrade]?.label}`}
                         </p>
                     </div>
                 </div>

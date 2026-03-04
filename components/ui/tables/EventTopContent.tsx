@@ -1,4 +1,4 @@
-import { FaCalendar, FaFileAlt, FaMapMarkerAlt } from 'react-icons/fa'
+import { FaCalendar, FaFileAlt, FaMapMarkerAlt, FaUsers } from 'react-icons/fa'
 import { MdDelete, MdEdit } from 'react-icons/md'
 import {
     Popover,
@@ -10,7 +10,7 @@ import {
 import { useState } from 'react'
 import { BiSolidPrinter } from 'react-icons/bi'
 
-import { Event } from '@/lib/primitives'
+import { Event, GRADES } from '@/lib/primitives'
 import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
 interface Props {
     event: Event
@@ -127,6 +127,12 @@ export default function EventTopContent({
             <div className="flex flex-row gap-4 text-black/80 dark:text-white/80">
                 <FaMapMarkerAlt size={15} />
                 <p className="text-xs">{event.location}</p>
+            </div>
+            <div className="flex flex-row gap-4 text-black/80 dark:text-white/80">
+                <FaUsers size={15} />
+                <p className="text-xs">
+                    {`Grades ${GRADES[event.minGrade]?.label} to ${GRADES[event.maxGrade]?.label}`}
+                </p>
             </div>
         </>
     )

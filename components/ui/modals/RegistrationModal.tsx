@@ -16,7 +16,7 @@ import {
     ModalHeader,
 } from '@heroui/react'
 
-import { Event, Registration } from '@/lib/primitives'
+import { Event, Registration, GRADES } from '@/lib/primitives'
 import {
     useCreateRegistration,
     useUpdateRegistration,
@@ -29,18 +29,6 @@ interface Props {
     existingRegistration?: Registration | null
     clearExisting: () => void
 }
-
-const grades = [
-    { key: '0', label: 'Kindergarten' },
-    { key: '1', label: '1st Grade' },
-    { key: '2', label: '2nd Grade' },
-    { key: '3', label: '3rd Grade' },
-    { key: '4', label: '4th Grade' },
-    { key: '5', label: '5th Grade' },
-    { key: '6', label: '6th Grade' },
-    { key: '7', label: '7th Grade' },
-    { key: '8', label: '8th Grade' },
-]
 
 export default function RegistrationModal({
     event,
@@ -55,6 +43,17 @@ export default function RegistrationModal({
 
     const [grade, setGrade] = useState<SharedSelection>(new Set([]))
     const [gradeTouched, setGradeTouched] = useState(false)
+
+    const grades = Object.entries(GRADES)
+        .filter(
+            ([key]) =>
+                Number(key) >= (event?.minGrade ?? 0) &&
+                Number(key) <= (event?.maxGrade ?? 0)
+        )
+        .map(([key, { label }]) => ({
+            key: key,
+            label: label,
+        }))
 
     const isEditing = !!existingRegistration
     const createRegistrationMutation = useCreateRegistration()

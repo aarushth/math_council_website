@@ -54,16 +54,31 @@ export async function PUT(
         location,
         active,
         totalScore,
+        minGrade,
+        maxGrade,
         questionPdf,
     } = body
 
-    if (!name || !description || !date || !location || active === undefined) {
+    if (
+        !name ||
+        !description ||
+        !date ||
+        !location ||
+        active === undefined ||
+        minGrade == undefined ||
+        maxGrade == undefined
+    ) {
         return Response.json(
             { message: 'Missing required fields' },
             { status: 400 }
         )
     }
-
+    if (minGrade > maxGrade || minGrade < 0 || maxGrade > 8) {
+        return Response.json(
+            { message: 'Invalid Grade Range' },
+            { status: 400 }
+        )
+    }
     try {
         const updatedEvent = await prisma.event.update({
             where: { id: eventId },
@@ -74,6 +89,8 @@ export async function PUT(
                 location,
                 active,
                 totalScore,
+                minGrade,
+                maxGrade,
                 questionPdf,
             },
         })

@@ -2,7 +2,7 @@
 
 import { addToast } from '@heroui/react'
 import { useSession } from 'next-auth/react'
-import { ReactNode, useEffect, useRef } from 'react'
+import { ReactNode, useEffect } from 'react'
 
 interface LayoutWrapperProps {
     children: ReactNode
@@ -10,15 +10,17 @@ interface LayoutWrapperProps {
 
 export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     const { data: session } = useSession()
-    const toastShown = useRef(false)
 
     useEffect(() => {
-        if (session && !toastShown.current) {
+        if (session && !sessionStorage.getItem('toastShown')) {
             addToast({
                 title: 'Logged in as ' + session.user.email,
                 color: 'success',
             })
-            toastShown.current = true
+            sessionStorage.setItem('toastShown', 'true')
+        }
+        if (!session) {
+            sessionStorage.removeItem('toastShown')
         }
     }, [session])
 
