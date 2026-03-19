@@ -1,18 +1,19 @@
 'use client'
 
-import { Card, CardBody, CardFooter, Divider } from '@heroui/react'
+import { Card, CardBody, CardFooter } from '@heroui/card'
+import { Divider } from '@heroui/divider'
 import { FaCalendar, FaMapMarkerAlt, FaUsers } from 'react-icons/fa'
-import { useRouter } from 'next/navigation'
 
 import { Event, GRADES } from '@/lib/primitives'
 import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
 
 interface Props {
     event: Event
+    onPress: () => void
+    clickText: string
 }
 
-export default function EventCard({ event }: Props) {
-    const router = useRouter()
+export default function EventCard({ event, onPress, clickText }: Props) {
     let formatter = useAppDateFormatter()
 
     return (
@@ -20,7 +21,7 @@ export default function EventCard({ event }: Props) {
             isHoverable
             isPressable
             className="min-w-50 md:w-100"
-            onPress={() => router.push('/registration')}
+            onPress={onPress}
         >
             <CardBody className="text-black/80 dark:text-white/80 gap-4 p-5 flex flex-col justify-between">
                 <div>
@@ -55,7 +56,7 @@ export default function EventCard({ event }: Props) {
             <Divider />
             <CardFooter className="flex justify-center ">
                 <p className="text-sm text-black/60 dark:text-white/60">
-                    Click to Register
+                    {clickText}
                 </p>
             </CardFooter>
         </Card>
