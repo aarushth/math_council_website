@@ -7,8 +7,9 @@ import {
     ModalContent,
     ModalFooter,
     ModalHeader,
-    Slider,
 } from '@heroui/react'
+
+import GradeSlider from '../GradeSlider'
 
 import { Event } from '@/lib/primitives'
 interface Props {
@@ -24,7 +25,7 @@ export default function EventModal({
     event,
     onPrintEvent,
 }: Props) {
-    const [range, setRange] = useState([0, 8])
+    const [range, setRange] = useState<number[]>([0, 8])
 
     return (
         <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange}>
@@ -35,58 +36,12 @@ export default function EventModal({
                             {`Print ${event?.name} Registrations`}
                         </ModalHeader>
                         <ModalBody>
-                            <Slider
-                                showSteps
-                                className="max-w-md"
-                                getValue={(value) => {
-                                    return Array.isArray(value)
-                                        ? `${value[0] === 0 ? 'KG' : value[0]}-${value[1]}`
-                                        : value.toString()
-                                }}
-                                label="Grades to Print"
-                                marks={[
-                                    {
-                                        value: 0,
-                                        label: 'KG',
-                                    },
-                                    {
-                                        value: 1,
-                                        label: '1',
-                                    },
-                                    {
-                                        value: 2,
-                                        label: '2',
-                                    },
-                                    {
-                                        value: 3,
-                                        label: '3',
-                                    },
-                                    {
-                                        value: 4,
-                                        label: '4',
-                                    },
-                                    {
-                                        value: 5,
-                                        label: '5',
-                                    },
-                                    {
-                                        value: 6,
-                                        label: '6',
-                                    },
-                                    {
-                                        value: 7,
-                                        label: '7',
-                                    },
-                                    {
-                                        value: 8,
-                                        label: '8',
-                                    },
-                                ]}
-                                maxValue={8}
-                                minValue={0}
-                                step={1}
-                                value={range}
-                                onChange={(r) => setRange(r as number[])}
+                            <GradeSlider
+                                maxValue={event.maxGrade}
+                                minValue={event.minGrade}
+                                range={range}
+                                setRange={setRange}
+                                title="Grades to Print"
                             />
                         </ModalBody>
                         <ModalFooter>
@@ -102,7 +57,7 @@ export default function EventModal({
                             <Button
                                 color="primary"
                                 onPress={() => {
-                                    onPrintEvent(range as number[])
+                                    onPrintEvent(range)
                                     onClose()
                                 }}
                             >

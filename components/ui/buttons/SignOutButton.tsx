@@ -6,7 +6,10 @@ function SignOutButton() {
         <Button
             color="danger"
             variant="ghost"
-            onPress={() => signOut({ callbackUrl: '/' })}
+            onPress={() => {
+                sessionStorage.removeItem('toastShown')
+                signOut({ callbackUrl: '/' })
+            }}
         >
             Sign Out
         </Button>

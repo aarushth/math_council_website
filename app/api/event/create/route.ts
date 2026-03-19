@@ -17,10 +17,20 @@ export async function POST(req: Request) {
         location,
         active,
         totalScore,
+        minGrade,
+        maxGrade,
         questionPdf,
     } = body
 
-    if (!name || !description || !date || !location || active === undefined) {
+    if (
+        !name ||
+        !description ||
+        !date ||
+        !location ||
+        active === undefined ||
+        minGrade == undefined ||
+        maxGrade == undefined
+    ) {
         return Response.json(
             { message: 'Missing required fields' },
             { status: 400 }
@@ -36,6 +46,8 @@ export async function POST(req: Request) {
                 location,
                 active,
                 totalScore,
+                minGrade,
+                maxGrade,
                 questionPdf,
             },
         })

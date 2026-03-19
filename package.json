@@ -5,10 +5,9 @@
     "type": "module",
     "scripts": {
         "dev": "next dev --turbopack",
-        "build": "next build",
+        "build": "prisma generate && prisma migrate deploy && next build",
         "start": "next start",
         "lint": "eslint --fix",
-        "vercel-build": "prisma generate && prisma migrate deploy && next build",
         "postinstall": "prisma generate"
     },
     "dependencies": {
@@ -36,7 +35,7 @@
         "@heroui/popover": "2.3.27",
         "@heroui/progress": "2.2.22",
         "@heroui/radio": "2.3.27",
-        "@heroui/react": "^2.8.7",
+        "@heroui/react": "^2.8.10",
         "@heroui/react-utils": "2.1.14",
         "@heroui/scroll-shadow": "2.3.18",
         "@heroui/select": "2.4.28",

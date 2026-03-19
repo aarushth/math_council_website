@@ -19,7 +19,10 @@ model Event {
   active        Boolean        @default(true)
   totalScore    Int?
   questionPdf   String?
+  minGrade      Int            @default(0)
+  maxGrade      Int            @default(8)
   registrations Registration[]
+  
 }
 
 model User {

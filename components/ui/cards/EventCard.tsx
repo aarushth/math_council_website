@@ -1,18 +1,19 @@
 'use client'
 
-import { Card, CardBody, CardFooter, Divider } from '@heroui/react'
-import { FaCalendar, FaMapMarkerAlt } from 'react-icons/fa'
-import { useRouter } from 'next/navigation'
+import { Card, CardBody, CardFooter } from '@heroui/card'
+import { Divider } from '@heroui/divider'
+import { FaCalendar, FaMapMarkerAlt, FaUsers } from 'react-icons/fa'
 
-import { Event } from '../../../lib/primitives'
-import { useAppDateFormatter } from '../../hooks/useAppDateFormatter'
+import { Event, GRADES } from '@/lib/primitives'
+import { useAppDateFormatter } from '@/components/hooks/useAppDateFormatter'
 
 interface Props {
     event: Event
+    onPress: () => void
+    clickText: string
 }
 
-export default function EventCard({ event }: Props) {
-    const router = useRouter()
+export default function EventCard({ event, onPress, clickText }: Props) {
     let formatter = useAppDateFormatter()
 
     return (
@@ -20,7 +21,7 @@ export default function EventCard({ event }: Props) {
             isHoverable
             isPressable
             className="min-w-50 md:w-100"
-            onPress={() => router.push('/registration')}
+            onPress={onPress}
         >
             <CardBody className="text-black/80 dark:text-white/80 gap-4 p-5 flex flex-col justify-between">
                 <div>
@@ -44,12 +45,18 @@ export default function EventCard({ event }: Props) {
                             {event.location}
                         </p>
                     </div>
+                    <div className="flex flex-row gap-4 items-center">
+                        <FaUsers className="shrink-0" size={18} />
+                        <p className="text-xs md:text-sm flex-1">
+                            {`Grades ${GRADES[event.minGrade]?.label} to ${GRADES[event.maxGrade]?.label}`}
+                        </p>
+                    </div>
                 </div>
             </CardBody>
             <Divider />
             <CardFooter className="flex justify-center ">
                 <p className="text-sm text-black/60 dark:text-white/60">
-                    Click to Register
+                    {clickText}
                 </p>
             </CardFooter>
         </Card>
